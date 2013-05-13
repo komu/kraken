@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions>
+
+  <!-- WEAPONS -->
+  
+  <!-- Blades -->
+  
+  <item name="blade" class="net.wanhack.model.item.weapon.Sword" abstract="true">
+    <attributes damage="1d3" letter="†" color="dark grey" />
+  </item>
+
+  <item name="a dagger" parent="blade" level="2">
+    <attributes weight="100" />
+  </item>
+  
+  <item name="a knife" parent="blade" level="1">
+    <attributes damage="1d2" />
+  </item>
+
+  <item name="a rapier" parent="blade" level="3">
+    <attributes toHit="1" damage="1d5" weight="1100" />
+  </item>
+      
+  <item name="a short sword" parent="blade" level="5">
+    <attributes toHit="1" damage="1d6" weight="1200" />
+  </item>
+
+  <item name="a scimitar" parent="blade" level="8" probability="80" >
+    <attributes toHit="2" damage="1d6+1" weight="2100"/>
+  </item>
+    
+  <item name="a long sword" parent="blade" level="10" probability="60">
+    <attributes toHit="2" damage="1d6+2" weight="2500"  />
+  </item>
+
+  <item name="a mithril sword" parent="blade" level="20" probability="10">
+    <attributes toHit="5" damage="2d8+4" weight="1000" color="white" />
+  </item>
+
+  <item name="a two-handed sword" parent="blade" level="16" probability="50">
+      <attributes toHit="3" damage="1d8+3" weight="4200" />
+  </item>
+    
+  <!-- Axes (TODO: blunt or blade?) --> 
+
+  <item name="axe" class="net.wanhack.model.item.weapon.Sword" abstract="true">
+    <attributes damage="1d3" letter="۶" color="dark grey" />
+  </item>
+    
+  <item name="a hatchet" parent="axe" level="6">
+    <attributes toHit="0" damage="1d4+2" weight="1800" />
+  </item>
+
+  <item name="an axe" parent="axe" level="10" probability="80" >
+      <attributes toHit="1" damage="1d6+2" weight="2700"/>
+  </item>
+    
+  <item name="a battle axe" parent="axe" level="14" probability="60">
+    <attributes toHit="1" damage="2d3+4" weight="4500"  />
+  </item>
+    
+    
+  <item name="a two-handed axe" parent="blade" level="18" probability="50">
+      <attributes toHit="3" damage="1d9+4" weight="7200" />
+  </item>
+      
+	
+  <!-- Blunt weapons --> 
+
+  <item name="blunt" class="net.wanhack.model.item.weapon.BluntWeapon" abstract="true">
+    <attributes damage="1d3" letter="/" color="brown" />
+  </item>
+    
+  <item name="a club" parent="blunt" level="2">
+    <attributes toHit="0" damage="1d5" weight="2100" />
+  </item>
+
+  <item name="a mace" parent="blunt" level="6">
+    <attributes toHit="1" damage="1d5+2" weight="2000" color="black"/>
+  </item>
+
+  <item name="a flail" parent="blunt" level="9" probability="80">
+      <attributes toHit="2" damage="1d7+2" weight="3800" />
+  </item>   
+    
+  <item name="a war hammer" parent="blunt" level="12" probability="60">
+    <attributes toHit="2" damage="2d4+3" weight="4000" color="grey"/>
+  </item>
+      
+  <item name="spoon" parent="blunt" level="1" probability="30">
+    <attributes toHit="-1" damage="1" weight="20" />
+  </item>  
+      
+  <!-- Pointed weapons -->
+    
+  <item name="pointed" class="net.wanhack.model.item.weapon.PointedWeapon" abstract="true">
+    <attributes letter="\" color="brown" />
+  </item>
+
+  <item name="a spear" parent="pointed" level="5">
+    <attributes toHit="2" damage="1d7" weight="2700"  />
+  </item>
+
+  <item name="a halberd" parent="pointed" level="15" probability="50">
+    <attributes toHit="2" damage="2d6+3" weight="3500" color="grey" />
+  </item>   
+      
+  <!-- Projectiles -->
+  
+  <item name="projectile" class="net.wanhack.model.item.weapon.Projectile" abstract="true">
+    <attributes damage="1d3" letter="}" color="brown" />
+  </item>
+  
+  <item name="a javelin" parent="projectile" level="11" probability="50">
+    <attributes toHit="1" damage="1d12+2" weight="2700"  />
+  </item>
+    
+  <item name="an arrow" parent="projectile" level="1" probability="0">
+    <attributes damage="2d4" weight="120" color="brownish" />
+  </item>  
+  
+  <item name="a bolt" parent="projectile" level="1" probability="0">
+    <attributes damage="2d4+1randint(4, 9)" weight="160" color="brownish" />
+  </item>  
+ 
+  <item name="a dart" parent="projectile" level="1" probability="0">
+      <attributes damage="1d5" weight="60" color="red" />
+  </item>   
+    
+  <!-- Missile launchers -->
+  
+  <item name="launcher" class="net.wanhack.model.item.weapon.MissileLauncher" abstract="true">
+    <attributes damage="randint(1, 3)" letter="{" color="brown" />
+  </item>
+
+  <item name="a short bow" parent="launcher" level="6" probability="0">
+      <attributes weight="2000"/>
+  </item>
+  
+  <item name="a light crossbow" parent="launcher" level="11" probability="0">
+      <attributes weight="4500"/>
+  </item>
+		
+  <!-- Unique weapons -->
+  
+  <item name="the Black Sword" parent="blade" level="50" probability="0" maximumInstances="1">
+    <attributes toHit="5" damage="4d5+5" weight="3000" color="black" />
+  </item>
+  
+  <item name="Aluminium Pole" parent="blunt" level="50" probability="0" maximumInstances="1">
+    <attributes toHit="2" damage="4d5+1" weight="1000" color="aluminium" />
+  </item>
+</definitions>

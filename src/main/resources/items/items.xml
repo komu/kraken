@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions>
+
+  <!-- MISC ITEMS --> 
+    
+  <!-- Rocks -->
+  
+  <item name="a rock" class="net.wanhack.model.item.Item" >
+    <attributes weight="200" />
+  </item>
+  
+  <item name="a very small rock" parent="a rock" probability="10">
+    <attributes weight="0" />
+  </item>
+
+  <item name="a boulder" parent="a rock" probability="5">
+      <attributes weight="80000" />
+  </item>
+    
+  <!-- Light sources -->
+  
+  <item name="light source" class="net.wanhack.model.item.LightSource" abstract="true">
+    <attributes color="yellow" letter="~" />
+  </item>
+  
+  <item name="a torch" parent="light source" level="1" probability="75">
+    <attributes color="brown" weight="300" />
+  </item>
+
+  <item name="a lantern" parent="light source" level="10" probability="10">
+    <attributes color="light brown" weight="600" />
+  </item>
+
+  <item name="a Norwegian lantern" parent="light source" level="25" probability="15" maxInstances="5">
+    <attributes color="red" weight="820"/>
+  </item>
+    
+      
+  <!-- EDIBLES -->
+  
+  <item name="food ration" class="net.wanhack.model.item.food.Food" >
+    <attributes letter="%" effectiveness="1000" weight="500" />
+  </item>
+
+  <item name="chunk of cheese" class="net.wanhack.model.item.food.Food" >
+    <attributes letter="%" color="yellow" effectiveness="600" weight="350" />
+  </item>
+
+  <item name="big chunk of cheese" parent="chunk of cheese">
+    <attributes effectiveness="1200" weight="1100" />
+  </item>
+
+  <item name="bun" class="net.wanhack.model.item.food.Food" probability="60" >
+    <attributes letter="%" color="brownish" effectiveness="80" weight="60" />
+  </item>
+    
+  <item name="Friday bun" class="net.wanhack.model.item.food.HealingEdible" probability="30">
+    <attributes letter="%" color="brownish" effectiveness="400" healingEffect="5" weight="120" />
+  </item>
+
+  <item name="wraith essence" class="net.wanhack.model.item.food.HealingEdible" probability="0"> 
+    <attributes letter="%" color="white" effectiveness="100" weight="5" />
+  </item>
+
+            
+  <item name="wafer-thin mint" class="net.wanhack.model.item.food.WaferThinMint" probability="20" />
+  
+  <item name="a cyanide capsule" class="net.wanhack.model.item.food.CyanideCapsule" probability="0" />
+    
+  <!-- POTIONS -->
+
+  <item name="potion" class="net.wanhack.model.item.Item" abstract="true">
+    <attributes color="brown" letter="!" />
+  </item>  
+    
+  <item name="healing potion" class="net.wanhack.model.item.food.HealingEdible" parent="potion" probability="25">
+    <attributes color="light blue" effectiveness="10" healingEffect="10" weight="250" letter="!"/>
+  </item>
+  
+  <!-- SCROLLS -->
+
+  <item name="scroll" class="net.wanhack.model.item.Item" abstract="true">
+    <attributes color="white" letter="?" />
+  </item>  
+
+  
+  <!-- WANDS   -->
+  
+  <item name="wand" class="net.wanhack.model.item.Item" abstract="true">
+    <attributes color="brown" letter="-" />
+  </item>  
+  
+  <!-- STAVES  -->
+
+  <item name="staff" class="net.wanhack.model.item.Item" abstract="true">
+    <attributes color="brown" letter="_" />
+  </item>  
+
+
+  <!-- RINGS   -->
+  
+  <item name="ring" class="net.wanhack.model.item.Item" abstract="true">
+    <attributes color="brown" letter="=" />
+  </item>  
+  
+  <!-- AMULETS -->
+
+  <item name="potion" class="net.wanhack.model.item.Item" abstract="true">
+    <attributes color="brown"  letter='"'  />
+  </item>  
+
+
+      
+  <!-- ARMORS -->
+  
+  <!-- Light armors -->
+  
+  <item name="light armor" class="net.wanhack.model.item.armor.Armor" abstract="true">
+    <attributes letter="]" color="brown" bodyPart="TORSO" />
+  </item>
+
+  <item name="old rags" parent="light armor" level="1" probability="30">
+    <attributes weight="500"  color="red" bodyPart="TORSO" armorBonus="0"  />
+  </item>
+      
+  <item name="clothes" parent="light armor" level="1">
+    <attributes weight="500"  color="blue" bodyPart="TORSO" armorBonus="1" />
+  </item>
+  
+  <item name="a soft leather armor" parent="light armor" level="4">
+    <attributes weight="2300" bodyPart="TORSO" armorBonus="2"/>
+  </item>
+
+  <item name="a hard leather armor" parent="light armor" level="4" probability="70">
+    <attributes weight="3000" bodyPart="TORSO" armorBonus="3"/>
+  </item>
+  
+  <item name="a studded leather armor" parent="light armor" level="9" probability="60">
+    <attributes weight="3500"  bodyPart="TORSO" armorBonus="4"/>
+  </item>
+
+      
+  <!-- Heavy armors -->
+
+  <item name="heavy armor" class="net.wanhack.model.item.armor.Armor" abstract="true">
+    <attributes letter="[" color="brown" bodyPart="TORSO" />
+  </item>
+  
+  <item name="a ring mail" parent="heavy armor" level="15" probability="40">
+      <attributes weight="4600" bodyPart="TORSO" armorBonus="5"/>
+  </item>   
+    
+  <item name="a chain mail" parent="heavy armor" level="30" probability="30">
+    <attributes weight="6000" bodyPart="TORSO" armorBonus="6"/>
+  </item>   
+    
+  <item name="a plate mail" parent="heavy armor" level="50" probability="20">
+    <attributes weight="12000" bodyPart="TORSO" armorBonus="7"/>
+  </item>
+  
+  <!-- Helmets -->
+  
+  <item name="a leather cap" parent="light armor" level="1">
+    <attributes weight="200" bodyPart="HEAD" armorBonus="1"/>
+  </item>
+        
+  <item name="a metal cap" parent="heavy armor" level="5">
+    <attributes weight="400" bodyPart="HEAD" armorBonus="2" />
+  </item>
+
+  <item name="a chain coif" parent="heavy armor" level="10">
+    <attributes weight="2100" bodyPart="HEAD" armorBonus="3" />
+  </item>
+    
+     
+  <item name="an iron helmet" parent="heavy armor" level="20" probability="60">
+    <attributes weight="3500" bodyPart="HEAD" armorBonus="4" />
+  </item>       
+
+  <item name="a steel helmet" parent="heavy armor" level="30" probability="25">
+      <attributes weight="3300" bodyPart="HEAD" armorBonus="5"/>
+  </item>   
+            
+  <!-- Shields -->
+
+  <item name="a small wooden shield" parent="light armor" level="1">
+    <attributes weight="700" bodyPart="SHIELD" armorBonus="1"/>
+  </item>
+        
+  <item name="a small metal shield" parent="light armor" level="4">
+    <attributes weight="1500" bodyPart="SHIELD" armorBonus="2"/>
+  </item>
+
+  <item name="a large wooden shield" parent="heavy armor" level="13" probability="80">
+    <attributes weight="3200" bodyPart="SHIELD" armorBonus="3"/>
+  </item>
+
+  <item name="a large metal shield" parent="heavy armor" level="18" probability="40">
+    <attributes weight="4500" bodyPart="SHIELD" armorBonus="4"/>
+  </item>
+    
+        
+  <!-- Gloves, gauntlets -->
+    
+  <item name="a pair of leather gloves" parent="light armor" level="3">
+    <attributes weight="200" bodyPart="HANDS" armorBonus="1" />
+  </item>
+        
+  <item name="a pair of gauntlets" parent="heavy armor" level="9" probability="60">
+    <attributes weight="450" bodyPart="HANDS" armorBonus="2" />
+  </item>
+    
+    
+  <!-- Boots, shoes -->
+
+  <item name="a pair of leather shoes" parent="light armor" level="1">
+    <attributes weight="380" bodyPart="FEET" armorBonus="1" />
+  </item>
+        
+  <item name="a pair of leather boots" parent="light armor" level="8">
+    <attributes weight="1200" bodyPart="FEET" armorBonus="2" />
+  </item>
+ 
+  <item name="a pair of steel boots" parent="heavy armor" level="23" probability="80">
+      <attributes weight="2700" bodyPart="FEET" armorBonus="3"/>
+  </item>   
+
+  <!-- Unique armors -->           
+    
+  <!-- ARTIFACT ITEMS -->       
+
+  <item name="the Grail-shaped lantern" parent="light source" level="30" probability="0" maxInstances="5">
+    <attributes color="yellow" weight="800" />
+  </item>
+       
+  <!-- TODO: class for digger items - pick-axe, pick, shovel at least -->
+  <item name="the Unordinary Shovel"  class="net.wanhack.model.item.Item" 
+        level="0" probability="0" maxInstances="1">
+    <attributes color="white" letter="ٱ" weight="2500" />
+  </item>    
+
+  
+</definitions>
