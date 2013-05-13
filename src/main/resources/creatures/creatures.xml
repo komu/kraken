@@ -20,43 +20,43 @@
 
   <creature name="white ant" parent="ant" level="4">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(3,7)" color="white" level="4" luck="0"
+    <attributes hitPoints="randint(3,7)" color="white" level="4" luck="0"
                 killExperience="5" armorClass="15" tickRate="140" weight="800" />
   </creature>
     
   <creature name="grey ant" parent="ant" level="6">
     <natural-weapon toHit="0" damage="randint(2,4)" />
-    <attributes hitpoints="randint(4,8)" color="grey" level="6" luck="0"
+    <attributes hitPoints="randint(4,8)" color="grey" level="6" luck="0"
                 killExperience="8" armorClass="13" tickRate="130" weight="850" />
   </creature>
 
   <creature name="red ant" parent="ant" level="7">
     <natural-weapon toHit="0" damage="randint(2,5)" />
-    <attributes hitpoints="randint(6,12)" color="red" level="7"  luck="0"
+    <attributes hitPoints="randint(6,12)" color="red" level="7"  luck="0"
                 killExperience="9" armorClass="13" tickRate="100" weight="1100"  />
   </creature>
 
   <creature name="black ant" parent="ant" level="9" swarmSize="randint(3, 6)">
     <natural-weapon toHit="1" damage="randint(2,6)" />
-    <attributes hitpoints="randint(10,16)" color="black" level="9" luck="0"
+    <attributes hitPoints="randint(10,16)" color="black" level="9" luck="0"
                 killExperience="14" armorClass="12" tickRate="90" weight="1000" />
   </creature>
 
   <creature name="yellow ant" parent="ant" level="12" swarmSize="randint(2, 7)">
     <natural-weapon toHit="0" damage="randint(4,6)" />
-    <attributes hitpoints="randint(16,24)" color="yellow" level="12" luck="0"
+    <attributes hitPoints="randint(16,24)" color="yellow" level="12" luck="0"
                 killExperience="22" armorClass="12" tickRate="90" weight="1300" />
   </creature>
             
   <creature name="green ant" parent="ant" level="14" swarmSize="randint(4, 6)">
     <natural-weapon toHit="2" damage="randint(2,7)" />
-    <attributes hitpoints="randint(20,35)" color="green" level="14" luck="2"
+    <attributes hitPoints="randint(20,35)" color="green" level="14" luck="2"
                 killExperience="28" armorClass="11" tickRate="80" weight="1300" />
   </creature>
 
   <creature name="blue ant" parent="ant" level="16" swarmSize="randint(5, 9)">
     <natural-weapon toHit="2" damage="randint(5,12)" />
-    <attributes hitpoints="randint(34,48)" color="blue" level="16" luck="0"
+    <attributes hitPoints="randint(34,48)" color="blue" level="16" luck="0"
                 killExperience="35" armorClass="10" tickRate="70" weight="1200" />
   </creature>
     
@@ -69,13 +69,13 @@
 
   <creature name="angel" parent="baseangel" level="30">
     <natural-weapon toHit="5" damage="randint(6,16)" />
-    <attributes hitpoints="randint(250,350)" color="white" level="30" luck="1"
+    <attributes hitPoints="randint(250,350)" color="white" level="30" luck="1"
                 killExperience="310" armorClass="5" tickRate="80" weight="45000" />
   </creature>
 
   <creature name="archangel" parent="baseangel" level="60">
     <natural-weapon toHit="8" damage="randint(10,25)" />
-    <attributes hitpoints="randint(650,850)" color="white" level="60" luck="2"
+    <attributes hitPoints="randint(650,850)" color="white" level="60" luck="2"
                 killExperience="860" armorClass="-5" tickRate="50" weight="52000" />
   </creature>
 
@@ -88,32 +88,32 @@
 
   <creature name="giant bat" parent="bat" level="1">
     <natural-weapon toHit="0" damage="randint(1,3)" />
-    <attributes hitpoints="randint(2,5)" color="brown" level="1" luck="0"
+    <attributes hitPoints="randint(2,5)" color="brown" level="1" luck="0"
                 killExperience="2" armorClass="15" tickRate="50" weight="2300" />
   </creature>
     
   <creature name="giant white bat" parent="bat" level="3">
     <natural-weapon toHit="1" damage="randint(2,4)" />
-    <attributes hitpoints="randint(3,7)" color="white" level="3" luck="0"
+    <attributes hitPoints="randint(3,7)" color="white" level="3" luck="0"
                 killExperience="4" armorClass="14" tickRate="50" weight="2500" />
   </creature>
 
   <creature name="giant black bat" parent="bat" level="5" swarmSize="randint(2, 4)">
     <natural-weapon toHit="0" damage="randint(2,6)" />
-    <attributes hitpoints="randint(5,9)" color="black" level="5" luck="-1"
+    <attributes hitPoints="randint(5,9)" color="black" level="5" luck="-1"
                 killExperience="6" armorClass="14" tickRate="50" weight="2600" />
   </creature>
 
   <creature name="giant green bat" parent="bat" level="8" swarmSize="randint(3, 5)">
     <natural-weapon toHit="1" damage="randint(3,7)" />
-    <attributes hitpoints="randint(8,13)" color="green" level="8" luck="2"
+    <attributes hitPoints="randint(8,13)" color="green" level="8" luck="2"
                 killExperience="9" armorClass="14" tickRate="50" weight="3000"  />
   </creature>
     
   <!-- "No, a Siamese bat. They're more dangerous." -->
   <creature name="siamese bat" parent="bat" level="8" swarmSize="randint(3, 5)">
     <natural-weapon toHit="1" damage="randint(3,8)" />
-    <attributes hitpoints="randint(9,15)" color="green" level="8" luck="2"
+    <attributes hitPoints="randint(9,15)" color="green" level="8" luck="2"
                 killExperience="13" armorClass="13" tickRate="50" weight="3000"  />
   </creature>
             
@@ -125,25 +125,25 @@
 
   <creature name="headless chicken" parent="bird" level="1" probability="20">
     <natural-weapon toHit="0" damage="randint(1,2)" />
-    <attributes hitpoints="randint(1,1)" color="white" level="1"  luck="0"
+    <attributes hitPoints="randint(1,1)" color="white" level="1"  luck="0"
                 killExperience="1" armorClass="20" tickRate="60" weight="1700" />
   </creature>
     
   <creature name="european swallow" parent="bird" level="1">
     <natural-weapon toHit="0" damage="randint(1,2)" />
-    <attributes hitpoints="randint(1,3)" color="black" level="1" luck="0"
+    <attributes hitPoints="randint(1,3)" color="black" level="1" luck="0"
                 killExperience="1" armorClass="18" tickRate="40" weight="100" />
   </creature>
 
   <creature name="african swallow" parent="bird" level="2" probability="60">
     <natural-weapon toHit="0" damage="randint(1,3)" />
-    <attributes hitpoints="randint(2,4)" color="black" level="2" luck="0"
+    <attributes hitPoints="randint(2,4)" color="black" level="2" luck="0"
                 killExperience="2" armorClass="18" tickRate="40" weight="200" />
   </creature>
     
   <creature name="crow" parent="bird" level="4" swarmSize="randint(1, 6)">
     <natural-weapon toHit="0" damage="randint(2,4)" />
-    <attributes hitpoints="randint(3,7)" color="black" level="4" luck="-1"
+    <attributes hitPoints="randint(3,7)" color="black" level="4" luck="-1"
                 killExperience="4" armorClass="16" tickRate="70" weight="500" />
   </creature>
         
@@ -155,25 +155,25 @@
 
   <creature name="giant white centipede" parent="centipede" level="1">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(3,5)" color="white" level="1" luck="0"
+    <attributes hitPoints="randint(3,5)" color="white" level="1" luck="0"
                 killExperience="2" armorClass="18" tickRate="120" weight="800" />
   </creature>
 
   <creature name="giant yellow centipede" parent="centipede" level="2">
     <natural-weapon toHit="0" damage="randint(2,4)" />
-    <attributes hitpoints="randint(4,6)" color="yellow" level="2" luck="0"
+    <attributes hitPoints="randint(4,6)" color="yellow" level="2" luck="0"
                 killExperience="3" armorClass="17" tickRate="120" weight="800" />
   </creature>
     
   <creature name="giant green centipede" parent="centipede" level="4">
     <natural-weapon toHit="1" damage="randint(1,6)" />
-    <attributes hitpoints="randint(6,10)" color="green" level="4" luck="3"
+    <attributes hitPoints="randint(6,10)" color="green" level="4" luck="3"
                 killExperience="5" armorClass="16" tickRate="110" weight="900"  />
   </creature>
 
   <creature name="giant red centipede" parent="centipede" level="6">
     <natural-weapon toHit="0" damage="randint(2,7)" />
-    <attributes hitpoints="randint(9,14)" color="red" level="6" luck="0"
+    <attributes hitPoints="randint(9,14)" color="red" level="6" luck="0"
                 killExperience="7" armorClass="16" tickRate="100" weight="900" />
   </creature>
 
@@ -186,19 +186,19 @@
 
   <creature name="jackal" parent="canine" level="1" swarmSize="randint(3, 6)">
     <natural-weapon toHit="0" damage="randint(1,3)" />
-    <attributes hitpoints="randint(1,5)" color="brownish" level="1" luck="0"
+    <attributes hitPoints="randint(1,5)" color="brownish" level="1" luck="0"
                 killExperience="1" armorClass="18" tickRate="100" weight="6000" />
   </creature>
         
   <creature name="wild dog" parent="canine" level="2">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(3,5)" color="brown" level="2" luck="2"
+    <attributes hitPoints="randint(3,5)" color="brown" level="2" luck="2"
                 killExperience="3" armorClass="17" tickRate="100" weight="14000" />
   </creature>
 
   <creature name="wolf" parent="canine" level="11">
     <natural-weapon toHit="2" damage="randint(2,10)" />
-    <attributes hitpoints="randint(23,35)" color="dark grey" level="11" luck="0"
+    <attributes hitPoints="randint(23,35)" color="dark grey" level="11" luck="0"
                 killExperience="10" armorClass="15" tickRate="100" weight="35000"  />
   </creature>
 
@@ -211,25 +211,25 @@
 
   <creature name="young red dragon" parent="young dragon" level="10">
     <natural-weapon toHit="3" damage="randint(3,13)" />
-    <attributes hitpoints="randint(60,80)" color="red" level="10" luck="0"
+    <attributes hitPoints="randint(60,80)" color="red" level="10" luck="0"
                 killExperience="120" armorClass="10" tickRate="110" weight="120000" />
   </creature>
   
   <creature name="young black dragon" parent="young dragon" level="13">
     <natural-weapon toHit="3" damage="randint(6,15)" />
-    <attributes hitpoints="randint(70,90)" color="black" level="13" luck="0"
+    <attributes hitPoints="randint(70,90)" color="black" level="13" luck="0"
                 killExperience="140" armorClass="8" tickRate="110" weight="145000" />
   </creature>
 
   <creature name="mature red dragon" parent="young dragon" level="22">
     <natural-weapon toHit="6" damage="randint(6,20)" />
-    <attributes hitpoints="randint(220,300)" color="red" level="22" luck="1"
+    <attributes hitPoints="randint(220,300)" color="red" level="22" luck="1"
                 killExperience="300" armorClass="5" tickRate="100" weight="420000" />
   </creature>
   
   <creature name="mature black dragon" parent="young dragon" level="27">
     <natural-weapon toHit="6" damage="randint(5,22)" />
-    <attributes hitpoints="randint(270,390)" color="black" level="27" luck="0"
+    <attributes hitPoints="randint(270,390)" color="black" level="27" luck="0"
                 killExperience="340" armorClass="3" tickRate="100" weight="445000" />
   </creature>
     
@@ -242,13 +242,13 @@
 
   <creature name="ancient red dragon" parent="ancient dragon" level="60">
     <natural-weapon toHit="12" damage="randint(8,30)" />
-    <attributes hitpoints="randint(600,800)" color="red" level="60" luck="2"
+    <attributes hitPoints="randint(600,800)" color="red" level="60" luck="2"
                 killExperience="5000" armorClass="-5" tickRate="60" weight="800000" />
   </creature>
   
   <creature name="ancient black dragon" parent="ancient dragon" level="65">
     <natural-weapon toHit="12" damage="randint(10,40)" />
-    <attributes hitpoints="randint(700,850)" color="black" level="65" luck="2"
+    <attributes hitPoints="randint(700,850)" color="black" level="65" luck="2"
                 killExperience="6000" armorClass="-6" tickRate="50" weight="845000" />
   </creature>
   
@@ -261,7 +261,7 @@
 
   <creature name="floating eye" parent="eye" level="3">
     <natural-weapon toHit="0" damage="randint(1,5)" />
-    <attributes hitpoints="randint(8,14)" color="yellow" level="3" luck="3"
+    <attributes hitPoints="randint(8,14)" color="yellow" level="3" luck="3"
                 killExperience="5" armorClass="15" tickRate="100" weight="9000" />
   </creature>
 
@@ -275,20 +275,20 @@
   <creature name="emmental elemental" parent="elemental" level="8"
         class="net.wanhack.model.creature.monsters.EmmentalElemental">
     <natural-weapon toHit="4" damage="randint(1,8)" />
-    <attributes hitpoints="randint(70,140)" color="yellow" level="8" luck="-2"
+    <attributes hitPoints="randint(70,140)" color="yellow" level="8" luck="-2"
                 killExperience="16" armorClass="14" tickRate="150" weight="200000" />
   </creature>
 
   <creature name="fog elemental" parent="elemental" level="18">
     <natural-weapon toHit="7" damage="randint(3,5)" />
-    <attributes hitpoints="randint(120,180)" color="white" level="18" luck="0"
+    <attributes hitPoints="randint(120,180)" color="white" level="18" luck="0"
                 killExperience="125" armorClass="7" tickRate="100" weight="200" />
   </creature>
      
   <creature name="brunost elemental" parent="elemental" level="38"
             class="net.wanhack.model.creature.monsters.EmmentalElemental">    
     <natural-weapon toHit="10" damage="randint(1,11)" />
-    <attributes hitpoints="randint(270,340)" color="yellow" level="38" luck="-1"
+    <attributes hitPoints="randint(270,340)" color="yellow" level="38" luck="-1"
                 killExperience="180" armorClass="14" tickRate="120" weight="280000" />
   </creature>
             
@@ -301,13 +301,13 @@
 
   <creature name="crazy cat" parent="feline" level="1">
     <natural-weapon toHit="0" damage="randint(1,3)" />
-    <attributes hitpoints="randint(1,4)" color="black" level="1" luck="0"
+    <attributes hitPoints="randint(1,4)" color="black" level="1" luck="0"
                 killExperience="1" armorClass="18" tickRate="100" weight="2200" />
   </creature>
 
   <creature name="lion" parent="feline" level="12">
     <natural-weapon toHit="0" damage="randint(1,8)" />
-    <attributes hitpoints="randint(21,45)" color="yellowish" level="12" luck="1"
+    <attributes hitPoints="randint(21,45)" color="yellowish" level="12" luck="1"
                 killExperience="11" armorClass="14" tickRate="100" weight="85000"  />
   </creature>
     
@@ -321,25 +321,25 @@
 
   <creature name="straw golem" parent="golem" level="5">
     <natural-weapon toHit="0" damage="randint(2,6)" />
-    <attributes hitpoints="randint(10,30)" color="yellow" level="5" luck="-2" canUseDoors="false"
+    <attributes hitPoints="randint(10,30)" color="yellow" level="5" luck="-2" canUseDoors="false"
                 killExperience="5" armorClass="14" tickRate="200" weight="15000" />
   </creature>
     
   <creature name="clay golem" parent="golem" level="10">
     <natural-weapon toHit="0" damage="randint(1,8)" />
-    <attributes hitpoints="randint(30,80)" color="brown" level="10" luck="-1" canUseDoors="false"
+    <attributes hitPoints="randint(30,80)" color="brown" level="10" luck="-1" canUseDoors="false"
                 killExperience="10" armorClass="12" tickRate="180" weight="120000" />
   </creature>
     
   <creature name="iron golem" parent="golem" level="15">
     <natural-weapon toHit="5" damage="randint(2,9)" />
-    <attributes hitpoints="randint(100,150)" color="gray" level="15" luck="-2"
+    <attributes hitPoints="randint(100,150)" color="gray" level="15" luck="-2"
                 killExperience="15" armorClass="10" tickRate="160" weight="350000" />       
   </creature>
   
   <creature name="steel golem" parent="golem" level="20">
     <natural-weapon toHit="9" damage="randint(2,13)" />
-    <attributes hitpoints="randint(150,220)" color="cyan" level="20" luck="0"
+    <attributes hitPoints="randint(150,220)" color="cyan" level="20" luck="0"
                 killExperience="20" armorClass="8" tickRate="140" weight="420000" />        
   </creature>
 
@@ -352,25 +352,25 @@
     
   <creature name="spook" parent="baseghost" level="7">
     <natural-weapon toHit="0" damage="randint(1,6)" />
-    <attributes hitpoints="randint(8,13)" color="white" level="7" luck="1"
+    <attributes hitPoints="randint(8,13)" color="white" level="7" luck="1"
                 killExperience="9" armorClass="13" tickRate="130" weight="0" />
   </creature>
 
   <creature name="ghost" parent="baseghost" level="13">
     <natural-weapon toHit="0" damage="randint(2,9)" />
-    <attributes hitpoints="randint(23,33)" color="whiteish" level="13" luck="1"
+    <attributes hitPoints="randint(23,33)" color="whiteish" level="13" luck="1"
                 killExperience="19" armorClass="13" tickRate="110" weight="0" />
   </creature>
           
   <creature name="banshee" parent="baseghost" level="19">
     <natural-weapon toHit="4" damage="randint(4,6)" />
-    <attributes hitpoints="randint(33,53)" color="cyan" level="19" luck="1"
+    <attributes hitPoints="randint(33,53)" color="cyan" level="19" luck="1"
                 killExperience="22" armorClass="13" tickRate="100" weight="0" />
   </creature>
 
   <creature name="bunshee" parent="baseghost" level="23" probability="30">
     <natural-weapon toHit="5" damage="randint(6,13)" />
-    <attributes hitpoints="randint(53,73)" color="brownish" level="23" luck="3"
+    <attributes hitPoints="randint(53,73)" color="brownish" level="23" luck="3"
                 killExperience="25" armorClass="9" tickRate="90" weight="0" />
   </creature>
               
@@ -389,13 +389,13 @@
 
   <creature name="white icky thing" parent="icky thing" level="1">
     <natural-weapon toHit="0" damage="randint(1,3)" />
-    <attributes hitpoints="randint(2, 5)" color="white" level="1" luck="-2"
+    <attributes hitPoints="randint(2, 5)" color="white" level="1" luck="-2"
                 killExperience="2" armorClass="14" tickRate="100" weight="21000"  />
   </creature>   
 
   <creature name="red icky thing" parent="icky thing" level="8">
     <natural-weapon toHit="2" damage="randint(2,7)" />
-    <attributes hitpoints="randint(21, 35)" color="red" level="8" luck="0"
+    <attributes hitPoints="randint(21, 35)" color="red" level="8" luck="0"
                 killExperience="11" armorClass="11" tickRate="100" weight="33500"  />
   </creature>   
     
@@ -408,13 +408,13 @@
 
   <creature name="giant wasp" parent="insect" level="3" swarmSize="randint(1, 7)">
     <natural-weapon toHit="1" damage="randint(1,4)" />
-    <attributes hitpoints="randint(4, 6)" color="yellow" level="3" luck="0"
+    <attributes hitPoints="randint(4, 6)" color="yellow" level="3" luck="0"
                 killExperience="4" armorClass="15" tickRate="80" weight="750" />
   </creature>   
 
   <creature name="inarian mosquito" parent="insect" level="15" swarmSize="randint(4, 14)">
     <natural-weapon toHit="5" damage="randint(3,5)" />
-    <attributes hitpoints="randint(20, 27)" color="black" level="15" luck="2"
+    <attributes hitPoints="randint(20, 27)" color="black" level="15" luck="2"
                 killExperience="17" armorClass="10" tickRate="80" weight="1150" />
   </creature>   
     
@@ -427,13 +427,13 @@
 
   <creature name="white jelly" parent="jelly" level="3">
     <natural-weapon toHit="-1" damage="randint(2,5)" />
-    <attributes hitpoints="randint(6, 15)" color="white" level="3" luck="-1"
+    <attributes hitPoints="randint(6, 15)" color="white" level="3" luck="-1"
                 killExperience="5" armorClass="13" tickRate="120" weight="7000" />
   </creature>   
 
   <creature name="green jelly" parent="jelly" level="8">
     <natural-weapon toHit="-1" damage="randint(3,6)" />
-    <attributes hitpoints="randint(26, 35)" color="green" level="3" luck="0"
+    <attributes hitPoints="randint(26, 35)" color="green" level="3" luck="0"
                 killExperience="7" armorClass="12" tickRate="100" weight="7500" />
   </creature>   
 
@@ -446,19 +446,19 @@
 
   <creature name="garden snake" parent="basesnake" level="1">
     <natural-weapon toHit="-1" damage="randint(1,4)" />
-    <attributes hitpoints="randint(3, 5)" color="green" level="1" luck="-1"
+    <attributes hitPoints="randint(3, 5)" color="green" level="1" luck="-1"
                 killExperience="2" armorClass="15" tickRate="130" weight="400" />
   </creature>   
 
   <creature name="rattlesnake" parent="basesnake" level="10">
     <natural-weapon toHit="1" damage="randint(3,8)" />
-    <attributes hitpoints="randint(15, 25)" color="brownish" level="10" luck="-1"
+    <attributes hitPoints="randint(15, 25)" color="brownish" level="10" luck="-1"
                 killExperience="9" armorClass="13" tickRate="100" weight="1200" />
   </creature>   
 
   <creature name="king cobra" parent="basesnake" level="18">
     <natural-weapon toHit="4" damage="randint(3,13)" />
-    <attributes hitpoints="randint(45, 65)" color="black" level="18" luck="1"
+    <attributes hitPoints="randint(45, 65)" color="black" level="18" luck="1"
                 killExperience="20" armorClass="6" tickRate="90" weight="3700" />
   </creature>   
         
@@ -470,13 +470,13 @@
 
   <creature name="kobold" parent="basekobold" level="3" swarmSize="randint(1, 4)">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(3, 7)" color="red" level="3" luck="-2"
+    <attributes hitPoints="randint(3, 7)" color="red" level="3" luck="-2"
                 killExperience="4" armorClass="15" tickRate="110" weight="35000" />
   </creature>
 
   <creature name="large kobold" parent="basekobold" level="14">
     <natural-weapon toHit="4" damage="randint(2,7)" />
-    <attributes hitpoints="randint(40, 65)" color="blue" level="14" luck="-1"
+    <attributes hitPoints="randint(40, 65)" color="blue" level="14" luck="-1"
                 killExperience="20" armorClass="10" tickRate="100" weight="60000" />
   </creature>
         
@@ -492,19 +492,19 @@
 
   <creature name="green mold" parent="mold" level="2">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(4, 8)" color="green" level="2" luck="3"
+    <attributes hitPoints="randint(4, 8)" color="green" level="2" luck="3"
                 killExperience="2" armorClass="15" tickRate="150" weight="4000" />
   </creature>
 
   <creature name="brown mold" parent="mold" level="3">
     <natural-weapon toHit="-1" damage="randint(2,6)" />
-    <attributes hitpoints="randint(5, 9)" color="brown" level="3" luck="0"
+    <attributes hitPoints="randint(5, 9)" color="brown" level="3" luck="0"
                 killExperience="3" armorClass="15" tickRate="140" weight="4500" />
   </creature>   
 
   <creature name="black mold" parent="mold" level="20">
     <natural-weapon toHit="6" damage="randint(3,14)" />
-    <attributes hitpoints="randint(70, 100)" color="black" level="20" luck="2"
+    <attributes hitPoints="randint(70, 100)" color="black" level="20" luck="2"
                 killExperience="25" armorClass="6" tickRate="100" weight="9500" />
   </creature>   
                 
@@ -520,13 +520,13 @@
 
   <creature name="orc" parent="baseorc" level="8" swarmSize="randint(1, 10)">
     <natural-weapon toHit="2" damage="randint(1,7)" />
-    <attributes hitpoints="randint(10, 20)" level="8" luck="0"
+    <attributes hitPoints="randint(10, 20)" level="8" luck="0"
                 killExperience="10" armorClass="12" tickRate="100" weight="65000" />
   </creature>
 
   <creature name="large orc" parent="baseorc" level="14" swarmSize="randint(1, 4)">
     <natural-weapon toHit="6" damage="randint(3,10)" />
-    <attributes hitpoints="randint(30, 50)" level="14" luck="0" color="brown"
+    <attributes hitPoints="randint(30, 50)" level="14" luck="0" color="brown"
                 killExperience="19" armorClass="8" tickRate="100" weight="85000" />
   </creature>
             
@@ -539,7 +539,7 @@
 
   <creature name="ogre" parent="baseogre" level="25" swarmSize="randint(1, 4)">
     <natural-weapon toHit="7" damage="randint(1,10)" />
-    <attributes hitpoints="randint(150, 250)" level="25" luck="0"
+    <attributes hitPoints="randint(150, 250)" level="25" luck="0"
                 killExperience="31" armorClass="10" tickRate="100" weight="135000" />
   </creature>
     
@@ -552,13 +552,13 @@
     
   <creature name="knight of ni" parent="person" swarmSize="randint(1, 5)"
             class="net.wanhack.model.creature.monsters.KnightOfNi" level="8">
-    <attributes hitpoints="randint(20, 30)" level="8" color="blackish" luck="2" 
+    <attributes hitPoints="randint(20, 30)" level="8" color="blackish" luck="2" 
                 wieldedWeapon="a scimitar"
                 killExperience="25" armorClass="10" tickRate="100" weight="75000" />
   </creature>
 
   <creature name="poor knight of Queen Margareta" parent="person" level="15">
-    <attributes hitpoints="randint(70, 120)" level="15" color="red" 
+    <attributes hitPoints="randint(70, 120)" level="15" color="red" 
                 luck="0" wieldedWeapon="a dagger" 
                 killExperience="18" armorClass="14" tickRate="90" weight="85000" />
                 <!-- TODO: add "old rags" to inventory items, how? -->
@@ -573,7 +573,7 @@
 
   <creature name="hill giant" parent="giant" level="31">
     <natural-weapon toHit="10" damage="randint(2,9)" />
-    <attributes hitpoints="randint(200, 300)" level="31" luck="0"
+    <attributes hitPoints="randint(200, 300)" level="31" luck="0"
                 killExperience="40" armorClass="6" tickRate="100" weight="170000" />
   </creature>
         
@@ -587,7 +587,7 @@
 
   <creature name="cave rat" parent="rodent" level="1" swarmSize="randint(1, 8)">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(1, 3)" level="1" luck="0"
+    <attributes hitPoints="randint(1, 3)" level="1" luck="0"
                 killExperience="1" armorClass="16" tickRate="90" weight="500" />
   </creature>
     
@@ -601,25 +601,25 @@
 
   <creature name="newt" parent="baselizard" level="1">
     <natural-weapon toHit="-1" damage="randint(1,3)" />
-    <attributes hitpoints="randint(1, 3)" color="yellow" level="1" luck="0"
+    <attributes hitPoints="randint(1, 3)" color="yellow" level="1" luck="0"
                 killExperience="1" armorClass="16" tickRate="120" weight="300" />
   </creature>
     
   <creature name="lizard" parent="baselizard" level="2">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(2, 4)" color="green" level="2" luck="2"
+    <attributes hitPoints="randint(2, 4)" color="green" level="2" luck="2"
                 killExperience="2" armorClass="16" tickRate="100" weight="670" />
   </creature>
 
   <creature name="crocodile" parent="baselizard" level="20">
     <natural-weapon toHit="7" damage="randint(4,7)" />
-    <attributes hitpoints="randint(50, 80)" color="dark green" level="20" luck="0"
+    <attributes hitPoints="randint(50, 80)" color="dark green" level="20" luck="0"
                 killExperience="15" armorClass="16" tickRate="100" weight="200000" />
   </creature>
 
   <creature name="crazy frog" parent="baselizard" level="15">
     <natural-weapon toHit="5" damage="randint(2,7)" />
-    <attributes hitpoints="randint(50, 70)" color="black" level="15" luck="0"
+    <attributes hitPoints="randint(50, 70)" color="black" level="15" luck="0"
                 killExperience="12" armorClass="14" tickRate="100" weight="6400" />
   </creature>
 	
@@ -634,13 +634,13 @@
 
   <creature name="cave spider" parent="basespider" level="1" probability="60">
     <natural-weapon toHit="0" damage="randint(1,4)" />
-    <attributes hitpoints="randint(3, 6)" level="1"  luck="0"
+    <attributes hitPoints="randint(3, 6)" level="1"  luck="0"
                 killExperience="3" armorClass="16" tickRate="110" weight="1300"  /> 
   </creature>
 
   <creature name="very poisonous spider" parent="basespider" probability="10">
     <natural-weapon toHit="1" damage="randint(2,5)" />
-    <attributes hitpoints="randint(3, 6)" level="1" luck="2"
+    <attributes hitPoints="randint(3, 6)" level="1" luck="2"
                 killExperience="3" armorClass="16" tickRate="110" weight="800" 
                 corpsePoisonousness="randint(20, 40)" />
   </creature>
@@ -654,7 +654,7 @@
 
   <creature name="troll" parent="basetroll" level="15">
     <natural-weapon toHit="4" damage="randint(3,12)" />
-    <attributes hitpoints="randint(150, 200)" level="15" luck="-2"
+    <attributes hitPoints="randint(150, 200)" level="15" luck="-2"
                 killExperience="26" armorClass="14" tickRate="110" weight="110000" />
   </creature>
     
@@ -667,7 +667,7 @@
 
   <creature name="imp" parent="minor demon" level="15">
     <natural-weapon toHit="5" damage="randint(1,7)" />
-    <attributes hitpoints="randint(60, 90)" level="15" luck="2" color="green"
+    <attributes hitPoints="randint(60, 90)" level="15" luck="2" color="green"
                 killExperience="21" armorClass="12" tickRate="80" weight="59000" />
   </creature>
     
@@ -680,7 +680,7 @@
 
   <creature name="horned demon" parent="major demon" level="35">
     <natural-weapon toHit="12" damage="randint(4,17)" />
-    <attributes hitpoints="randint(260, 330)" level="35" luck="2" color="red"
+    <attributes hitPoints="randint(260, 330)" level="35" luck="2" color="red"
                 killExperience="280" armorClass="6" tickRate="80" weight="132000" />
   </creature>
     
@@ -693,7 +693,7 @@
 
   <creature name="vampire" parent="basevampire" level="25">
     <natural-weapon toHit="4" damage="randint(3,10)" />
-    <attributes hitpoints="randint(50, 90)" level="25" luck="2"
+    <attributes hitPoints="randint(50, 90)" level="25" luck="2"
                 killExperience="24" armorClass="6" tickRate="100" weight="63000" />
   </creature>
     
@@ -707,13 +707,13 @@
 
   <creature name="bog wraith" parent="basewraith" level="20">
     <natural-weapon toHit="2" damage="randint(2,6)" />
-    <attributes hitpoints="randint(40, 60)" level="20" luck="0"
+    <attributes hitPoints="randint(40, 60)" level="20" luck="0"
                 killExperience="23" armorClass="7" tickRate="100" weight="15000" />
   </creature>
 
   <creature name="forest wraith" parent="basewraith" level="25">
     <natural-weapon toHit="4" damage="randint(2,8)" />
-    <attributes hitpoints="randint(60, 90)" level="25" luck="2" color="green"
+    <attributes hitPoints="randint(60, 90)" level="25" luck="2" color="green"
                 killExperience="29" armorClass="6" tickRate="90" weight="15000" />
   </creature>
         
@@ -730,19 +730,19 @@
 
   <creature name="kobold zombie" parent="basezombie" level="8">
     <natural-weapon toHit="2" damage="randint(1,6)" />
-    <attributes hitpoints="randint(20, 40)" level="8" luck="0"
+    <attributes hitPoints="randint(20, 40)" level="8" luck="0"
                 killExperience="11" armorClass="10" tickRate="100" weight="55000" />
   </creature>
 
   <creature name="orc zombie" parent="basezombie" level="14">
     <natural-weapon toHit="3" damage="randint(2,8)" /> 
-    <attributes hitpoints="randint(35, 55)" level="14" luck="0" color="dark green"
+    <attributes hitPoints="randint(35, 55)" level="14" luck="0" color="dark green"
                 killExperience="16" armorClass="10" tickRate="100" weight="85000" />
   </creature>
       
   <creature name="troll zombie" parent="basezombie" level="20">
     <natural-weapon toHit="6" damage="randint(4,10)" />
-    <attributes hitpoints="randint(100, 170)" level="20" luck="1" color="green" canUseDoors="true"
+    <attributes hitPoints="randint(100, 170)" level="20" luck="1" color="green" canUseDoors="true"
                 killExperience="31" armorClass="7" tickRate="100" weight="155000" />
   </creature>
     
@@ -753,14 +753,14 @@
 
   <!-- Special creatures -->
   <creature name="The Black Knight" class="net.wanhack.model.creature.monsters.BlackKnight" probability="0" level="30">
-    <attributes hitpoints="randint(500, 600)" color="black" level="30" 
+    <attributes hitPoints="randint(500, 600)" color="black" level="30" 
 		        hitBonus="20" weight="80000"  luck="2" canUseDoors="true"
                 killExperience="4000" armorClass="-6" tickRate="60" wieldedWeapon="the Black Sword" />
   </creature>
   
   <creature name="Bugs Bunny" class="net.wanhack.model.creature.monsters.BugsBunny" probability="0" level="20">
     <natural-weapon toHit="10" damage="randint(4,10)" />
-    <attributes hitpoints="randint(100, 200)" color="white" level="20" luck="2"
+    <attributes hitPoints="randint(100, 200)" color="white" level="20" luck="2"
                 killExperience="450" armorClass="0" tickRate="50" weight="4500" />
   </creature>
     
@@ -768,13 +768,13 @@
 
   <creature name="the Surstromming" parent="hybrid" level="50" probability="0">
     <natural-weapon toHit="15" damage="randint(6,20)" />
-    <attributes hitpoints="randint(800, 850)" color="black" level="50" luck="1" canUseDoors="true"
+    <attributes hitPoints="randint(800, 850)" color="black" level="50" luck="1" canUseDoors="true"
                 killExperience="5500" armorClass="-6" tickRate="50" weight="123000"  corpsePoisonousness="10" />
   </creature>
 
   <creature name="the Melog" parent="golem" level="30" probability="0">
     <natural-weapon toHit="8" damage="randint(3,15)" />
-    <attributes hitpoints="550" color="blue" level="30" luck="1" canUseDoors="true"
+    <attributes hitPoints="550" color="blue" level="30" luck="1" canUseDoors="true"
                 killExperience="2500" armorClass="-6" tickRate="100" weight="400000" />
   </creature>
     
