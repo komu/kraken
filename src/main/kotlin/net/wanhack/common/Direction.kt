@@ -16,6 +16,8 @@
 
 package net.wanhack.model.common
 
+import net.wanhack.utils.collections.randomElement
+
 enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
     NORTH : Direction("N", 0, -1)
     NE : Direction("NE", 1, -1)
@@ -31,4 +33,6 @@ enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
 
 object Directions {
     val mainDirections = listOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
+
+    fun randomDirection() = Direction.values().randomElement()
 }

@@ -49,12 +49,9 @@ class Lassie(name: String): Pet(name) {
         }
     }
 
-    private fun findEscapeStairs(): Cell? {
-        for (cell in region!!) {
+    private fun findEscapeStairs(): Cell? =
+        region.find { cell ->
             val target = cell.getJumpTarget(true)
-            if (target != null && target.isExit)
-                return cell
+            target != null && target.isExit
         }
-        return null
-    }
 }

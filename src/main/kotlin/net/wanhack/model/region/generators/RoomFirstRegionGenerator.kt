@@ -16,7 +16,6 @@
 
 package net.wanhack.service.region.generators
 
-import java.util.ArrayList
 import java.util.Random
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.CellType
@@ -24,85 +23,36 @@ import net.wanhack.model.region.Door
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
 import net.wanhack.utils.Probability
-import net.wanhack.utils.RandomUtils
 import org.apache.commons.logging.LogFactory
+import net.wanhack.service.region.generators.RoomFirstRegionGenerator.RegionParameters
+import net.wanhack.utils.collections.randomElement
 
-class RoomFirstRegionGenerator: RegionGenerator {
-    private var region: Region? = null
-    private var width: Int = 0
-    private var height: Int = 0
-    private var minRooms: Int = 4
-    private var maxRooms: Int = 10
-    private var roomMinWidth: Int = 6
-    private var roomMaxWidth: Int = 18
-    private var roomMinHeight: Int = 5
-    private var roomMaxHeight: Int = 9
+class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
+    private val region = Region(world, name, level, rp.width, rp.height)
     private val connectConnectedProbability = Probability(50)
     private val doorProbability = Probability(30)
     private val hiddenDoorProbability = Probability(15)
     private val overlapTries: Int = 20
     private val random = Random()
-    private val log = LogFactory.getLog(javaClass)!!
+    private val log = LogFactory.getLog(javaClass)
 
-    override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region {
-        initRegionParameters(level)
-
-        val region = Region(world, name, level, width, height)
-        this.region = region
+    fun generate(): Region {
         val rooms = createRooms()
         createCorridors(rooms)
         createDoors()
-        addStairsUpAndDown(rooms, up, down)
+        addStairsUpAndDown(rooms)
         return region
     }
 
-    private fun initRegionParameters(level: Int) {
-        if (level < 5) {
-            width = 80
-            height = 25
-            minRooms = 4
-            maxRooms = 10
-            roomMinWidth = 6
-            roomMaxWidth = 18
-            roomMinHeight = 5
-            roomMaxHeight = 9
-        } else if (level < 10) {
-            width = 120
-            height = 30
-            minRooms = 6
-            maxRooms = 12
-            roomMinWidth = 6
-            roomMaxWidth = 18
-            roomMinHeight = 5
-            roomMaxHeight = 9
-        } else if (level < 20) {
-            width = 160
-            height = 40
-            minRooms = 8
-            maxRooms = 16
-            roomMinWidth = 6
-            roomMaxWidth = 18
-            roomMinHeight = 5
-            roomMaxHeight = 9
-        } else {
-            width = 200
-            height = 50
-            minRooms = 10
-            maxRooms = 25
-            roomMinWidth = 6
-            roomMaxWidth = 18
-            roomMinHeight = 5
-            roomMaxHeight = 9
-        }
-    }
-
     private fun createRooms(): List<Room> {
-        val roomCount: Int = minRooms + random.nextInt(maxRooms - minRooms + 1)
-        val rooms = ArrayList<Room>(roomCount)
-        for (i in 0..roomCount - 1) {
+        val roomCount = rp.minRooms + random.nextInt(rp.maxRooms - rp.minRooms + 1)
+        val rooms = listBuilder<Room>()
+
+        roomCount.times {
             rooms.add(createRoom())
         }
-        return rooms
+
+        return rooms.build()
     }
 
     private fun createRoom(): Room {
@@ -116,7 +66,7 @@ class RoomFirstRegionGenerator: RegionGenerator {
     }
 
     private fun createDoors() {
-        for (cell in region!!) {
+        for (cell in region) {
             if (isDoorCandidate(cell) && doorProbability.check()) {
                 val hidden = hiddenDoorProbability.check()
                 cell.state = Door(hidden)
@@ -131,7 +81,7 @@ class RoomFirstRegionGenerator: RegionGenerator {
         var roomNeighbour: Cell? = null
         var hallwayNeighbour: Cell? = null
         var walls: Int = 0
-        for (neighbour in cell.getAdjacentCellsInMainDirections()) {
+        for (neighbour in cell.adjacentCellsInMainDirections) {
             if (neighbour.cellType == CellType.ROOM_FLOOR)
                 roomNeighbour = neighbour
             else if (neighbour.cellType == CellType.HALLWAY_FLOOR)
@@ -151,14 +101,12 @@ class RoomFirstRegionGenerator: RegionGenerator {
     }
 
     private fun createCorridors(rooms: List<Room>) {
-        var count: Int = 0
+        var count = 0
         while (!allConnected(rooms)) {
-            val room1 = RandomUtils.randomItem(rooms)
+            val room1 = rooms.randomElement()
             val room2 = random(rooms, room1)
             if (!connected(room1, room2) || connectConnected())
-            {
                 connect(room1, room2)
-            }
 
             if (count > 1000) {
                 log.warn("Count exceeded, bailing out.")
@@ -180,7 +128,7 @@ class RoomFirstRegionGenerator: RegionGenerator {
                 cell.setType(CellType.HALLWAY_FLOOR)
 
             if (cell !in start)
-                for (adjacent in cell.getAdjacentCellsInMainDirections())
+                for (adjacent in cell.adjacentCellsInMainDirections)
                     if (adjacent != previous && adjacent.isPassable())
                         return
 
@@ -188,26 +136,26 @@ class RoomFirstRegionGenerator: RegionGenerator {
         }
     }
     private fun createPath(start: Cell, goal: Cell): List<Cell>? =
-        CorridorPathSearcher(region!!).findShortestPath(start, goal)
+        CorridorPathSearcher(region).findShortestPath(start, goal)
 
     private fun random<T>(items: List<T>, invalid: T): T {
         var result = invalid
-        while (result == invalid) {
-            result = items[random.nextInt(items.size)]
-        }
+        while (result == invalid)
+            result = items.randomElement()
+
         return result
     }
 
-    private fun allConnected(rooms: List<Room>): Boolean =
+    private fun allConnected(rooms: List<Room>) =
         rooms.all { connected(rooms[0], it) }
 
-    private fun connected(room1: Room, room2: Room): Boolean =
+    private fun connected(room1: Room, room2: Room) =
         room1.getMiddleCell().isReachable(room2.getMiddleCell())
 
     private fun overlapsExisting(room: Room): Boolean {
         for (yy in 0..room.h - 1) {
             for (xx in 0..room.w - 1) {
-                val cell = region!!.getCell(room.x + xx, room.y + yy)
+                val cell = region.getCell(room.x + xx, room.y + yy)
                 if (cell.cellType != CellType.WALL)
                     return true
             }
@@ -215,29 +163,28 @@ class RoomFirstRegionGenerator: RegionGenerator {
         return false
     }
 
-    fun addStairsUpAndDown(rooms: List<Room>, upRegion: String?, downRegion: String?): Unit {
-        val stairsUpRoom = RandomUtils.randomItem(rooms)
-        val empty = region!!.getRoomFloorCells()
+    fun addStairsUpAndDown(rooms: List<Room>) {
+        val stairsUpRoom = rooms.randomElement()
+        val empty = region.getRoomFloorCells()
         if (empty.size < 2)
             throw IllegalStateException("not enough empty cells to place stairs")
 
         val stairsUp = stairsUpRoom.getRandomCell(random)
         stairsUp.setType(CellType.STAIRS_UP)
-        if (upRegion != null) {
-            region?.addPortal(stairsUp.x, stairsUp.y, upRegion, "from down", true)
-        }
+        if (up != null)
+            region.addPortal(stairsUp.x, stairsUp.y, up, "from down", true)
 
-        region?.addStartPoint("from up", stairsUp.x, stairsUp.y)
+        region.addStartPoint("from up", stairsUp.x, stairsUp.y)
 
-        if (downRegion != null) {
+        if (down != null) {
             while (true)
             {
                 val stairsDownRoom = random(rooms, stairsUpRoom)
                 val stairsDown = stairsDownRoom.getRandomCell(random)
-                if (stairsDown != stairsUp && region?.findPath(stairsUp, stairsDown) != null) {
+                if (stairsDown != stairsUp && region.findPath(stairsUp, stairsDown) != null) {
                     stairsDown.setType(CellType.STAIRS_DOWN)
-                    region?.addPortal(stairsDown.x, stairsDown.y, downRegion, "from up", false)
-                    region?.addStartPoint("from down", stairsDown.x, stairsDown.y)
+                    region.addPortal(stairsDown.x, stairsDown.y, down, "from up", false)
+                    region.addStartPoint("from down", stairsDown.x, stairsDown.y)
                     return
                 }
             }
@@ -245,11 +192,11 @@ class RoomFirstRegionGenerator: RegionGenerator {
     }
 
     private fun randomRoom(): Room {
-        val w = roomMinWidth + random.nextInt(1 + roomMaxWidth - roomMinWidth)
-        val h = roomMinHeight + random.nextInt(1 + roomMaxHeight - roomMinHeight)
-        val x = 1 + random.nextInt(width - w - 2)
-        val y = 1 + random.nextInt(height - h - 2)
-        return Room(region!!, x, y, w, h)
+        val w = rp.roomMinWidth + random.nextInt(1 + rp.roomMaxWidth - rp.roomMinWidth)
+        val h = rp.roomMinHeight + random.nextInt(1 + rp.roomMaxHeight - rp.roomMinHeight)
+        val x = 1 + random.nextInt(region.width - w - 2)
+        val y = 1 + random.nextInt(region.height - h - 2)
+        return Room(region, x, y, w, h)
     }
 
     private class Room(val region: Region, val x: Int, val y: Int, val w: Int, val h: Int) {
@@ -278,5 +225,63 @@ class RoomFirstRegionGenerator: RegionGenerator {
                 region.getCell(x + w - 1, y + yy).setType(CellType.ROOM_WALL)
             }
         }
+    }
+
+    class object : RegionGenerator {
+        override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region =
+            RoomFirstRegionGenerator(world, name, level, regionParameters(level), up, down).generate()
+
+        private fun regionParameters(level: Int): RegionParameters {
+            val rp = RegionParameters()
+            if (level < 5) {
+                rp.width = 80
+                rp.height = 25
+                rp.minRooms = 4
+                rp.maxRooms = 10
+                rp.roomMinWidth = 6
+                rp.roomMaxWidth = 18
+                rp.roomMinHeight = 5
+                rp.roomMaxHeight = 9
+            } else if (level < 10) {
+                rp.width = 120
+                rp.height = 30
+                rp.minRooms = 6
+                rp.maxRooms = 12
+                rp.roomMinWidth = 6
+                rp.roomMaxWidth = 18
+                rp.roomMinHeight = 5
+                rp.roomMaxHeight = 9
+            } else if (level < 20) {
+                rp.width = 160
+                rp.height = 40
+                rp.minRooms = 8
+                rp.maxRooms = 16
+                rp.roomMinWidth = 6
+                rp.roomMaxWidth = 18
+                rp.roomMinHeight = 5
+                rp.roomMaxHeight = 9
+            } else {
+                rp.width = 200
+                rp.height = 50
+                rp.minRooms = 10
+                rp.maxRooms = 25
+                rp.roomMinWidth = 6
+                rp.roomMaxWidth = 18
+                rp.roomMinHeight = 5
+                rp.roomMaxHeight = 9
+            }
+            return rp
+        }
+    }
+
+    class RegionParameters {
+        var width = 0
+        var height = 0
+        var minRooms = 4
+        var maxRooms = 10
+        var roomMinWidth = 6
+        var roomMaxWidth = 18
+        var roomMinHeight = 5
+        var roomMaxHeight = 9
     }
 }

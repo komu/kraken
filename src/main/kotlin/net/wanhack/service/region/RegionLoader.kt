@@ -167,7 +167,7 @@ class RegionLoader(val objectFactory: ObjectFactory) {
         private val DOWN_PATTERN = DirectivePattern(":portal down [int],[int] [str] [str]")
         private val UP_PATTERN = DirectivePattern(":portal up [int],[int] [str] [str]")
         private val LIGHT_PATTERN = DirectivePattern(":light [int],[int] [int]")
-        private val log = LogFactory.getLog(javaClass<RegionLoader>())!!
+        private val log = LogFactory.getLog(javaClass<RegionLoader>())
 
         private fun getRegion(name: String, aliases: Map<String, String>): String =
             aliases[name] ?: name

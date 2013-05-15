@@ -52,14 +52,16 @@ class RegionView: JComponent() {
         paintBackground(g2)
 
         gameRef?.executeQuery { game ->
-            transformFocusToCell(g2, game.cellInFocus)
-            val player = game.player
-            for (cell in game.currentRegion)
-                paintCell(g2, cell, player)
+            if (game.player.cellOrNull != null) {
+                transformFocusToCell(g2, game.cellInFocus)
+                val player = game.player
+                for (cell in game.currentRegion)
+                    paintCell(g2, cell, player)
 
-            val selectedCell = game.selectedCell
-            if (selectedCell != null)
-                tileProvider.drawSelection(g2, selectedCell)
+                val selectedCell = game.selectedCell
+                if (selectedCell != null)
+                    tileProvider.drawSelection(g2, selectedCell)
+            }
         }
     }
 
@@ -107,10 +109,10 @@ class RegionView: JComponent() {
             if (creature != null) {
                 tileProvider.drawCreature(g2, cell, creature)
             } else {
-                val item = cell.getLargestItem()
-                if (item != null) {
+                val item = cell.largestItem
+                if (item != null)
                     tileProvider.drawItem(g2, cell, item)
-                } else
+                else
                     tileProvider.drawCell(g2, cell, true)
             }
         } else if (cell.hasBeenSeen)

@@ -35,22 +35,25 @@ import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.exp.Expression
 import java.awt.*
 import java.util.*
+import net.wanhack.utils.collections.filterByType
+import net.wanhack.model.common.Directions
 
 abstract class Creature(var name: String): Actor, MessageTarget {
 
     var cellOrNull: Cell? = null
         set(cell: Cell?) {
-            if ($cellOrNull != null)
-                $cellOrNull!!.creature = null
+            val oldValue = $cellOrNull
+            if (oldValue != null)
+                oldValue.creature = null
 
             $cellOrNull = cell
 
-            if ($cellOrNull != null)
-                $cellOrNull!!.creature = this
+            if (cell != null)
+                cell.creature = this
         }
 
     var cell: Cell
-        get() = cellOrNull!!
+        get() = cellOrNull ?: throw NullPointerException("no current cell for $this")
         set(cell: Cell) = cellOrNull = cell
 
     var letter = '\u0000'
@@ -99,26 +102,8 @@ abstract class Creature(var name: String): Actor, MessageTarget {
             return weight
         }
 
-    fun getInventoryItems<T: Item>(cl: Class<T>): Collection<T> {
-        val result = listBuilder<T>()
-        for (item in inventoryItems)
-            if (cl.isInstance(item))
-                result.add(cl.cast(item)!!)
-
-        return result.build()
-    }
-
-    fun clearInventory() {
-        inventoryItems.clear()
-    }
-
-    fun addItemToInventory(item: Item) {
-        inventoryItems.add(item)
-    }
-
-    fun removeItemFromInventory(item: Item) {
-        inventoryItems.remove(item)
-    }
+    fun getInventoryItems<T: Item>(cl: Class<T>) =
+        inventoryItems.filterByType(cl)
 
     open fun getProficiency(weaponClass: WeaponClass): Int = 0
 
@@ -135,9 +120,9 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         cell.isAdjacent(creature.cell)
 
     override val destroyed: Boolean
-        get() = !isAlive
+        get() = !alive
 
-    val isAlive: Boolean
+    val alive: Boolean
         get() = hitPoints > 0 && cellOrNull != null
 
     override fun act(game: Game): Int {
@@ -175,7 +160,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     protected fun moveRandomly() {
         if (Probability.check(75))
-            move(RandomUtils.randomEnum(javaClass<Direction>()))
+            move(Directions.randomDirection())
     }
 
     protected abstract fun onTick(game: Game)
@@ -190,15 +175,16 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     protected fun calculateCanSee(target: Cell): Boolean =
         cell.getCellsBetween(target).all { it.canSeeThrough() }
 
-    fun getAdjacentCreatures(): Set<Creature> {
-        val adjacent = HashSet<Creature>()
-        for (c in cell.getAdjacentCells()) {
-            val creature = c.creature
-            if (creature != null)
-                adjacent.add(creature)
+    val adjacentCreatures: Set<Creature>
+        get() {
+            val adjacent = HashSet<Creature>()
+            for (c in cell.adjacentCells) {
+                val creature = c.creature
+                if (creature != null)
+                    adjacent.add(creature)
+            }
+            return adjacent
         }
-        return adjacent
-    }
 
     fun toString() = "$name [hp=$hitPoints]"
 
@@ -228,10 +214,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     open fun you(): String = name
 
-    open fun You(): String {
-        val name = you()
-        return "${Character.toUpperCase(name[0])}${name.substring(1)}"
-    }
+    open fun You(): String = you().capitalize()
 
     open fun verb(verb: String): String =
         if (verb.endsWith("s")) "${verb}es" else "${verb}s"
@@ -252,21 +235,20 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     open fun die(killer: String) {
         hitPoints = 0
-        cell.addItems(inventoryItems)
-        clearInventory()
+        cell.items.addAll(inventoryItems)
+        inventoryItems.clear()
 
         val weapon = wieldedWeapon
         if (weapon != null) {
-            cell.addItem(weapon)
+            cell.items.add(weapon)
             wieldedWeapon = null
         }
 
-        cell.addItems(armoring.removeAllArmors())
+        cell.items.addAll(armoring.removeAllArmors())
 
         val corpse = createCorpse()
-        println("corpse: $corpse")
         if (corpse != null)
-            cell.addItem(corpse)
+            cell.items.add(corpse)
 
         removeFromGame()
     }
@@ -280,10 +262,10 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     val lighting: Int
         get() {
-            var effectiveness = 0
+            var total = 0
             for (item in inventoryItems)
-                effectiveness += item.lighting
-            return effectiveness
+                total += item.lighting
+            return total
         }
 
     override fun message(pattern: String, vararg args: Any?) {

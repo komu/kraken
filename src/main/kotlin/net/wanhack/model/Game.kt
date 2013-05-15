@@ -44,6 +44,8 @@ import net.wanhack.service.ServiceProvider
 import net.wanhack.utils.RandomUtils
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import net.wanhack.utils.isFriday
+import net.wanhack.utils.isFestivus
 
 class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable, IGame {
     private val globalClock = Clock()
@@ -68,8 +70,8 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
         val objectFactory = ServiceProvider.objectFactory
         player.wieldedWeapon = objectFactory.create(javaClass<Weapon>(), "a dagger")
-        player.addItemToInventory(objectFactory.create(javaClass<Item>(), "food ration"))
-        player.addItemToInventory(objectFactory.create(javaClass<Item>(), "a cyanide capsule"))
+        player.inventoryItems.add(objectFactory.create(javaClass<Item>(), "food ration"))
+        player.inventoryItems.add(objectFactory.create(javaClass<Item>(), "a cyanide capsule"))
         enterRegion("start", "from up")
 
         if (config.pet == PetType.DORIS)
@@ -82,14 +84,15 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         currentRegion.updateSeenCells(player.visibleCells!!)
         player.message("Hello %s, welcome to Wanhack!", player.name)
 
-        if (todayIsFestivus()) {
+        val today = Calendar.getInstance()
+        if (today.isFestivus()) {
             player.message("Happy Festivus!")
             player.strength += 10
             player.luck = 2
-            player.addItemToInventory(objectFactory.create(javaClass<Item>(), "Aluminium Pole"))
+            player.inventoryItems.add(objectFactory.create(javaClass<Item>(), "Aluminium Pole"))
         }
 
-        if (todayIsFriday()) {
+        if (today.isFriday()) {
             player.message("It is Friday, good luck!")
             player.luck = 1
         }
@@ -102,7 +105,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
     private fun putPetNextToPlayer(pet: Creature): Boolean {
         var target: Cell? = null
-        for (cell in player.cell.getAdjacentCells())
+        for (cell in player.cell.adjacentCells)
             if (cell.cellType.isFloor() && cell.creature == null)
                 target = cell
 
@@ -146,7 +149,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             regionClock.clear()
             maxDungeonLevel = Math.max(region.level, maxDungeonLevel)
             if (oldCell != null) {
-                for (cell in oldCell.getAdjacentCells()) {
+                for (cell in oldCell.adjacentCells) {
                     val creature = cell.creature
                     if (creature is Pet)
                         putPetNextToPlayer(creature)
@@ -171,7 +174,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        val adjacent = player.getAdjacentCreatures()
+        val adjacent = player.adjacentCreatures
         if (adjacent.size == 1) {
             val creature = adjacent.iterator().next()
             creature.talk(player)
@@ -181,8 +184,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
-                val cell  = player.cell.getCellTowards(dir)
-                val creature = cell.creature
+                val creature = player.cell.getCellTowards(dir).creature
                 if (creature != null) {
                     creature.talk(player)
                     tick()
@@ -259,14 +261,14 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             player.message("There's nothing to pick up.")
         } else if (items.size == 1) {
             val item = items.iterator().next()
-            player.addItemToInventory(item)
-            cell.removeItem(item)
+            player.inventoryItems.add(item)
+            cell.items.remove(item)
             player.message("Picked up %s.", item.title)
             tick()
         } else {
             for (item in console.selectItems("Select items to pick up", items)) {
-                player.addItemToInventory(item)
-                cell.removeItem(item)
+                player.inventoryItems.add(item)
+                cell.items.remove(item)
                 player.message("Picked up %s.", item.title)
             }
             tick()
@@ -282,10 +284,10 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         val weapon = console.selectItem(javaClass<Weapon>(), "Select weapon to wield", player.getInventoryItems(javaClass<Weapon>()))
         if (weapon != null && weapon != oldWeapon) {
             player.wieldedWeapon = weapon
-            player.removeItemFromInventory(weapon)
+            player.inventoryItems.remove(weapon)
             if (oldWeapon != null) {
                 player.message("You were wielding %s.", oldWeapon.title)
-                player.addItemToInventory(oldWeapon)
+                player.inventoryItems.add(oldWeapon)
             }
 
             player.message("You wield %s.", weapon.title)
@@ -301,10 +303,10 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         val armor = console.selectItem(javaClass<Armor>(), "Select armor to wear", player.getInventoryItems(javaClass<Armor>()))
         if (armor != null ) {
             val oldArmor = player.replaceArmor(armor)
-            player.removeItemFromInventory(armor)
+            player.inventoryItems.remove(armor)
             if (oldArmor != null) {
                 player.message("You were wearing %s.", oldArmor.title)
-                player.addItemToInventory(oldArmor)
+                player.inventoryItems.add(oldArmor)
             }
 
             player.message("You are now wearing %s.", armor.title)
@@ -326,12 +328,10 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        if (item in player.inventoryItems) {
-            player.removeItemFromInventory(item)
-            player.cell.addItem(item)
-            message("Dropped %s.", item.title)
-            tick()
-        }
+        player.inventoryItems.remove(item)
+        player.cell.items.add(item)
+        message("Dropped %s.", item.title)
+        tick()
     }
 
     override fun eat() {
@@ -341,7 +341,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
         val food = console.selectItem(javaClass<Food>(), "Select food to eat", player.getInventoryItems(javaClass<Food>()))
         if (food != null) {
-            player.removeItemFromInventory(food)
+            player.inventoryItems.remove(food)
             food.onEatenBy(player)
             tick()
         }
@@ -352,7 +352,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        for (cell in player.cell.getAdjacentCells())
+        for (cell in player.cell.adjacentCells)
             if (cell.search(player))
                 break
 
@@ -368,7 +368,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (projectile != null) {
             val dir = console.selectDirection()
             if (dir != null) {
-                player.removeItemFromInventory(projectile)
+                player.inventoryItems.remove(projectile)
                 var currentCell = player.cell
                 var nextCell = currentCell.getCellTowards(dir)
                 val range = player.getThrowRange(projectile.weight)
@@ -384,7 +384,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
                     d++
                 }
-                currentCell.addItem(projectile)
+                currentCell.items.add(projectile)
                 tick()
             }
         }
@@ -397,9 +397,8 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             message("%s %s %s at %s.", attacker.You(), attacker.verb("throw"), projectile.title, target.you())
             assignDamage(attacker, projectile, target)
             attacker.onSuccessfulHit(target, projectile)
-            if (!target.isAlive) {
+            if (!target.alive)
                 attacker.onKilledCreature(target)
-            }
 
             return true
         } else {
@@ -465,13 +464,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
                     return
 
                 var newTarget: Cell? = null
-                for (c in player.cell.getAdjacentCellsInMainDirections()) {
+                for (c in player.cell.adjacentCellsInMainDirections)
                     if (c != previous && c.canMoveInto(player.corporeal))
                         if (newTarget == null)
                             newTarget = c
                         else
                             return
-                }
 
                 val targetCell = newTarget
                 if (targetCell != null && targetCell.canMoveInto(player.corporeal)) {
@@ -487,23 +485,20 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
     }
 
     private fun runInRoom(direction: Direction) {
-        var previous: Cell? = null
+        var first = true
         do {
-            var target  = player.cell.getCellTowards(direction)
-            if (target.canMoveInto((player.corporeal))) {
-                val first = previous == null
-                previous = player.cell
-                target.enter(player)
-                tick()
-                if (!first) {
-                    val previousNeighbours: Int = previous?.countPassableMainNeighbours()!!
-                    val currentNeighbours: Int = target.countPassableMainNeighbours()
-                    if (previousNeighbours != currentNeighbours)
-                        return
-                }
-            } else {
-                return
-            }
+            val target = player.cell.getCellTowards(direction)
+            if (!target.canMoveInto(player.corporeal))
+                break;
+
+            val previous = player.cell
+            target.enter(player)
+            tick()
+
+            if (!first && previous.countPassableMainNeighbours() != target.countPassableMainNeighbours())
+                break
+
+            first = false
         } while (!isCurrentCellInteresting(false))
     }
 
@@ -582,7 +577,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
     }
     public fun attack(attacker: Creature, target: Creature): Boolean {
         assertWriteLock()
-        if (!target.isAlive)
+        if (!target.alive)
             return false
 
         if (attacker.isPlayer && target.friendly)
@@ -596,7 +591,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             message("%s %s %s.", attacker.You(), attacker.verb(weapon.attackVerb), target.you())
             assignDamage(attacker, weapon, target)
             attacker.onSuccessfulHit(target, weapon)
-            if (!target.isAlive)
+            if (!target.alive)
                 attacker.onKilledCreature(target)
         } else {
             message("%s %s.", attacker.You(), attacker.verb("miss"))
@@ -633,12 +628,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
     }
 
     private fun tick() {
-        if (player.isAlive) {
+        if (player.alive) {
             do {
                 val ticks = player.tickRate
                 globalClock.tick(ticks, this)
                 regionClock.tick(ticks, this)
-            } while (player.isAlive && player.isFainted())
+            } while (player.alive && player.isFainted())
 
             currentRegion.updateLighting()
             currentRegion.updateSeenCells(player.visibleCells!!)
@@ -661,7 +656,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         selfRef.assertWriteLockedByCurrentThread()
     }
 
-    public fun gameOver(reason: String) {
+    fun gameOver(reason: String) {
         over = true
         if (!player.regenerated) {
             ServiceProvider.highScoreService.saveGameScore(selfRef, reason)
@@ -672,16 +667,6 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         get() = globalClock.time
 
     class object {
-        private val log: Log = LogFactory.getLog(javaClass<Game>())!!
-
-        private fun todayIsFriday(): Boolean {
-            val calendar = Calendar.getInstance()
-            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
-        }
-
-        private fun todayIsFestivus(): Boolean {
-            val calendar = Calendar.getInstance()
-            return calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) == 23
-        }
+        private val log: Log = LogFactory.getLog(javaClass<Game>())
     }
 }

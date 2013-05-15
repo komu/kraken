@@ -26,4 +26,16 @@ fun <T> Collection<T>.shuffled(): MutableList<T> {
 }
 
 fun <T> List<T>.randomElement(): T =
-    RandomUtils.randomItem(this)
+    this[RandomUtils.randomInt(this.size)]
+
+fun <T> Array<T>.randomElement(): T =
+        this[RandomUtils.randomInt(this.size)]
+
+fun <T> Collection<*>.filterByType(cl: Class<T>): List<T> {
+    val result = listBuilder<T>()
+    for (x in this)
+        if (cl.isInstance(x))
+            result.add(cl.cast(x)!!)
+
+    return result.build()
+}

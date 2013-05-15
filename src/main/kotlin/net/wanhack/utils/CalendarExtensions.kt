@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package net.wanhack.model.creature
+package net.wanhack.utils
 
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.ShortestPathSearcher
+import java.util.Calendar
 
-class CreatureShortestPathSearcher(val creature: Creature): ShortestPathSearcher(creature.region) {
+fun Calendar.isFriday() =
+    get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
 
-    override fun costToEnter(cell: Cell): Int =
-        when {
-            cell.creature != null -> 5
-            cell.isClosedDoor()   -> if (creature.canUseDoors) 2 else 10
-            else                  -> 1
-        }
-
-    override fun canEnter(cell: Cell) =
-        !creature.corporeal || cell.isPassable()
-}
+fun Calendar.isFestivus() =
+    get(Calendar.MONTH) == Calendar.DECEMBER && get(Calendar.DAY_OF_MONTH) == 23

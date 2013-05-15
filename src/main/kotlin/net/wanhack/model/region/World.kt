@@ -121,9 +121,9 @@ class World(val game: Game) {
 
     private fun getRegionGenerator(): RegionGenerator =
         if (mazeProbability.check())
-            MazeRegionGenerator()
+            MazeRegionGenerator
         else
-            RoomFirstRegionGenerator()
+            RoomFirstRegionGenerator
 
     private fun addRandomCreatures(player: Player, region: Region) {
         if (region.level == 0)
@@ -137,7 +137,7 @@ class World(val game: Game) {
             if (empty.empty)
                 return
 
-            val cell = empty[random.nextInt(empty.size)]
+            val cell = empty.randomElement()
             val cells = cell.getMatchingCellsNearestFirst { it.canMoveInto(true) }
             for (creature in creatures)
                 if (cells.hasNext()) {
@@ -159,7 +159,7 @@ class World(val game: Game) {
 
             val item = randomItem(minItemLevel, maxItemLevel)
 
-            emptyCells[random.nextInt(emptyCells.size)].addItem(item)
+            emptyCells.randomElement().items.add(item)
         }
     }
 
@@ -198,7 +198,7 @@ class World(val game: Game) {
     private fun getObjectFactory(): ObjectFactory = ServiceProvider.objectFactory
 
     class object {
-        private val log = LogFactory.getLog(javaClass<World>())!!
+        private val log = LogFactory.getLog(javaClass<World>())
 
         private class DefProbability(val def: ObjectDefinition, val probability: Int, val level: Int?)
     }

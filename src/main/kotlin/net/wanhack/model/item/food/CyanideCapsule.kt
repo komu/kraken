@@ -26,7 +26,7 @@ class CyanideCapsule(title: String): Food(title) {
             eater.die(title)
         } else {
             eater.message("You change your mind.")
-            eater.addItemToInventory(this)
+            eater.inventoryItems.add(this)
         }
     }
 }

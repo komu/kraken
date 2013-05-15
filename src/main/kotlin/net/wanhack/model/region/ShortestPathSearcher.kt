@@ -40,7 +40,7 @@ open class ShortestPathSearcher(val region: Region) {
         openHeap.add(startNode)
 
         while (!openHeap.empty) {
-            val current = openHeap.poll()!!
+            val current = openHeap.remove()
             if (current.cell == goal) {
                 val result = ArrayList<Cell>()
                 var node: Node? = current
@@ -89,7 +89,7 @@ open class ShortestPathSearcher(val region: Region) {
 
         fun successors(allowSubDirections: Boolean): List<Node> {
             val nodes = ArrayList<Node>(7)
-            val adjacent = if (allowSubDirections) cell.getAdjacentCells() else cell.getAdjacentCellsInMainDirections()
+            val adjacent = if (allowSubDirections) cell.adjacentCells else cell.adjacentCellsInMainDirections
 
             for (adj in adjacent)
                 if (adj != parent?.cell && canEnter(adj))
@@ -98,7 +98,7 @@ open class ShortestPathSearcher(val region: Region) {
             return nodes
         }
 
-        override fun compareTo(other: Node): Int = heuristic - other.heuristic
+        override fun compareTo(other: Node) = heuristic - other.heuristic
 
         fun toString() = cell.toString()
     }

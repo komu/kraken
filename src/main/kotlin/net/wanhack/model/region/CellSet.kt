@@ -19,6 +19,7 @@ package net.wanhack.model.region
 import java.util.AbstractSet
 import java.util.BitSet
 import java.util.NoSuchElementException
+import net.wanhack.utils.RandomUtils
 
 class CellSet(val region: Region): AbstractSet<Cell>() {
 
@@ -29,6 +30,9 @@ class CellSet(val region: Region): AbstractSet<Cell>() {
         assert(y >= 0 && y < region.height)  { "y out of bounds: $y" }
         return x + y * region.width
     }
+
+    fun randomElement(): Cell =
+        this[RandomUtils.randomInt(size)]
 
     private fun point(index: Int): Cell =
         region.getCell(index % region.width, index / region.width)

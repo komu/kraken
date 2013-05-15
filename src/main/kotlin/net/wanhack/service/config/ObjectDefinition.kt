@@ -45,7 +45,7 @@ class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val ob
 
     var maximumInstances = Integer.MAX_VALUE
     var createdInstances = 0
-    private val log = LogFactory.getLog(javaClass)!!
+    private val log = LogFactory.getLog(javaClass)
 
     fun swarmSize(): Int =
         swarmSize.evaluate()

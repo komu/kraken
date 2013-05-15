@@ -56,7 +56,7 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
 
     private fun selectRandomTargetCell(candidates: CellSet, creature: Creature): Cell? {
         while (!candidates.isEmpty()) {
-            val cell = candidates[random.nextInt(candidates.size)]
+            val cell = candidates.randomElement()
             if (cell.creature == null && cell.canMoveInto(creature.corporeal))
                 return cell
         }
@@ -64,6 +64,6 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
     }
 
     class object {
-        private val log = LogFactory.getLog(javaClass<CreateMonstersEvent>())!!
+        private val log = LogFactory.getLog(javaClass<CreateMonstersEvent>())
     }
 }

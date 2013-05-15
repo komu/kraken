@@ -16,12 +16,11 @@
 
 package net.wanhack.model
 
-import java.io.Serializable
 import java.util.PriorityQueue
 import net.wanhack.model.common.Actor
 import org.apache.commons.logging.LogFactory
 
-class Clock: Serializable {
+class Clock {
     var time = 0
 
     private val actors = PriorityQueue<ActorInfo>()
@@ -34,8 +33,8 @@ class Clock: Serializable {
     }
 
     private fun tick(game: Game, maxTime: Int) {
-        while (!actors.empty && actors.peek()!!.nextTick <= maxTime) {
-            val actor = actors.poll()!!
+        while (!actors.empty && actors.element().nextTick <= maxTime) {
+            val actor = actors.remove()
             time = Math.max(time, actor.nextTick)
             if (!actor.destroyed) {
                 val reschedule = actor.tick(game, time)
@@ -55,37 +54,31 @@ class Clock: Serializable {
         actors.add(ActorInfo(actor, time + ticks))
     }
 
-    override fun toString() =
+    fun toString() =
         "Clock [time=$time, objects=$actors]"
 
     class object {
-        private val serialVersionUID: Long = 0
-        private val log = LogFactory.getLog(javaClass<Clock>())!!
+        private val log = LogFactory.getLog(javaClass<Clock>())
 
-        private open class ActorInfo(private val actor: Actor, var nextTick: Int): Comparable<ActorInfo>, Serializable {
+        private class ActorInfo(private val actor: Actor, var nextTick: Int): Comparable<ActorInfo> {
 
             fun tick(game: Game, time: Int): Boolean {
                 val rate = actor.act(game)
                 if (rate > 0) {
                     nextTick = time + rate
                     return true
-                }
-                else
+                } else
                     return false
             }
 
             val destroyed: Boolean
                 get() = actor.destroyed
 
-            override fun toString() =
+            fun toString() =
                 "($nextTick: $actor)"
 
             override fun compareTo(other: ActorInfo) =
                 nextTick - other.nextTick
-
-            class object {
-                private val serialVersionUID: Long = 0
-            }
         }
     }
 }

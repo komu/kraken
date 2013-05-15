@@ -100,7 +100,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     }
 
     fun addItem(x: Int, y: Int, item: Item) {
-        getCell(x, y).addItem(item)
+        getCell(x, y).items.add(item)
     }
 
     fun getCells(): CellSet {

@@ -55,45 +55,32 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
     fun closeDoor(closer: Creature): Boolean {
         val door = state as? Door
-        if (door != null) {
-            if (door.isOpen) {
-                if (creature != null || !items.isEmpty()) {
-                    closer.message("Something blocks the door.")
-                    return false
-                }
-
-                door.close(closer)
-                return true
+        if (door != null && door.isOpen) {
+            if (creature != null || !items.empty) {
+                closer.message("Something blocks the door.")
+                return false
             }
+
+            door.close(closer)
+            return true
         }
 
         return false
     }
 
-    fun getLargestItem(): Item? {
-        var maxWeight = Integer.MIN_VALUE
-        var largest: Item? = null
+    val largestItem: Item?
+        get() {
+            var maxWeight = Integer.MIN_VALUE
+            var largest: Item? = null
 
-        for (item in items)
-            if (item.weight > maxWeight) {
-                maxWeight = item.weight
-                largest = item
-            }
+            for (item in items)
+                if (item.weight > maxWeight) {
+                    maxWeight = item.weight
+                    largest = item
+                }
 
-        return largest
-    }
-
-    fun addItem(item: Item) {
-        items.add(item)
-    }
-
-    fun addItems(items: Collection<Item>) {
-        this.items.addAll(items)
-    }
-
-    fun removeItem(item: Item){
-        items.remove(item)
-    }
+            return largest
+        }
 
     fun isReachable(goal: Cell) =
         this == goal || region.findPath(this, goal) != null
@@ -161,7 +148,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         return sqrt((dx * dx + dy * dy).toDouble()).toInt()
     }
 
-    fun isInteresting() =!state.cellType.isFloor() || !items.empty
+    fun isInteresting() = !state.cellType.isFloor() || !items.empty
 
     fun getMatchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> {
         val maxDistance: Int = getMaximumDistanceFromEdgeOfRegion()
@@ -233,15 +220,16 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         return cells
     }
 
-    fun getAdjacentCells(): List<Cell> {
-        val adjacent = ArrayList<Cell>(8)
-        for (d in Direction.values()) {
-            val cell = region.getCellOrNull(x + d.dx, y + d.dy)
-            if (cell != null)
-                adjacent.add(cell)
+    val adjacentCells: List<Cell>
+        get() {
+            val adjacent = ArrayList<Cell>(8)
+            for (d in Direction.values()) {
+                val cell = region.getCellOrNull(x + d.dx, y + d.dy)
+                if (cell != null)
+                    adjacent.add(cell)
+            }
+            return adjacent
         }
-        return adjacent
-    }
 
     fun getAdjacentCellsOfType(cellType: CellType): List<Cell> {
         val adjacent = ArrayList<Cell>(8)
@@ -273,17 +261,18 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         return null
     }
 
-    fun getAdjacentCellsInMainDirections(): List<Cell> {
-        val adjacent = ArrayList<Cell>(4)
+    val adjacentCellsInMainDirections: List<Cell>
+        get() {
+            val adjacent = ArrayList<Cell>(4)
 
-        for (d in Directions.mainDirections) {
-            val cell = region.getCellOrNull(x + d.dx, y + d.dy)
-            if (cell != null)
-                adjacent.add(cell)
+            for (d in Directions.mainDirections) {
+                val cell = region.getCellOrNull(x + d.dx, y + d.dy)
+                if (cell != null)
+                    adjacent.add(cell)
+            }
+
+            return adjacent
         }
-
-        return adjacent
-    }
 
     fun getCellsBetween(target: Cell): List<Cell> {
         val cells = ArrayList<Cell>(distance(target))

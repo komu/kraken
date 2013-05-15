@@ -27,7 +27,7 @@ import java.security.AccessControlException
 import java.util.concurrent.Executors
 
 class HighScoreService {
-    private val log = LogFactory.getLog(javaClass)!!
+    private val log = LogFactory.getLog(javaClass)
     private val highScoreExecutor = Executors.newSingleThreadExecutor()
 
     fun saveGameScore(gameRef: GameRef, killer: String) {

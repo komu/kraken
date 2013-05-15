@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory
 
 object ColorFactory {
 
-    private val log = LogFactory.getLog(javaClass)!!
+    private val log = LogFactory.getLog(javaClass)
 
     private val colorMap = mapOf(
         "black"         to Color.BLACK,

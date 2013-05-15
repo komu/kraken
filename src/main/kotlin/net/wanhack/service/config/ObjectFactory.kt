@@ -41,10 +41,8 @@ class ObjectFactory {
     private fun open(file: String) =
         javaClass.getResourceAsStream(file) ?: throw FileNotFoundException("classpath:$file")
 
-    fun create<T>(objectClass: Class<T>, name: String): T {
-        val def = getDefinition(name)
-        return objectClass.cast(def.createObject())!!
-    }
+    fun create<T>(objectClass: Class<T>, name: String): T =
+        objectClass.cast(getDefinition(name).createObject())!!
 
     fun getAvailableDefinitionsForClass<T>(cl: Class<T>): List<ObjectDefinition> =
         definitions.values().filter { it.isInstantiable(cl) }

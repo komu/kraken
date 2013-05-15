@@ -31,7 +31,7 @@ class Corpse(name: String): Food(name) {
         if (poisonDamage > 0) {
             eater.takeDamage(poisonDamage, eater)
             eater.message("This %s tastes terrible, it must have been poisonous!", title)
-            if (!eater.isAlive) {
+            if (!eater.alive) {
                 eater.message("%s %s.", eater.You(), eater.verb("die"))
                 eater.die("poisonous corpse")
             }

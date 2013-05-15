@@ -65,14 +65,14 @@ class ConsoleView : JComponent(), Console {
         g.setColor(getBackground())
         g.fillRect(0, 0, getWidth(), getHeight())
 
-        if (!buffer.isEmpty() && currentRow < buffer.size()) {
+        if (!buffer.empty && currentRow < buffer.size) {
             g.setColor(getForeground())
             val fm = getFontMetrics(getFont())!!
             val maxWidth = getWidth()
-            val text = buffer.get(currentRow)!!
+            val text = buffer[currentRow]
             val words = text.split(" ")
-            var x: Int = 0
-            var y: Int = fm.getAscent()
+            var x = 0
+            var y = fm.getAscent()
             for (i in 0..words.size - 1) {
                 var wordWidth = fm.stringWidth(words[i])
                 if (x != 0 && x + wordWidth >= maxWidth) {
@@ -81,7 +81,7 @@ class ConsoleView : JComponent(), Console {
                 }
 
                 g.drawString(words[i], x, y)
-                x += wordWidth + (fm.charWidth(' '))
+                x += wordWidth + fm.charWidth(' ')
             }
         }
 

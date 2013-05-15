@@ -50,7 +50,7 @@ class Main(val wizardMode: Boolean) {
     private val regionLoader = RegionLoader(objectFactory)
     private var gameRef: DefaultGameRef? = null
     private val regionView = RegionView()
-    private val log = LogFactory.getLog(javaClass<Main>())!!
+    private val log = LogFactory.getLog(javaClass<Main>())
     private val logFrame = if (wizardMode) LogFrame() else null
     private val gameActions = GameActionSet();
 

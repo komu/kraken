@@ -43,7 +43,7 @@ open class Monster(name: String): Creature(name) {
             if (isAdjacentToCreature(player)) {
                 game.attack(this, player)
             } else if (!immobile)
-                moveTowards(player.cell!!)
+                moveTowards(player.cell)
 
         } else {
             if (cell == lastKnownPlayerPosition)

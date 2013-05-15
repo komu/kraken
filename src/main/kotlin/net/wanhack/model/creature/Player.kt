@@ -204,11 +204,11 @@ class Player(name: String): Creature(name) {
         target in visibleCells!!
 
     private fun updateVisiblePoints() {
-        visibleCells = VisibilityChecker().getVisibleCells(cell!!, sight)
+        visibleCells = VisibilityChecker().getVisibleCells(cell, sight)
     }
 
     fun getInvisibleCells(): CellSet {
-        val cells = region!!.getCells()
+        val cells = region.getCells()
         cells.removeAll(visibleCells!!)
         return cells
     }

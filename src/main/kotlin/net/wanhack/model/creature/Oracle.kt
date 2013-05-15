@@ -19,7 +19,7 @@ package net.wanhack.model.creature
 import java.awt.Color
 import net.wanhack.model.Game
 import net.wanhack.model.item.weapon.NaturalWeapon
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.collections.randomElement
 
 class Oracle(name: String): Creature(name) {
 
@@ -34,7 +34,7 @@ class Oracle(name: String): Creature(name) {
     }
 
     override fun talk(target: Creature) {
-        target.say(this, RandomUtils.randomItem(wisdoms))
+        target.say(this, wisdoms.randomElement())
     }
 
     override fun onTick(game: Game) {
