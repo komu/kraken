@@ -39,18 +39,19 @@ import java.util.*
 abstract class Creature(var name: String): Actor, MessageTarget {
 
     var cellOrNull: Cell? = null
+        set(cell: Cell?) {
+            if ($cellOrNull != null)
+                $cellOrNull!!.creature = null
+
+            $cellOrNull = cell
+
+            if ($cellOrNull != null)
+                $cellOrNull!!.creature = this
+        }
 
     var cell: Cell
         get() = cellOrNull!!
-        set(cell: Cell) {
-            if (cellOrNull != null)
-                cellOrNull!!.creature = null
-
-            cellOrNull = cell
-
-            if (cellOrNull != null)
-                cellOrNull!!.creature = this
-        }
+        set(cell: Cell) = cellOrNull = cell
 
     var letter = '\u0000'
         get() = if ($letter == '\u0000') name[0] else $letter
@@ -236,7 +237,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         if (verb.endsWith("s")) "${verb}es" else "${verb}s"
 
     open fun createCorpse(): Item? {
-        if (corporeal)
+        if (!corporeal)
             return null
 
         val corpse = Corpse("$name corpse")
@@ -263,6 +264,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         cell.addItems(armoring.removeAllArmors())
 
         val corpse = createCorpse()
+        println("corpse: $corpse")
         if (corpse != null)
             cell.addItem(corpse)
 
