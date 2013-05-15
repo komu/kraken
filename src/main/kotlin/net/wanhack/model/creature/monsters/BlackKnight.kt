@@ -23,8 +23,8 @@ import net.wanhack.model.creature.Monster
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.region.Cell
-import net.wanhack.utils.RandomUtils
-import java.util.ArrayList
+import net.wanhack.utils.collections.shuffled
+import net.wanhack.utils.collections.randomElement
 
 class BlackKnight(name: String): Monster(name) {
 
@@ -49,13 +49,15 @@ class BlackKnight(name: String): Monster(name) {
 
     override fun talk(target: Creature)  {
         val percentage = hitPointPercentage
-        when {
-            percentage >= 80 -> target.say(this, RandomUtils.randomItem(HEALTHY_YELLS))
-            percentage >= 60 -> target.say(this, RandomUtils.randomItem(ONE_ARMED_YELLS))
-            percentage >= 40 -> target.say(this, RandomUtils.randomItem(ARMLESS_YELLS))
-            percentage >= 20 -> target.say(this, RandomUtils.randomItem(ONE_LEGGED_YELLS))
-            else             -> target.say(this, RandomUtils.randomItem(TORSO_YELLS))
+        val yells = when {
+            percentage >= 80 -> HEALTHY_YELLS
+            percentage >= 60 -> ONE_ARMED_YELLS
+            percentage >= 40 -> ARMLESS_YELLS
+            percentage >= 20 -> ONE_LEGGED_YELLS
+            else             -> TORSO_YELLS
         }
+
+        target.say(this, yells.randomElement())
     }
 
     private val hitPointPercentage: Int
@@ -70,7 +72,7 @@ class BlackKnight(name: String): Monster(name) {
         val isAdjacent = isAdjacentToCreature(player)
 
         if (hasBeenFighting && !isAdjacent) {
-            player.say(this, RandomUtils.randomItem(PLAYER_FLEEING_YELLS))
+            player.say(this, PLAYER_FLEEING_YELLS.randomElement())
             hasBeenFighting = false
 
         } else if (isAdjacent) {
@@ -83,7 +85,7 @@ class BlackKnight(name: String): Monster(name) {
         } else if (!fullyCrippled) {
             if (seesCreature(player)) {
                 lastKnownPlayerPosition = player.cell
-                moveTowards(player.cell!!)
+                moveTowards(player.cell)
             } else {
                 if (cell == lastKnownPlayerPosition)
                     lastKnownPlayerPosition = null
@@ -117,15 +119,14 @@ class BlackKnight(name: String): Monster(name) {
     }
 
     private fun dropToAdjacentCell(item: Item) {
-        val cells = ArrayList(cell!!.getAdjacentCells())
-        RandomUtils.shuffle(cells)
+        val cells = cell.getAdjacentCells().shuffled()
         for (cell in cells) {
             if (cell.canDropItemToCell()) {
                 cell.addItem(item)
                 return
             }
         }
-        cell!!.addItem(item)
+        cell.addItem(item)
     }
 
     class object {

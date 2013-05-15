@@ -36,17 +36,20 @@ import net.wanhack.utils.exp.Expression
 import java.awt.*
 import java.util.*
 
-public abstract class Creature(var name: String): Actor, MessageTarget {
+abstract class Creature(var name: String): Actor, MessageTarget {
 
-    var cell: Cell? = null
-        set(cell: Cell?) {
-            if ($cell != null)
-                $cell!!.creature = null
+    var cellOrNull: Cell? = null
 
-            $cell = cell
+    var cell: Cell
+        get() = cellOrNull!!
+        set(cell: Cell) {
+            if (cellOrNull != null)
+                cellOrNull!!.creature = null
 
-            if ($cell != null)
-                $cell!!.creature = this
+            cellOrNull = cell
+
+            if (cellOrNull != null)
+                cellOrNull!!.creature = this
         }
 
     var letter = '\u0000'
@@ -80,7 +83,7 @@ public abstract class Creature(var name: String): Actor, MessageTarget {
     val inventoryItems = HashSet<Item>()
 
     val game: Game
-        get() = region!!.world.game
+        get() = region.world.game
 
     val weightOfCarriedItems: Int
         get() {
@@ -121,20 +124,20 @@ public abstract class Creature(var name: String): Actor, MessageTarget {
     open val isPlayer: Boolean
         get() = false
 
-    val region: Region?
-        get() = cell?.region
+    val region: Region
+        get() = cell.region
 
     fun seesCreature(creature: Creature) =
-        canSee(creature.cell!!)
+        canSee(creature.cell)
 
     fun isAdjacentToCreature(creature: Creature) =
-        cell!!.isAdjacent(creature.cell!!)
+        cell.isAdjacent(creature.cell)
 
     override val destroyed: Boolean
         get() = !isAlive
 
     val isAlive: Boolean
-        get() = hitPoints > 0 && cell != null
+        get() = hitPoints > 0 && cellOrNull != null
 
     override fun act(game: Game): Int {
         onTick(game)
@@ -143,7 +146,7 @@ public abstract class Creature(var name: String): Actor, MessageTarget {
 
     protected fun moveTowards(targetCell: Cell): Boolean {
         val searcher = CreatureShortestPathSearcher(this)
-        val first = searcher.findFirstCellOnShortestPath(cell!!, targetCell)
+        val first = searcher.findFirstCellOnShortestPath(cell, targetCell)
         if (first != null && canMoveTo(first)) {
             cell = first
             return true
@@ -153,7 +156,7 @@ public abstract class Creature(var name: String): Actor, MessageTarget {
     }
 
     protected fun move(direction: Direction): Boolean {
-        val target = cell!!.getCellTowards(direction)
+        val target = cell.getCellTowards(direction)
         if (canMoveTo(target)) {
             target.enter(this)
             return true
@@ -184,11 +187,11 @@ public abstract class Creature(var name: String): Actor, MessageTarget {
     }
 
     protected fun calculateCanSee(target: Cell): Boolean =
-        cell!!.getCellsBetween(target).all { it.canSeeThrough() }
+        cell.getCellsBetween(target).all { it.canSeeThrough() }
 
     fun getAdjacentCreatures(): Set<Creature> {
         val adjacent = HashSet<Creature>()
-        for (c in cell!!.getAdjacentCells()) {
+        for (c in cell.getAdjacentCells()) {
             val creature = c.creature
             if (creature != null)
                 adjacent.add(creature)
@@ -248,26 +251,26 @@ public abstract class Creature(var name: String): Actor, MessageTarget {
 
     open fun die(killer: String) {
         hitPoints = 0
-        cell?.addItems(inventoryItems)
+        cell.addItems(inventoryItems)
         clearInventory()
 
         val weapon = wieldedWeapon
         if (weapon != null) {
-            cell?.addItem(weapon)
+            cell.addItem(weapon)
             wieldedWeapon = null
         }
 
-        cell?.addItems(armoring.removeAllArmors())
+        cell.addItems(armoring.removeAllArmors())
 
         val corpse = createCorpse()
         if (corpse != null)
-            cell?.addItem(corpse)
+            cell.addItem(corpse)
 
         removeFromGame()
     }
 
     protected fun removeFromGame() {
-        cell = null
+        cellOrNull = null
     }
 
     protected fun createItem<T>(cl: Class<T>, name: String): T =

@@ -60,7 +60,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
     }
 
     override fun revealCurrentRegion() {
-        getCurrentRegion()?.reveal()
+        currentRegion.reveal()
     }
 
     override fun start() {
@@ -77,9 +77,9 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         else if (config.pet == PetType.LASSIE)
             putPetNextToPlayer(Lassie("Lassie"))
 
-        getCurrentRegion()?.updateLighting()
+        currentRegion.updateLighting()
         player.act(this)
-        getCurrentRegion()?.updateSeenCells(player.visibleCells!!)
+        currentRegion.updateSeenCells(player.visibleCells!!)
         player.message("Hello %s, welcome to Wanhack!", player.name)
 
         if (todayIsFestivus()) {
@@ -102,12 +102,13 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
     private fun putPetNextToPlayer(pet: Creature): Boolean {
         var target: Cell? = null
-        for (cell in player.cell!!.getAdjacentCells())
+        for (cell in player.cell.getAdjacentCells())
             if (cell.cellType.isFloor() && cell.creature == null)
                 target = cell
 
-        if (target != null) {
-            pet.cell = target
+        val targetCell = target
+        if (targetCell != null) {
+            pet.cell = targetCell
             regionClock.schedule(pet.tickRate, pet)
             return true
         } else {
@@ -123,14 +124,14 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         regionClock.schedule(event.rate, event)
     }
 
-    public override fun getCellInFocus(): Cell? =
-        getSelectedCell() ?: player.cell
+    override val dungeonLevel: Int
+        get() = currentRegion.level
 
-    public override fun getSelectedCell(): Cell? =
-        null
+    override val cellInFocus: Cell
+        get() = selectedCell ?: player.cell
 
-    public override fun getDungeonLevel(): Int =
-        getCurrentRegion()?.level ?: 0
+    override val selectedCell: Cell?
+        get() = null
 
     public override fun save(oos: ObjectOutputStream?): Unit {
         oos?.writeObject(this)
@@ -138,7 +139,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
     public fun enterRegion(name: String, location: String) {
         val region = world.getRegion(player, name)
-        val oldCell = player.cell
+        val oldCell = player.cellOrNull
         val oldRegion = oldCell?.region
         region.setPlayerLocation(player, location)
         if (region != oldRegion) {
@@ -160,7 +161,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
     public fun addCreature(creature: Creature, target: Cell) {
         creature.cell = target
-        if (target.region == getCurrentRegion()) {
+        if (target.region == currentRegion) {
             regionClock.schedule(creature.tickRate, creature)
         }
     }
@@ -180,7 +181,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
-                val cell  = player.cell!!.getCellTowards(dir)
+                val cell  = player.cell.getCellTowards(dir)
                 val creature = cell.creature
                 if (creature != null) {
                     creature.talk(player)
@@ -198,7 +199,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        val closedDoors  = player.cell!!.getAdjacentCellsOfType(CellType.CLOSED_DOOR)
+        val closedDoors  = player.cell.getAdjacentCellsOfType(CellType.CLOSED_DOOR)
         if (closedDoors.isEmpty()) {
             player.message("There are no closed doors around you.")
         } else if (closedDoors.size == 1) {
@@ -207,7 +208,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
-                val cell = player.cell!!.getCellTowards(dir)
+                val cell = player.cell.getCellTowards(dir)
                 if (cell.cellType == CellType.CLOSED_DOOR) {
                     cell.openDoor(player)
                     tick()
@@ -223,7 +224,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        val openDoors = player.cell!!.getAdjacentCellsOfType(CellType.OPEN_DOOR)
+        val openDoors = player.cell.getAdjacentCellsOfType(CellType.OPEN_DOOR)
         if (openDoors.isEmpty()) {
             player.message("There are no open doors around you.")
         } else if (openDoors.size == 1) {
@@ -231,7 +232,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
-                val cell = player.cell!!.getCellTowards(dir)
+                val cell = player.cell.getCellTowards(dir)
                 if (cell.cellType == CellType.OPEN_DOOR)
                     closeDoor(cell)
                 else
@@ -239,13 +240,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             }
         }
     }
-    private fun closeDoor(door: Cell?): Unit {
-        assertWriteLock()
-        if (door?.closeDoor(player)!!)
-        {
-            tick()
-        }
 
+    private fun closeDoor(door: Cell): Unit {
+        assertWriteLock()
+
+        if (door.closeDoor(player))
+            tick()
     }
 
     override fun pickup() {
@@ -253,7 +253,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        val cell = player.cell!!
+        val cell = player.cell
         val items = cell.items
         if (items.empty) {
             player.message("There's nothing to pick up.")
@@ -328,7 +328,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
 
         if (item in player.inventoryItems) {
             player.removeItemFromInventory(item)
-            player.cell!!.addItem(item)
+            player.cell.addItem(item)
             message("Dropped %s.", item.title)
             tick()
         }
@@ -352,7 +352,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        for (cell in player.cell!!.getAdjacentCells())
+        for (cell in player.cell.getAdjacentCells())
             if (cell.search(player))
                 break
 
@@ -369,9 +369,9 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             val dir = console.selectDirection()
             if (dir != null) {
                 player.removeItemFromInventory(projectile)
-                var currentCell = player.cell!!
+                var currentCell = player.cell
                 var nextCell = currentCell.getCellTowards(dir)
-                val range: Int = player.getThrowRange(projectile.weight)
+                val range = player.getThrowRange(projectile.weight)
 
                 var d = 0
                 while (d < range && nextCell.isPassable()) {
@@ -408,18 +408,18 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun getCurrentRegion(): Region? =
-        player.region
+    override val currentRegion: Region
+        get() = player.region
 
-    override fun getScore() =
-        player.experience
+    override val score: Int
+        get() = player.experience
 
     override fun movePlayer(direction: Direction) {
         assertWriteLock()
         if (over)
             return
 
-        val cell = player.cell!!.getCellTowards(direction)
+        val cell = player.cell.getCellTowards(direction)
         val creatureInCell = cell.creature
         if (creatureInCell != null) {
             if (attack(player, creatureInCell))
@@ -437,7 +437,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         if (over)
             return
 
-        var target = player.cell!!.getCellTowards(direction)
+        var target = player.cell.getCellTowards(direction)
         if (isInCorridor(target))
         {
             runInCorridor(direction)
@@ -454,93 +454,77 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
     private fun runInCorridor(initialDirection: Direction): Unit {
         var direction = initialDirection
         var previous: Cell? = null
-        do
-        {
-            val target = player.cell!!.getCellTowards(direction)
+        do {
+            val target = player.cell.getCellTowards(direction)
             if (target.canMoveInto(player.corporeal)) {
                 previous = player.cell
                 target.enter(player)
                 tick()
-            }
-            else
-            {
+            } else {
                 if (previous == null)
                     return
 
                 var newTarget: Cell? = null
-                for (c in player.cell!!.getAdjacentCellsInMainDirections()) {
+                for (c in player.cell.getAdjacentCellsInMainDirections()) {
                     if (c != previous && c.canMoveInto(player.corporeal))
                         if (newTarget == null)
                             newTarget = c
                         else
                             return
                 }
-                if (newTarget != null && (newTarget?.canMoveInto((player.corporeal)))!!) {
+
+                val targetCell = newTarget
+                if (targetCell != null && targetCell.canMoveInto(player.corporeal)) {
                     previous = player.cell
-                    direction = previous!!.getDirection(newTarget!!)!!
-                    newTarget?.enter(player)
+                    direction = player.cell.getDirection(targetCell)!!
+                    targetCell.enter(player)
                     tick()
                 } else {
                     return
                 }
             }
-        }
-        while (!isCurrentCellInteresting(true))
+        } while (!isCurrentCellInteresting(true))
     }
 
     private fun runInRoom(direction: Direction) {
         var previous: Cell? = null
-        do
-        {
-            var target  = player.cell!!.getCellTowards(direction)
-            if (target.canMoveInto((player.corporeal)))
-            {
+        do {
+            var target  = player.cell.getCellTowards(direction)
+            if (target.canMoveInto((player.corporeal))) {
                 val first = previous == null
                 previous = player.cell
                 target.enter(player)
                 tick()
-                if (!first)
-                {
+                if (!first) {
                     val previousNeighbours: Int = previous?.countPassableMainNeighbours()!!
                     val currentNeighbours: Int = target.countPassableMainNeighbours()
                     if (previousNeighbours != currentNeighbours)
-                    {
                         return
-                    }
-
                 }
-
-            }
-            else
-            {
+            } else {
                 return
             }
-        }
-        while (!isCurrentCellInteresting(false))
+        } while (!isCurrentCellInteresting(false))
     }
 
     private fun isCurrentCellInteresting(corridor: Boolean): Boolean {
-        var cell = player.cell!!
-        if ((cell.isInteresting()) || (player.seesNonFriendlyCreatures()))
-        {
+        val cell = player.cell
+        if (cell.isInteresting() || player.seesNonFriendlyCreatures())
             return true
-        }
 
-        if (corridor)
-        {
+        if (corridor) {
             return cell.countPassableMainNeighbours() > 2
-        }
-        else
-        {
+        } else {
             return false
         }
     }
+
     public override fun movePlayerVertically(up: Boolean) {
         assertWriteLock()
         if (over)
             return
 
-        val target = player.cell!!.getJumpTarget(up)
+        val target = player.cell.getJumpTarget(up)
         if (target != null) {
             if (target.isExit) {
                 if (console.ask("Really escape from the dungeon?")) {
@@ -656,8 +640,8 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
                 regionClock.tick(ticks, this)
             } while (player.isAlive && player.isFainted())
 
-            getCurrentRegion()?.updateLighting()
-            getCurrentRegion()?.updateSeenCells(player.visibleCells!!)
+            currentRegion.updateLighting()
+            currentRegion.updateSeenCells(player.visibleCells!!)
 
             listener()
         }
@@ -684,8 +668,8 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    public override fun getTime(): Int =
-        globalClock.time
+    override val time: Int
+        get() = globalClock.time
 
     class object {
         private val log: Log = LogFactory.getLog(javaClass<Game>())!!

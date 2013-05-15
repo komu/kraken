@@ -28,7 +28,7 @@ import java.util.HashMap
 class ObjectFactory {
     private val definitions = HashMap<String, ObjectDefinition>()
 
-    fun parse(definitionFile: String, objectClass: Class<*>, element: String): Unit {
+    fun parse(definitionFile: String, element: String): Unit {
         open(definitionFile).use { inputStream ->
             val parserFactory = SAXParserFactory.newInstance()!!
             parserFactory.setNamespaceAware(true)

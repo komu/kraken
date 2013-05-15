@@ -42,15 +42,15 @@ trait IGame {
     fun skipTurn()
     fun rest(maxTurns: Int)
     fun revealCurrentRegion()
-    fun getCurrentRegion(): Region?
 
+    val currentRegion: Region
     val player: Player
 
-    fun getScore(): Int
-    fun getTime(): Int
-    fun getDungeonLevel(): Int
+    val score: Int
+    val time: Int
+    val dungeonLevel: Int
     val maxDungeonLevel: Int
-    fun getCellInFocus(): Cell?
-    fun getSelectedCell(): Cell?
+    val cellInFocus: Cell
+    val selectedCell: Cell?
     fun save(oos: ObjectOutputStream?)
 }

@@ -89,9 +89,9 @@ class StatisticsView: JComponent() {
 
         val player = game.player
         val line = Line()
-        line.add("%-20s  ", player.region!!.name)
+        line.add("%-20s  ", player.region.name)
         line.add(getHitPointsColor(player), "HP:%d(%d)", player.hitPoints, player.maximumHitPoints)
-        line.add("  AC:%d  Exp:%s(%s)  T:%d    ", player.armorClass, player.level, player.experience, game.getTime())
+        line.add("  AC:%d  Exp:%s(%s)  T:%d    ", player.armorClass, player.level, player.experience, game.time)
         line.add(getHungerColor(player.getHungerLevel()), "%-10s", player.getHungerLevel())
         return line
     }

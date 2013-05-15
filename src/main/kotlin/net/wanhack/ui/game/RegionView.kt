@@ -52,17 +52,14 @@ class RegionView: JComponent() {
         paintBackground(g2)
 
         gameRef?.executeQuery { game ->
-            val region = game.getCurrentRegion()
-            if (region != null) {
-                transformFocusToCell(g2, game.getCellInFocus()!!)
-                val player = game.player
-                for (cell in region)
-                    paintCell(g2, cell, player)
+            transformFocusToCell(g2, game.cellInFocus)
+            val player = game.player
+            for (cell in game.currentRegion)
+                paintCell(g2, cell, player)
 
-                val selectedCell = game.getSelectedCell()
-                if (selectedCell != null)
-                    tileProvider.drawSelection(g2, selectedCell)
-            }
+            val selectedCell = game.selectedCell
+            if (selectedCell != null)
+                tileProvider.drawSelection(g2, selectedCell)
         }
     }
 

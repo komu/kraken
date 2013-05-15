@@ -16,45 +16,29 @@
 
 package net.wanhack
 
-import javax.swing.UIManager
-import net.wanhack.ui.common.ErrorDialog
-import net.wanhack.utils.SystemAccess
-import net.wanhack.ui.debug.ScriptFrame
-import javax.swing.JFrame
-import net.wanhack.ui.console.ConsoleView
-import net.wanhack.ui.game.InventoryView
-import net.wanhack.ui.game.StatisticsView
-import javax.swing.JOptionPane
-import net.wanhack.ui.debug.LogFrame
-import net.wanhack.model.item.Item
-import net.wanhack.model.creature.Creature
+import java.awt.BorderLayout
+import java.awt.event.*
+import java.awt.event.KeyEvent.*
+import javax.swing.*
+import javax.swing.Action.*
+import kotlin.swing.*
+import org.apache.commons.logging.LogFactory
+import net.wanhack.common.Version
+import net.wanhack.model.common.Direction
+import net.wanhack.model.DefaultGameRef
+import net.wanhack.model.Game
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.region.RegionLoader
 import net.wanhack.service.ServiceProvider
-import net.wanhack.model.DefaultGameRef
-import net.wanhack.ui.game.RegionView
-import org.apache.commons.logging.LogFactory
+import net.wanhack.ui.common.ErrorDialog
+import net.wanhack.ui.console.ConsoleView
+import net.wanhack.ui.debug.LogFrame
 import net.wanhack.ui.game.action.GameActionSet
-import javax.swing.JSplitPane
-import java.awt.BorderLayout
-import javax.swing.JPanel
-import javax.swing.WindowConstants
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
-import javax.swing.JMenu
-import javax.swing.JMenuBar
-import java.awt.event.KeyEvent
-import javax.swing.AbstractAction
-import java.awt.event.ActionEvent
-import javax.swing.Action.*
-import net.wanhack.common.Version
-import javax.swing.JCheckBoxMenuItem
-import java.awt.Cursor
-import net.wanhack.model.common.Direction
-import javax.swing.KeyStroke
-import net.wanhack.model.Game
-import javax.swing.SwingUtilities
+import net.wanhack.ui.game.InventoryView
+import net.wanhack.ui.game.RegionView
+import net.wanhack.ui.game.StatisticsView
 import net.wanhack.ui.game.StartGameDialog
+import net.wanhack.utils.SystemAccess
 
 class Main(val wizardMode: Boolean) {
 
@@ -62,55 +46,49 @@ class Main(val wizardMode: Boolean) {
     private val consoleView = ConsoleView()
     private val inventoryView = InventoryView()
     private val statisticsView = StatisticsView()
-
-    private val regionLoader: RegionLoader
+    private val objectFactory = ObjectFactory()
+    private val regionLoader = RegionLoader(objectFactory)
     private var gameRef: DefaultGameRef? = null
     private val regionView = RegionView()
     private val log = LogFactory.getLog(javaClass<Main>())!!
-    private var logFrame: LogFrame? = null
+    private val logFrame = if (wizardMode) LogFrame() else null
     private val gameActions = GameActionSet();
 
     {
         JOptionPane.setRootFrame(frame)
 
-        val objectFactory = ObjectFactory()
-        objectFactory.parse("/items/items.xml", javaClass<Item>(), "item")
-        objectFactory.parse("/items/weapons.xml", javaClass<Item>(), "item")
-        objectFactory.parse("/creatures/creatures.xml", javaClass<Creature>(), "creature")
-        this.regionLoader = RegionLoader(objectFactory)
+        objectFactory.parse("/items/items.xml", "item")
+        objectFactory.parse("/items/weapons.xml", "item")
+        objectFactory.parse("/creatures/creatures.xml", "creature")
 
         ServiceProvider.console = consoleView
         ServiceProvider.objectFactory = objectFactory
         ServiceProvider.regionLoader = regionLoader
 
-        if (wizardMode) {
-            logFrame = LogFrame()
-        }
-
-        initializeMenuBar()
+        frame.jmenuBar = createMenuBar()
         initializeInputMap()
         initializeActionMap()
 
-        val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT)
-        splitPane.setDividerSize(1)
-        val contentPane = frame.getContentPane()!!
-        val mainPanel = JPanel(BorderLayout())
-        mainPanel.add(consoleView, BorderLayout.NORTH)
-        mainPanel.add(regionView, BorderLayout.CENTER)
-        mainPanel.add(statisticsView, BorderLayout.SOUTH)
-        splitPane.setLeftComponent(mainPanel)
-        splitPane.setRightComponent(inventoryView)
+        val mainPanel = panel {
+            setLayout(BorderLayout())
 
-        contentPane.add(splitPane, BorderLayout.CENTER)
+            add(consoleView, BorderLayout.NORTH)
+            add(regionView, BorderLayout.CENTER)
+            add(statisticsView, BorderLayout.SOUTH)
+        }
+
+        val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, inventoryView)
+        splitPane.setDividerSize(1)
+
+        frame.contentPane!!.add(splitPane, BorderLayout.CENTER)
 
         frame.pack()
         frame.setLocationByPlatform(true)
 
         initUncaughtExceptionHandler()
 
-        frame.setVisible(true);
+        frame.defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
 
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
         frame.addWindowListener(object : WindowAdapter() {
 
             override fun windowClosing(e: WindowEvent) {
@@ -118,53 +96,59 @@ class Main(val wizardMode: Boolean) {
             }
         })
 
+        frame.setVisible(true)
         startNewGame()
     }
 
     fun exit() {
         val res = JOptionPane.showConfirmDialog(frame, "Really exit Wanhack?", "Are you sure?", JOptionPane.YES_NO_OPTION)
-        if (res == JOptionPane.YES_OPTION) {
+        if (res == JOptionPane.YES_OPTION)
             System.exit(0)
-        }
     }
 
-    fun initializeMenuBar() {
-        log.debug("Initializing menu bar");
+    fun createMenuBar() =
+        menuBar {
+            menu("Game") {
+                mnemonic = VK_G
 
-        val menuBar = JMenuBar()
+                add(action("New Game", mnemonic=VK_N) {
+                    startNewGame()
+                })
 
-        val gameMenu = JMenu("Game")
-        gameMenu.setMnemonic('g')
-        gameMenu.add(NewGameAction())
+                addSeparator()
 
-        gameMenu.addSeparator()
-        gameMenu.add(ExitAction())
-        menuBar.add(gameMenu)
+                add(action("Exit", mnemonic=VK_X) {
+                    exit();
+                })
+            }
 
-        val actionMenu = JMenu("Action")
-        actionMenu.setMnemonic('a')
-        for (action in gameActions.actions)
-            actionMenu.add(action)
+            menu("Action") {
+                mnemonic = VK_A
 
-        menuBar.add(actionMenu);
+                for (action in gameActions.actions)
+                    add(action)
+            }
 
-        if (wizardMode) {
-            val debugMenu = JMenu("Debug");
-            debugMenu.setMnemonic('d');
-            debugMenu.add(RevealRegionAction());
-            debugMenu.add(ShowLogFrameAction(logFrame!!).menuItem);
-            debugMenu.add(ShowScriptingFrameAction().menuItem);
+            if (wizardMode) {
+                menu("Debug") {
+                    mnemonic = VK_D
 
-            menuBar.add(debugMenu);
+                    add(action("Reveal Current Region", mnemonic=VK_R) {
+                        gameRef?.getAutoLockingGame()?.revealCurrentRegion()
+                        regionView.repaint()
+                    })
+
+                    add(ShowLogFrameAction(logFrame!!).menuItem)
+                }
+            }
+
+            menu("Help") {
+                mnemonic = VK_H
+                add(action("About Wanhack", mnemonic=VK_A) {
+                    showAbout()
+                })
+            }
         }
-
-        val helpMenu = JMenu("Help")
-        helpMenu.setMnemonic('h')
-        helpMenu.add(AboutAction())
-        menuBar.add(helpMenu)
-
-        frame.setJMenuBar(menuBar)
-    }
 
     fun initializeInputMap() {
         log.debug("Initializing input map")
@@ -218,21 +202,19 @@ class Main(val wizardMode: Boolean) {
 
         val actionMap = regionView.getActionMap()!!
 
-        for (direction in Direction.values()) {
-            actionMap.put(direction, MovePlayerAction(direction, false));
-        }
+        for (direction in Direction.values())
+            actionMap.put(direction, MovePlayerAction(direction, false))
 
-        for (direction in Direction.values()) {
-            actionMap.put("run " + direction, MovePlayerAction(direction, true));
-        }
+        for (direction in Direction.values())
+            actionMap.put("run " + direction, MovePlayerAction(direction, true))
 
-        actionMap.put("down", VerticalMoveAction(false));
-        actionMap.put("up",   VerticalMoveAction(true));
+        actionMap.put("down", VerticalMoveAction(false))
+        actionMap.put("up",   VerticalMoveAction(true))
 
-        actionMap.put("rest", SkipTurnAction());
-        actionMap.put("history up", HistoryScrollAction(true));
-        actionMap.put("history down", HistoryScrollAction(false));
-        actionMap.put("map",  MapAction());
+        actionMap.put("rest", SkipTurnAction())
+        actionMap.put("history up", HistoryScrollAction(true))
+        actionMap.put("history down", HistoryScrollAction(false))
+        actionMap.put("map",  MapAction())
     }
 
     fun startNewGame() {
@@ -354,33 +336,8 @@ class Main(val wizardMode: Boolean) {
         }
     }
 
-    inner class NewGameAction : AbstractAction("New Game") {
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_N)
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            startNewGame()
-        }
-    }
-
-    inner class ExitAction : AbstractAction("Exit") {
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_X);
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            exit();
-        }
-    }
-
-    inner class AboutAction : AbstractAction("About Wanhack") {
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_A)
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            val message =
+    fun showAbout() {
+        val message =
                 "Wanhack ${Version.fullVersion}\n" +
                 "\n" +
                 "Copyright 2005-2013 The Wanhack Team\n" +
@@ -388,25 +345,9 @@ class Main(val wizardMode: Boolean) {
                 "This product includes software developed by the\n" +
                 "Apache Software Foundation http://www.apache.org/"
 
-            JOptionPane.showMessageDialog(
-                    frame, message,
-                    "About Wanhack", JOptionPane.INFORMATION_MESSAGE)
-        }
-    }
-
-    inner class RevealRegionAction : AbstractAction("Reveal Current Region") {
-
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_R)
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            val game = gameRef
-            if (game != null) {
-                game.getAutoLockingGame().revealCurrentRegion()
-                regionView.repaint()
-            }
-        }
+        JOptionPane.showMessageDialog(
+                frame, message,
+                "About Wanhack", JOptionPane.INFORMATION_MESSAGE)
     }
 
     class ShowLogFrameAction(val frame: LogFrame) : AbstractAction("Log") {
@@ -414,7 +355,7 @@ class Main(val wizardMode: Boolean) {
         val menuItem = JCheckBoxMenuItem(this);
 
         {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_L);
+            putValue(MNEMONIC_KEY, VK_L);
             frame.addWindowListener(object : WindowAdapter() {
                 public override fun windowClosing(e: WindowEvent) {
                     menuItem.setSelected(false);
@@ -425,39 +366,6 @@ class Main(val wizardMode: Boolean) {
         public override fun actionPerformed(e: ActionEvent) {
             val newState = !frame.isVisible()
             frame.setVisible(newState)
-            menuItem.setSelected(newState)
-        }
-    }
-
-    inner class ShowScriptingFrameAction : AbstractAction("Scripting Console") {
-        var scriptFrame: ScriptFrame? = null
-        val menuItem = JCheckBoxMenuItem(this);
-
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_S);
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            if (scriptFrame == null) {
-                val oldCursor = frame.getCursor()
-                frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR))
-                try {
-                    scriptFrame = ScriptFrame()
-                } finally {
-                    frame.setCursor(oldCursor)
-                }
-
-                scriptFrame!!.addWindowListener(object : WindowAdapter() {
-                    public override fun windowClosing(e: WindowEvent) {
-                        menuItem.setSelected(false);
-                    }
-                })
-            }
-
-            scriptFrame!!.setGame(gameRef!!.getAutoLockingGame())
-
-            val newState = !scriptFrame!!.isVisible()
-            scriptFrame!!.setVisible(newState)
             menuItem.setSelected(newState)
         }
     }

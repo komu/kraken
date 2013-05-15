@@ -35,11 +35,11 @@ class HighScoreService {
             val params = ParameterSet()
             val player = game.player
             params.add("name", player.name)
-            params.add("score", game.getScore())
+            params.add("score", game.score)
             params.add("killed_by", killer)
             params.add("level", player.level)
             params.add("max_hitpoints", player.maximumHitPoints)
-            params.add("dungeon_level", game.getDungeonLevel())
+            params.add("dungeon_level", game.dungeonLevel)
             params.add("max_dungeon_level", game.maxDungeonLevel)
             params.add("client_version", Version.fullVersion)
             params
