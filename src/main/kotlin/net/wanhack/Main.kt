@@ -34,9 +34,6 @@ import net.wanhack.service.ServiceProvider
 import net.wanhack.model.DefaultGameRef
 import net.wanhack.ui.game.RegionView
 import org.apache.commons.logging.LogFactory
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileFilter
-import java.io.File
 import net.wanhack.ui.game.action.GameActionSet
 import javax.swing.JSplitPane
 import java.awt.BorderLayout
@@ -44,7 +41,6 @@ import javax.swing.JPanel
 import javax.swing.WindowConstants
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.security.AccessControlException
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import java.awt.event.KeyEvent
@@ -56,11 +52,7 @@ import javax.swing.JCheckBoxMenuItem
 import java.awt.Cursor
 import net.wanhack.model.common.Direction
 import javax.swing.KeyStroke
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
 import net.wanhack.model.Game
-import java.io.ObjectInputStream
-import java.io.FileInputStream
 import javax.swing.SwingUtilities
 import net.wanhack.ui.game.StartGameDialog
 
@@ -76,7 +68,6 @@ class Main(val wizardMode: Boolean) {
     private val regionView = RegionView()
     private val log = LogFactory.getLog(javaClass<Main>())!!
     private var logFrame: LogFrame? = null
-    private var fileChooser: JFileChooser? = null
     private val gameActions = GameActionSet();
 
     {
@@ -87,22 +78,6 @@ class Main(val wizardMode: Boolean) {
         objectFactory.parse("/items/weapons.xml", javaClass<Item>(), "item")
         objectFactory.parse("/creatures/creatures.xml", javaClass<Creature>(), "creature")
         this.regionLoader = RegionLoader(objectFactory)
-
-        try {
-            val chooser = JFileChooser()
-            // Initialize the load/save dialog
-
-            chooser.setAcceptAllFileFilterUsed(false)
-            chooser.setFileFilter(object : FileFilter() {
-                override fun accept(f: File?) = f!!.isDirectory() || f.getName().endsWith(".wh")
-                override fun getDescription() = "Wanhack game files"
-            });
-
-            fileChooser = chooser
-
-        } catch (e: AccessControlException) {
-            // We're inside WebStart and have no permission for JFileChooser
-        }
 
         ServiceProvider.console = consoleView
         ServiceProvider.objectFactory = objectFactory
@@ -161,10 +136,7 @@ class Main(val wizardMode: Boolean) {
         val gameMenu = JMenu("Game")
         gameMenu.setMnemonic('g')
         gameMenu.add(NewGameAction())
-        if (fileChooser != null) {
-            gameMenu.add(LoadGameAction())
-            gameMenu.add(SaveGameAction())
-        }
+
         gameMenu.addSeparator()
         gameMenu.add(ExitAction())
         menuBar.add(gameMenu)
@@ -334,67 +306,6 @@ class Main(val wizardMode: Boolean) {
         SwingUtilities.invokeLater(Runnable {
             Thread.currentThread().setUncaughtExceptionHandler(eh)
         });
-    }
-
-    inner class SaveGameAction : AbstractAction("Save...") {
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_S)
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"))
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            try {
-                val status = fileChooser!!.showSaveDialog(frame)
-                if (status == JFileChooser.APPROVE_OPTION) {
-                    val file = fileChooser!!.getSelectedFile()!!
-                    val out = FileOutputStream(file)
-                    try {
-                        val oos = ObjectOutputStream(out)
-                        gameRef!!.getAutoLockingGame().save(oos)
-                        oos.flush();
-                    } finally {
-                        out.close();
-                    }
-
-                    // If game was saved successfully, quit it
-                    setGame(null);
-                }
-
-            } catch (ex: Exception) {
-                ErrorDialog.show(frame, "Saving failed", ex);
-            }
-        }
-    }
-
-    inner class LoadGameAction : AbstractAction("Load...") {
-
-        {
-            putValue(MNEMONIC_KEY, KeyEvent.VK_L);
-        }
-
-
-        public override fun actionPerformed(e: ActionEvent) {
-            try {
-                val status = fileChooser!!.showOpenDialog(frame)
-                if (status == JFileChooser.APPROVE_OPTION) {
-                    val file = fileChooser!!.getSelectedFile()!!
-                    val inp = FileInputStream(file)
-                    try {
-                        val ois = ObjectInputStream(inp)
-                        consoleView.clear();
-                        setGame(ois.readObject() as Game);
-
-                    } finally {
-                        inp.close();
-                    }
-
-                    // if file was loaded successfully, delete the file
-                    file.delete();
-                }
-            } catch (ex: Exception) {
-                ErrorDialog.show(frame, "Loading failed", ex);
-            }
-        }
     }
 
     inner class MovePlayerAction(val direction: Direction, val run: Boolean) : AbstractAction() {
