@@ -20,7 +20,7 @@ import net.wanhack.model.item.Item
 
 trait Console {
     fun message(message: String)
-    fun ask(question: String, vararg args: Any?): Boolean
+    fun ask(question: String): Boolean
     fun selectItem<T: Item>(itemType: Class<T>, message: String, items: Collection<T>): T?
     fun selectItems(message: String, items: Collection<Item>): Set<Item>
     fun selectDirection(): Direction?

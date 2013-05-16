@@ -516,7 +516,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         val target = player.cell.getJumpTarget(up)
         if (target != null) {
             if (target.isExit) {
-                if (console.ask("Really escape from the dungeon?")) {
+                if (ask("Really escape from the dungeon?")) {
                     gameOver("Escaped the dungeon.")
                     return
                 }
@@ -644,7 +644,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     }
 
     fun ask(question: String, vararg args: Any?): Boolean =
-        console.ask(question, *args)
+        console.ask(question.format(*args))
 
     val console: Console 
         get() = LockSafeConsole(ServiceProvider.console, selfRef)

@@ -25,8 +25,8 @@ class LockSafeConsole(val console: Console, val gameRef: GameRef): Console {
         console.message(message)
     }
 
-    override fun ask(question: String, vararg args: Any?) =
-        gameRef.withoutLock { console.ask(question, *args) }
+    override fun ask(question: String) =
+        gameRef.withoutLock { console.ask(question) }
 
     override fun selectDirection() =
         gameRef.withoutLock { console.selectDirection() }

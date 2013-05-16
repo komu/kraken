@@ -44,11 +44,8 @@ class ConsoleView : JComponent(), Console {
     val frame: Frame
         get() = JOptionPane.getFrameForComponent(this)!!
 
-    override fun ask(question: String, args: Array<Any?>): Boolean {
-        val question2 = question.format(*args)
-        val result  = JOptionPane.showConfirmDialog(frame, question2, "Question", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)
-        return result == JOptionPane.YES_OPTION
-    }
+    override fun ask(question: String) =
+        JOptionPane.showConfirmDialog(frame, question, "Question", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION
 
     fun scrollUp() {
         currentRow = Math.max(0, currentRow - 1)
