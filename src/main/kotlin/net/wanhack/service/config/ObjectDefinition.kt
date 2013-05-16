@@ -24,7 +24,7 @@ import net.wanhack.utils.ColorFactory
 import net.wanhack.utils.exp.Expression
 import org.apache.commons.beanutils.BeanUtils
 import org.apache.commons.beanutils.PropertyUtils
-import org.apache.commons.logging.LogFactory
+import net.wanhack.utils.logger
 
 class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val objectFactory: ObjectFactory) {
     val attributes = HashMap<String, Any>()
@@ -45,7 +45,7 @@ class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val ob
 
     var maximumInstances = Integer.MAX_VALUE
     var createdInstances = 0
-    private val log = LogFactory.getLog(javaClass)
+    private val log = javaClass.logger()
 
     fun swarmSize(): Int =
         swarmSize.evaluate()
@@ -89,7 +89,7 @@ class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val ob
         try {
             val propertyType = PropertyUtils.getPropertyType(obj, name)
             if (propertyType == null) {
-                log.error("invalid property <$name> for <$obj>")
+                log.severe("invalid property <$name> for <$obj>")
                 return
             }
 

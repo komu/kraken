@@ -40,10 +40,9 @@ import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
 import net.wanhack.service.ServiceProvider
 import net.wanhack.utils.RandomUtils
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
 import net.wanhack.utils.isFriday
 import net.wanhack.utils.isFestivus
+import net.wanhack.utils.logger
 
 class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     private val globalClock = Clock()
@@ -421,7 +420,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
             cell.enter(player)
             tick()
         } else {
-            log.trace("Can't move towards: " + direction)
+            log.finer("Can't move towards: $direction")
         }
     }
 
@@ -522,12 +521,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
                 }
 
             } else {
-                log.debug("Found portal to target $target")
+                log.fine("Found portal to target $target")
                 enterRegion(target.region, target.location)
                 tick()
             }
         } else {
-            log.debug("No matching portal at current location")
+            log.fine("No matching portal at current location")
         }
     }
 
@@ -605,16 +604,15 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         val targetLuck = target.luck
         val roll = 1 + attackerLuck + hitBonus + weaponToHit + proficiency + armorClass - targetLuck
 
-        if (log.isDebugEnabled())
-            log.debug("hit roll: $roll = 1 + %d + %d + %d + %d + %d - %d".format(attackerLuck, hitBonus, weaponToHit, proficiency, armorClass, targetLuck))
+        log.fine("hit roll: $roll = 1 + %d + %d + %d + %d + %d - %d".format(attackerLuck, hitBonus, weaponToHit, proficiency, armorClass, targetLuck))
 
         return roll
     }
 
     private fun assignDamage(attacker: Creature, weapon: Attack, target: Creature) {
         val damage = weapon.getDamage(target)
-        if (log.isDebugEnabled())
-            log.debug("rolled $damage hp damage from $weapon")
+
+        log.fine("rolled $damage hp damage from $weapon")
 
         target.takeDamage(damage, attacker)
         if (target.hitPoints <= 0) {
@@ -664,6 +662,6 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         get() = globalClock.time
 
     class object {
-        private val log: Log = LogFactory.getLog(javaClass<Game>())
+        private val log = javaClass<Game>().logger()
     }
 }

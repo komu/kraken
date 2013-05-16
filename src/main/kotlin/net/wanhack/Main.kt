@@ -22,7 +22,6 @@ import java.awt.event.KeyEvent.*
 import javax.swing.*
 import javax.swing.Action.*
 import kotlin.swing.*
-import org.apache.commons.logging.LogFactory
 import net.wanhack.common.Version
 import net.wanhack.model.common.Direction
 import net.wanhack.model.Game
@@ -39,6 +38,8 @@ import net.wanhack.ui.game.StatisticsView
 import net.wanhack.ui.game.StartGameDialog
 import net.wanhack.utils.SystemAccess
 import net.wanhack.model.GameRef
+import net.wanhack.utils.logger
+import java.util.logging.Level
 
 class Main(val wizardMode: Boolean) {
 
@@ -50,16 +51,16 @@ class Main(val wizardMode: Boolean) {
     private val regionLoader = RegionLoader(objectFactory)
     private var gameRef: GameRef? = null
     private val regionView = RegionView()
-    private val log = LogFactory.getLog(javaClass<Main>())
+    private val log = javaClass<Main>().logger()
     private val logFrame = if (wizardMode) LogFrame() else null
     private val gameActions = GameActionSet();
 
     {
         JOptionPane.setRootFrame(frame)
 
-        objectFactory.parse("/items/items.xml", "item")
-        objectFactory.parse("/items/weapons.xml", "item")
-        objectFactory.parse("/creatures/creatures.xml", "creature")
+        objectFactory.parse("/items/items.xml")
+        objectFactory.parse("/items/weapons.xml")
+        objectFactory.parse("/creatures/creatures.xml")
 
         ServiceProvider.console = consoleView
         ServiceProvider.objectFactory = objectFactory
@@ -151,7 +152,7 @@ class Main(val wizardMode: Boolean) {
         }
 
     fun initializeInputMap() {
-        log.debug("Initializing input map")
+        log.fine("Initializing input map")
 
         // Movement with numlock off
 
@@ -198,7 +199,7 @@ class Main(val wizardMode: Boolean) {
     }
 
     fun initializeActionMap() {
-        log.debug("Initializing action map");
+        log.fine("Initializing action map");
 
         val actionMap = regionView.getActionMap()!!
 
@@ -218,7 +219,7 @@ class Main(val wizardMode: Boolean) {
     }
 
     fun startNewGame() {
-        log.debug("starting new game")
+        log.fine("starting new game")
 
         val dialog = StartGameDialog(frame);
         val config = dialog.showDialog();
@@ -231,7 +232,7 @@ class Main(val wizardMode: Boolean) {
                 gameRef!!.scheduleAction { it.start() }
 
             } catch (e: Exception) {
-                log.error("Failed to start new game", e);
+                log.log(Level.SEVERE, "Failed to start new game", e);
                 JOptionPane.showMessageDialog(
                         frame, e, "Failed to start new game", JOptionPane.ERROR_MESSAGE);
             }
@@ -273,13 +274,13 @@ class Main(val wizardMode: Boolean) {
     fun initUncaughtExceptionHandler() {
         setAWTUncaughtExceptionHandler(object : Thread.UncaughtExceptionHandler {
             override fun uncaughtException(t: Thread, e: Throwable) {
-                log.error("Uncaught exception", e);
+                log.log(Level.SEVERE, "Uncaught exception", e)
 
-                ErrorDialog.show(frame, "Unexpected Error", e);
+                ErrorDialog.show(frame, "Unexpected Error", e)
 
                 // The thread is about to die, set this same handler
                 // for the newly created AWT event handler thread.
-                setAWTUncaughtExceptionHandler(this);
+                setAWTUncaughtExceptionHandler(this)
             }
         });
     }

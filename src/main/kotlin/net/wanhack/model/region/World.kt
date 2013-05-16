@@ -31,7 +31,7 @@ import net.wanhack.service.region.generators.MazeRegionGenerator
 import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator
 import net.wanhack.utils.Probability
-import org.apache.commons.logging.LogFactory
+import net.wanhack.utils.logger
 
 class World(val game: Game) {
     private val loadedRegions = HashMap<String, Region>()
@@ -198,7 +198,7 @@ class World(val game: Game) {
     private fun getObjectFactory(): ObjectFactory = ServiceProvider.objectFactory
 
     class object {
-        private val log = LogFactory.getLog(javaClass<World>())
+        private val log = javaClass<World>().logger()
 
         private class DefProbability(val def: ObjectDefinition, val probability: Int, val level: Int?)
     }

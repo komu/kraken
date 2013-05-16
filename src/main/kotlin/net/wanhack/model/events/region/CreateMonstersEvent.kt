@@ -25,7 +25,7 @@ import net.wanhack.model.region.Cell
 import net.wanhack.model.region.CellSet
 import net.wanhack.model.region.Region
 import net.wanhack.service.creature.CreatureService
-import org.apache.commons.logging.LogFactory
+import net.wanhack.utils.logger
 
 class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
 
@@ -35,14 +35,14 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
         val creatureService = CreatureService.instance
         val player = game.player
         val creatures = creatureService.randomSwarm(region.level, player.level)
-        log.debug("Created new random creatures: " + creatures)
+        log.fine("Created new random creatures: " + creatures)
 
         for (creature in creatures) {
             val target = getTargetCell(player, creature)
             if (target != null)
                 game.addCreature(creature, target)
             else
-                log.warn("No empty cells available, creature not added.")
+                log.warning("No empty cells available, creature not added.")
         }
     }
 
@@ -64,6 +64,6 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
     }
 
     class object {
-        private val log = LogFactory.getLog(javaClass<CreateMonstersEvent>())
+        private val log = javaClass<CreateMonstersEvent>().logger()
     }
 }

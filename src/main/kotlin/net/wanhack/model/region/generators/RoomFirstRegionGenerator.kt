@@ -23,9 +23,9 @@ import net.wanhack.model.region.Door
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
 import net.wanhack.utils.Probability
-import org.apache.commons.logging.LogFactory
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator.RegionParameters
 import net.wanhack.utils.collections.randomElement
+import net.wanhack.utils.logger
 
 class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
     private val region = Region(world, name, level, rp.width, rp.height)
@@ -34,7 +34,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     private val hiddenDoorProbability = Probability(15)
     private val overlapTries: Int = 20
     private val random = Random()
-    private val log = LogFactory.getLog(javaClass)
+    private val log = javaClass.logger()
 
     fun generate(): Region {
         val rooms = createRooms()
@@ -109,7 +109,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
                 connect(room1, room2)
 
             if (count > 1000) {
-                log.warn("Count exceeded, bailing out.")
+                log.warning("Count exceeded, bailing out.")
                 break
             }
             count++

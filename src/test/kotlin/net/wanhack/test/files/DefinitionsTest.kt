@@ -25,9 +25,9 @@ class DefinitionsTest() {
 
     test fun loadDefinitions() {
         val obj = ObjectFactory()
-        obj.parse("/items/items.xml", "item")
-        obj.parse("/items/weapons.xml", "item")
-        obj.parse("/creatures/creatures.xml", "creature")
+        obj.parse("/items/items.xml")
+        obj.parse("/items/weapons.xml")
+        obj.parse("/creatures/creatures.xml")
 
         for (def in obj.getAvailableDefinitionsForClass(javaClass<Creature>()))
             def.createObject()

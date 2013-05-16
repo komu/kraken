@@ -28,13 +28,13 @@ import java.util.HashMap
 class ObjectFactory {
     private val definitions = HashMap<String, ObjectDefinition>()
 
-    fun parse(definitionFile: String, element: String): Unit {
+    fun parse(definitionFile: String): Unit {
         open(definitionFile).use { inputStream ->
             val parserFactory = SAXParserFactory.newInstance()!!
             parserFactory.setNamespaceAware(true)
 
             val parser = parserFactory.newSAXParser()!!
-            parser.parse(inputStream, MySAXHandler(element))
+            parser.parse(inputStream, MySAXHandler())
         }
     }
 
@@ -52,22 +52,22 @@ class ObjectFactory {
 
     fun toString() = definitions.toString()
 
-    private inner class MySAXHandler(val element: String): DefaultHandler() {
+    private inner class MySAXHandler: DefaultHandler() {
 
         private var definition: ObjectDefinition? = null
 
         override fun startElement(uri: String?, localName: String?, qName: String, attributes: Attributes?) {
             when (localName) {
-                element          -> startDefinition(attributes!!)
-                "attributes"     -> startAttributes(attributes!!)
-                "natural-weapon" -> startNaturalWeapon(attributes!!)
-                "definitions"    -> { }
-                else             -> throw SAXException("Unknown tag: $localName")
+                "creature", "item" -> startDefinition(attributes!!)
+                "attributes"       -> startAttributes(attributes!!)
+                "natural-weapon"   -> startNaturalWeapon(attributes!!)
+                "definitions"      -> { }
+                else               -> throw SAXException("Unknown tag: $localName")
             }
         }
 
         override fun endElement(uri: String?, localName: String?, qName: String) {
-            if (localName == element)
+            if (localName == "creature" || localName == "item")
                 endDefinition()
         }
 

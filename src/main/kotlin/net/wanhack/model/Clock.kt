@@ -18,7 +18,8 @@ package net.wanhack.model
 
 import java.util.PriorityQueue
 import net.wanhack.model.common.Actor
-import org.apache.commons.logging.LogFactory
+import net.wanhack.utils.logger
+import java.util.logging.Level
 
 class Clock {
     var time = 0
@@ -26,8 +27,8 @@ class Clock {
     private val actors = PriorityQueue<ActorInfo>()
 
     fun tick(ticks: Int, game: Game) {
-        if (log.isTraceEnabled())
-            log.trace("ticking the clock for $ticks ticks")
+        if (log.isLoggable(Level.FINER))
+            log.finer("ticking the clock for $ticks ticks")
 
         tick(game, time + ticks)
     }
@@ -58,7 +59,7 @@ class Clock {
         "Clock [time=$time, objects=$actors]"
 
     class object {
-        private val log = LogFactory.getLog(javaClass<Clock>())
+        private val log = javaClass<Clock>().logger()
 
         private class ActorInfo(private val actor: Actor, var nextTick: Int): Comparable<ActorInfo> {
 

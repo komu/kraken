@@ -17,11 +17,10 @@
 package net.wanhack.utils
 
 import java.awt.Color
-import org.apache.commons.logging.LogFactory
 
 object ColorFactory {
 
-    private val log = LogFactory.getLog(javaClass)
+    private val log = javaClass.logger()
 
     private val colorMap = mapOf(
         "black"         to Color.BLACK,
@@ -52,7 +51,7 @@ object ColorFactory {
 
     fun getColor(exp: String): Color =
         colorMap.getOrElse(exp) {
-            log.error("unknown color: <$exp>")
+            log.warning("unknown color: <$exp>")
             Color.BLACK
         }
 }

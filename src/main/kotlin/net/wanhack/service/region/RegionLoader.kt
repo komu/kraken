@@ -23,10 +23,10 @@ import net.wanhack.model.region.Region
 import net.wanhack.model.region.RegionInfo
 import net.wanhack.model.region.World
 import net.wanhack.service.config.ObjectFactory
-import org.apache.commons.logging.LogFactory
 import java.io.*
 import java.util.ArrayList
 import java.util.HashMap
+import net.wanhack.utils.logger
 
 class RegionLoader(val objectFactory: ObjectFactory) {
 
@@ -82,12 +82,12 @@ class RegionLoader(val objectFactory: ObjectFactory) {
                             '<'  -> region.getCell(x, y).setType(CellType.STAIRS_UP)
                             '>'  -> region.getCell(x, y).setType(CellType.STAIRS_DOWN)
                             ' '  -> { }
-                            else -> log.error("unknown tile: ${line[x]}")
+                            else -> log.severe("unknown tile: ${line[x]}")
                         }
                     }
                     y++
                 } else {
-                    log.error("invalid line: <$line>")
+                    log.severe("invalid line: <$line>")
                 }
             }
             return region
@@ -154,7 +154,7 @@ class RegionLoader(val objectFactory: ObjectFactory) {
             return
         }
 
-        log.error("Invalid directive: $line")
+        log.severe("Invalid directive: $line")
     }
 
     private fun openReader(path: String): BufferedReader =
@@ -167,7 +167,7 @@ class RegionLoader(val objectFactory: ObjectFactory) {
         private val DOWN_PATTERN = DirectivePattern(":portal down [int],[int] [str] [str]")
         private val UP_PATTERN = DirectivePattern(":portal up [int],[int] [str] [str]")
         private val LIGHT_PATTERN = DirectivePattern(":light [int],[int] [int]")
-        private val log = LogFactory.getLog(javaClass<RegionLoader>())
+        private val log = javaClass<RegionLoader>().logger()
 
         private fun getRegion(name: String, aliases: Map<String, String>): String =
             aliases[name] ?: name

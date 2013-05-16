@@ -18,16 +18,17 @@ package net.wanhack.service.score
 
 import net.wanhack.common.Version
 import net.wanhack.model.GameRef
-import org.apache.commons.logging.LogFactory
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 import java.security.AccessControlException
 import java.util.concurrent.Executors
+import net.wanhack.utils.logger
+import java.util.logging.Level
 
 class HighScoreService {
-    private val log = LogFactory.getLog(javaClass)
+    private val log = javaClass.logger()
     private val highScoreExecutor = Executors.newSingleThreadExecutor()
 
     fun saveGameScore(gameRef: GameRef, killer: String) {
@@ -51,7 +52,7 @@ class HighScoreService {
     }
 
     private fun saveGameScoreImpl(parameters: ParameterSet) {
-        log.debug("Saving high-score for game.")
+        log.fine("Saving high-score for game.")
         try {
             val url = URL("http://wanhack.net/submit-score")
             val conn = url.openConnection() as HttpURLConnection
@@ -65,13 +66,13 @@ class HighScoreService {
                 out.writer("ISO-8859-1").write(parameters.toString())
             }
 
-            log.debug("response: " + conn.getResponseMessage())
+            log.fine("response: " + conn.getResponseMessage())
             conn.disconnect()
 
         } catch (e: IOException) {
-            log.error("Saving high-scores failed", e)
+            log.log(Level.SEVERE, "Saving high-scores failed", e)
         } catch (e: AccessControlException) {
-            log.debug("Saving high-scores failed", e)
+            log.log(Level.FINE, "Saving high-scores failed", e)
         }
     }
 
