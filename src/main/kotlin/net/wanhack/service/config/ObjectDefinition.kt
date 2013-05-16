@@ -22,9 +22,8 @@ import net.wanhack.model.item.Item
 import net.wanhack.model.item.weapon.Weapon
 import net.wanhack.utils.ColorFactory
 import net.wanhack.utils.exp.Expression
-import org.apache.commons.beanutils.BeanUtils
-import org.apache.commons.beanutils.PropertyUtils
 import net.wanhack.utils.logger
+import net.wanhack.utils.PropertyUtils
 
 class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val objectFactory: ObjectFactory) {
     val attributes = HashMap<String, Any>()
@@ -87,13 +86,13 @@ class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val ob
 
     private fun setProperty(obj: Any, name: String, value: Any) {
         try {
-            val propertyType = PropertyUtils.getPropertyType(obj, name)
+            val propertyType = PropertyUtils.getSettablePropertyType(obj, name)
             if (propertyType == null) {
                 log.severe("invalid property <$name> for <$obj>")
                 return
             }
 
-            BeanUtils.setProperty(obj, name, evaluateValue(propertyType, value))
+            PropertyUtils.setProperty(obj, name, evaluateValue(propertyType, value))
         } catch (e: ConfigurationException) {
             throw e
         } catch (e: Exception) {
@@ -113,6 +112,8 @@ class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val ob
             propertyType == javaClass<Int?>()       -> Expression.evaluate(exp)
             propertyType == javaClass<Boolean>(),
             propertyType == javaClass<Boolean?>()   -> "true".equalsIgnoreCase(exp)
+            propertyType == javaClass<Char>(),
+            propertyType == javaClass<Char?>()      -> exp[0]
             propertyType == javaClass<Color>()      -> ColorFactory.getColor(exp)
             propertyType == javaClass<Weapon>()     -> objectFactory.create(javaClass<Weapon>(), exp)
             propertyType == javaClass<Item>()       -> objectFactory.create(javaClass<Item>(), exp)
