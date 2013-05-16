@@ -16,8 +16,44 @@
 
 package net.wanhack.model
 
-trait GameRef {
-    fun scheduleAction(callback: (IGame) -> Unit)
-    fun executeQuery<T>(callback: (IGame) -> T): T
-    fun getAutoLockingGame(): IGame
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.concurrent.Executors
+import kotlin.concurrent.withLock
+
+class GameRef(private val game: Game) {
+
+    private val gameExecutor = Executors.newSingleThreadExecutor()
+    private val lock = ReentrantReadWriteLock(true)
+
+    fun scheduleAction(callback: (Game) -> Unit) {
+        gameExecutor.execute(Runnable() {
+            lock.writeLock().withLock {
+                callback(game)
+            }
+        })
+    }
+
+    fun executeQuery<T>(callback: (Game) -> T): T =
+        lock.readLock().withLock {
+            callback(game)
+        }
+
+    fun withoutLock<T>(callback: () -> T): T =
+        try {
+            lock.writeLock().unlock()
+            callback()
+        } finally {
+            lock.writeLock().lock()
+        }
+
+    fun yieldWriteLock()  {
+        if (lock.isWriteLockedByCurrentThread()) {
+            lock.writeLock().unlock()
+            lock.writeLock().lock()
+        }
+    }
+
+    fun assertWriteLockedByCurrentThread() {
+        assert(lock.isWriteLockedByCurrentThread()) { "Write lock not held by current thread: ${Thread.currentThread().getName()}" }
+    }
 }

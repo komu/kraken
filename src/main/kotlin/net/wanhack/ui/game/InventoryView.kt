@@ -31,8 +31,8 @@ import javax.swing.JPopupMenu
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 import net.wanhack.model.GameRef
-import net.wanhack.model.IGame
 import net.wanhack.ui.game.action.DropItemAction
+import net.wanhack.model.Game
 
 class InventoryView : JPanel(BorderLayout()) {
     private val list = JList<ItemInfo>()
@@ -50,7 +50,7 @@ class InventoryView : JPanel(BorderLayout()) {
         add(scrollPane, BorderLayout.CENTER)
     }
 
-    fun update(game: IGame?) {
+    fun update(game: Game?) {
         if (game == null) return
 
         val player = game.player

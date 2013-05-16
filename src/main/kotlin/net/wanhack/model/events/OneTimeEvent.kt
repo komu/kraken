@@ -17,7 +17,6 @@
 package net.wanhack.model.events
 
 import net.wanhack.model.Game
-import net.wanhack.model.IGame
 
 abstract class OneTimeEvent(rate: Int): GameEvent(rate) {
 
@@ -27,5 +26,5 @@ abstract class OneTimeEvent(rate: Int): GameEvent(rate) {
         return 0
     }
 
-    protected abstract fun fire(game: IGame)
+    protected abstract fun fire(game: Game)
 }

@@ -18,16 +18,12 @@ package net.wanhack.ui.game.action
 
 import java.awt.event.ActionEvent
 import net.wanhack.model.GameRef
-import net.wanhack.model.IGame
 import net.wanhack.model.item.Item
+import net.wanhack.model.Game
 
-class DropItemAction(game: GameRef?, val item: Item): GameAction("Drop") {
+class DropItemAction(game: GameRef?, val item: Item): GameAction("Drop", game) {
 
-    {
-        gameRef = game
-    }
-
-    override fun actionPerformed(e: ActionEvent, game: IGame) {
+    override fun actionPerformed(e: ActionEvent, game: Game) {
         game.drop(item)
     }
 }

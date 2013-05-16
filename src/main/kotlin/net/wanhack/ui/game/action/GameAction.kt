@@ -19,11 +19,11 @@ package net.wanhack.ui.game.action
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import net.wanhack.model.GameRef
-import net.wanhack.model.IGame
+import net.wanhack.model.Game
 
-abstract class GameAction(name: String): AbstractAction(name) {
+abstract class GameAction(name: String, gameRef: GameRef? = null): AbstractAction(name) {
 
-    var gameRef: GameRef? = null
+    var gameRef: GameRef? = gameRef
         set(gameRef: GameRef?) {
             $gameRef = gameRef
             setEnabled(gameRef != null)
@@ -39,5 +39,5 @@ abstract class GameAction(name: String): AbstractAction(name) {
         }
     }
 
-    protected abstract fun actionPerformed(e: ActionEvent, game: IGame)
+    protected abstract fun actionPerformed(e: ActionEvent, game: Game)
 }

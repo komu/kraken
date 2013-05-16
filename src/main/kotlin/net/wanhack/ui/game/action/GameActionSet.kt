@@ -22,7 +22,7 @@ import java.util.ArrayList
 import javax.swing.KeyStroke
 import javax.swing.Action
 import net.wanhack.model.GameRef
-import net.wanhack.model.IGame
+import net.wanhack.model.Game
 
 class GameActionSet {
 
@@ -50,14 +50,14 @@ class GameActionSet {
         add("Search", VK_S, "S")            { it.search() }
     }
 
-    fun add(name: String, mnemonic: Int, accelerator: String, action: (IGame) -> Unit) {
+    fun add(name: String, mnemonic: Int, accelerator: String, action: (Game) -> Unit) {
         actions.add(object : GameAction(name) {
             {
                 putValue(Action.MNEMONIC_KEY, mnemonic)
                 putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator))
             }
 
-            override fun actionPerformed(e: ActionEvent, game: IGame) {
+            override fun actionPerformed(e: ActionEvent, game: Game) {
                 action(game)
             }
         })

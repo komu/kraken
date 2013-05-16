@@ -17,48 +17,23 @@
 package net.wanhack.model
 
 import net.wanhack.model.common.Console
-import net.wanhack.model.common.Direction
 import net.wanhack.model.item.Item
 
-class LockSafeConsole(private val console: Console, private val gameRef: DefaultGameRef): Console {
+class LockSafeConsole(val console: Console, val gameRef: GameRef): Console {
 
     override fun message(message: String) {
         console.message(message)
     }
 
-    override fun ask(question: String, vararg args: Any?): Boolean {
-        gameRef.unlockWriteLock()
-        try {
-            return console.ask(question, *args)
-        } finally {
-            gameRef.lockWriteLock()
-        }
-    }
+    override fun ask(question: String, vararg args: Any?) =
+        gameRef.withoutLock { console.ask(question, *args) }
 
-    override fun selectDirection(): Direction? {
-        gameRef.unlockWriteLock()
-        try {
-            return console.selectDirection()
-        } finally {
-            gameRef.lockWriteLock()
-        }
-    }
+    override fun selectDirection() =
+        gameRef.withoutLock { console.selectDirection() }
 
-    override fun <T: Item> selectItem(itemType: Class<T>, message: String, items: Collection<T>): T? {
-        gameRef.unlockWriteLock()
-        try {
-            return console.selectItem(itemType, message, items)
-        } finally {
-            gameRef.lockWriteLock()
-        }
-    }
+    override fun <T: Item> selectItem(itemType: Class<T>, message: String, items: Collection<T>) =
+        gameRef.withoutLock { console.selectItem(itemType, message, items) }
 
-    override fun selectItems(message: String, items: Collection<Item>): Set<Item> {
-        gameRef.unlockWriteLock()
-        try {
-            return console.selectItems(message, items)
-        } finally {
-            gameRef.lockWriteLock()
-        }
-    }
+    override fun selectItems(message: String, items: Collection<Item>) =
+        gameRef.withoutLock { console.selectItems(message, items) }
 }

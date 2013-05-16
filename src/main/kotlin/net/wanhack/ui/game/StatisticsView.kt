@@ -24,9 +24,9 @@ import java.awt.Graphics
 import java.awt.Graphics2D
 import java.util.ArrayList
 import javax.swing.JComponent
-import net.wanhack.model.IGame
 import net.wanhack.model.creature.HungerLevel
 import net.wanhack.model.creature.Player
+import net.wanhack.model.Game
 
 class StatisticsView: JComponent() {
 
@@ -67,13 +67,13 @@ class StatisticsView: JComponent() {
         }
     }
 
-    fun updateStatistics(game: IGame?) {
+    fun updateStatistics(game: Game?) {
         line1 = getStatsLine1(game)
         line2 = getStatsLine2(game)
         repaint()
     }
 
-    private fun getStatsLine1(game: IGame?): Line? {
+    private fun getStatsLine1(game: Game?): Line? {
         if (game == null)
             return null
 
@@ -83,7 +83,7 @@ class StatisticsView: JComponent() {
         return line
     }
 
-    private fun getStatsLine2(game: IGame?): Line? {
+    private fun getStatsLine2(game: Game?): Line? {
         if (game == null)
             return null
 

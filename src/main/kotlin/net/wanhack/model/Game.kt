@@ -16,8 +16,6 @@
 
 package net.wanhack.model
 
-import java.io.ObjectOutputStream
-import java.io.Serializable
 import java.util.Calendar
 import net.wanhack.model.GameConfiguration.PetType
 import net.wanhack.model.common.Attack
@@ -47,25 +45,25 @@ import org.apache.commons.logging.LogFactory
 import net.wanhack.utils.isFriday
 import net.wanhack.utils.isFestivus
 
-class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable, IGame {
+class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     private val globalClock = Clock()
     private val regionClock = Clock()
-    override val player = Player(config.name)
+    val player = Player(config.name)
     private val world = World(this)
-    override var maxDungeonLevel = 0
+    var maxDungeonLevel = 0
     private var over = false
-    var listener: (() -> Unit) = { }
-    val selfRef = DefaultGameRef(this);
+    val selfRef = GameRef(this)
+    var listener: (() -> Unit) = { };
 
     {
         player.sex = config.sex
     }
 
-    override fun revealCurrentRegion() {
+    fun revealCurrentRegion() {
         currentRegion.reveal()
     }
 
-    override fun start() {
+    fun start() {
         assertWriteLock()
 
         val objectFactory = ServiceProvider.objectFactory
@@ -119,28 +117,24 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    public fun addGlobalEvent(event: GameEvent) {
+    fun addGlobalEvent(event: GameEvent) {
         globalClock.schedule(event.rate, event)
     }
 
-    public fun addRegionEvent(event: GameEvent) {
+    fun addRegionEvent(event: GameEvent) {
         regionClock.schedule(event.rate, event)
     }
 
-    override val dungeonLevel: Int
+    val dungeonLevel: Int
         get() = currentRegion.level
 
-    override val cellInFocus: Cell
+    val cellInFocus: Cell
         get() = selectedCell ?: player.cell
 
-    override val selectedCell: Cell?
+    val selectedCell: Cell?
         get() = null
 
-    public override fun save(oos: ObjectOutputStream?): Unit {
-        oos?.writeObject(this)
-    }
-
-    public fun enterRegion(name: String, location: String) {
+    fun enterRegion(name: String, location: String) {
         val region = world.getRegion(player, name)
         val oldCell = player.cellOrNull
         val oldRegion = oldCell?.region
@@ -169,7 +163,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    public override fun talk(): Unit {
+    fun talk(): Unit {
         assertWriteLock()
         if (over)
             return
@@ -196,7 +190,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun openDoor() {
+    fun openDoor() {
         assertWriteLock()
         if (over)
             return
@@ -221,7 +215,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun closeDoor() {
+    fun closeDoor() {
         assertWriteLock()
         if (over)
             return
@@ -250,7 +244,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             tick()
     }
 
-    override fun pickup() {
+    fun pickup() {
         assertWriteLock()
         if (over)
             return
@@ -275,7 +269,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun wield() {
+    fun wield() {
         assertWriteLock()
         if (over)
             return
@@ -295,7 +289,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun wear() {
+    fun wear() {
         assertWriteLock()
         if (over)
             return
@@ -314,7 +308,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun drop() {
+    fun drop() {
         assertWriteLock()
         if (over)
             return
@@ -323,7 +317,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             drop(item)
     }
 
-    override fun drop(item: Item) {
+    fun drop(item: Item) {
         assertWriteLock()
         if (over)
             return
@@ -334,7 +328,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         tick()
     }
 
-    override fun eat() {
+    fun eat() {
         assertWriteLock()
         if (over)
             return
@@ -347,7 +341,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override fun search() {
+    fun search() {
         assertWriteLock()
         if (over)
             return
@@ -359,7 +353,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         tick()
     }
 
-    override fun fling() {
+    fun fling() {
         assertWriteLock()
         if (over)
             return
@@ -407,13 +401,13 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override val currentRegion: Region
+    val currentRegion: Region
         get() = player.region
 
-    override val score: Int
+    val score: Int
         get() = player.experience
 
-    override fun movePlayer(direction: Direction) {
+    fun movePlayer(direction: Direction) {
         assertWriteLock()
         if (over)
             return
@@ -431,7 +425,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    public override fun runTowards(direction: Direction) {
+    fun runTowards(direction: Direction) {
         assertWriteLock()
         if (over)
             return
@@ -514,7 +508,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    public override fun movePlayerVertically(up: Boolean) {
+    fun movePlayerVertically(up: Boolean) {
         assertWriteLock()
         if (over)
             return
@@ -536,14 +530,16 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             log.debug("No matching portal at current location")
         }
     }
-    public override fun skipTurn(): Unit {
+
+    fun skipTurn() {
         assertWriteLock()
         if (over)
             return
 
         tick()
     }
-    public override fun rest(maxTurns: Int): Unit {
+
+    fun rest(maxTurns: Int): Unit {
         assertWriteLock()
         if (over)
             return
@@ -575,7 +571,8 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
             tick()
         }
     }
-    public fun attack(attacker: Creature, target: Creature): Boolean {
+
+    fun attack(attacker: Creature, target: Creature): Boolean {
         assertWriteLock()
         if (!target.alive)
             return false
@@ -642,11 +639,11 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    public fun message(message: String, vararg args: Any?): Unit {
+    fun message(message: String, vararg args: Any?): Unit {
         console.message(message.format(*args))
     }
 
-    public fun ask(question: String, vararg args: Any?): Boolean =
+    fun ask(question: String, vararg args: Any?): Boolean =
         console.ask(question, *args)
 
     val console: Console 
@@ -663,7 +660,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean): Serializable
         }
     }
 
-    override val time: Int
+    val time: Int
         get() = globalClock.time
 
     class object {

@@ -25,7 +25,6 @@ import kotlin.swing.*
 import org.apache.commons.logging.LogFactory
 import net.wanhack.common.Version
 import net.wanhack.model.common.Direction
-import net.wanhack.model.DefaultGameRef
 import net.wanhack.model.Game
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.region.RegionLoader
@@ -39,6 +38,7 @@ import net.wanhack.ui.game.RegionView
 import net.wanhack.ui.game.StatisticsView
 import net.wanhack.ui.game.StartGameDialog
 import net.wanhack.utils.SystemAccess
+import net.wanhack.model.GameRef
 
 class Main(val wizardMode: Boolean) {
 
@@ -48,7 +48,7 @@ class Main(val wizardMode: Boolean) {
     private val statisticsView = StatisticsView()
     private val objectFactory = ObjectFactory()
     private val regionLoader = RegionLoader(objectFactory)
-    private var gameRef: DefaultGameRef? = null
+    private var gameRef: GameRef? = null
     private val regionView = RegionView()
     private val log = LogFactory.getLog(javaClass<Main>())
     private val logFrame = if (wizardMode) LogFrame() else null
@@ -134,7 +134,7 @@ class Main(val wizardMode: Boolean) {
                     mnemonic = VK_D
 
                     add(action("Reveal Current Region", mnemonic=VK_R) {
-                        gameRef?.getAutoLockingGame()?.revealCurrentRegion()
+                        gameRef?.scheduleAction { it.revealCurrentRegion() }
                         regionView.repaint()
                     })
 
@@ -228,7 +228,7 @@ class Main(val wizardMode: Boolean) {
                 val game = Game(config, wizardMode)
                 consoleView.clear();
                 setGame(game);
-                gameRef!!.getAutoLockingGame().start();
+                gameRef!!.scheduleAction { it.start() }
 
             } catch (e: Exception) {
                 log.error("Failed to start new game", e);
@@ -293,13 +293,11 @@ class Main(val wizardMode: Boolean) {
     inner class MovePlayerAction(val direction: Direction, val run: Boolean) : AbstractAction() {
 
         public override fun actionPerformed(e: ActionEvent) {
-            val game = gameRef?.getAutoLockingGame()
-            if (game != null) {
-                if (run) {
+            gameRef?.scheduleAction { game ->
+                if (run)
                     game.runTowards(direction);
-                } else {
+                else
                     game.movePlayer(direction);
-                }
             }
         }
     }
@@ -307,14 +305,14 @@ class Main(val wizardMode: Boolean) {
     inner class VerticalMoveAction(val up: Boolean) : AbstractAction() {
 
         public override fun actionPerformed(e: ActionEvent) {
-            gameRef?.getAutoLockingGame()?.movePlayerVertically(up);
+            gameRef?.scheduleAction { it.movePlayerVertically(up) }
         }
     }
 
     inner class SkipTurnAction : AbstractAction() {
 
         public override fun actionPerformed(e: ActionEvent) {
-            gameRef?.getAutoLockingGame()?.skipTurn()
+            gameRef?.scheduleAction { it.skipTurn() }
         }
     }
 

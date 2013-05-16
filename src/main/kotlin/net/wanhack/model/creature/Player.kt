@@ -17,7 +17,6 @@
 package net.wanhack.model.creature
 
 import net.wanhack.model.Game
-import net.wanhack.model.IGame
 import net.wanhack.model.common.Attack
 import net.wanhack.model.events.OneTimeEvent
 import net.wanhack.model.item.Item
@@ -140,7 +139,7 @@ class Player(name: String): Creature(name) {
             fainted = true
             val ticks = 100 * (5 + RandomUtils.rollDie(45))
             game.addGlobalEvent(object : OneTimeEvent(ticks) {
-                override fun fire(game: IGame) {
+                override fun fire(game: Game) {
                     if (fainted) {
                         message("You wake up.")
                         if (hunger <= 0)
