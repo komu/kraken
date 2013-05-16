@@ -38,6 +38,10 @@ class ObjectFactory {
         }
     }
 
+    fun addDefinition(definition: ObjectDefinition) {
+        definitions[definition.name] = definition
+    }
+
     private fun open(file: String) =
         javaClass.getResourceAsStream(file) ?: throw FileNotFoundException("classpath:$file")
 
@@ -54,86 +58,79 @@ class ObjectFactory {
 
     private inner class MySAXHandler: DefaultHandler() {
 
-        private var definition: ObjectDefinition? = null
+        private var currentDefinition: ObjectDefinition? = null
 
         override fun startElement(uri: String?, localName: String?, qName: String, attributes: Attributes?) {
+            attributes!!
             when (localName) {
-                "creature", "item" -> startDefinition(attributes!!)
-                "attributes"       -> startAttributes(attributes!!)
-                "natural-weapon"   -> startNaturalWeapon(attributes!!)
                 "definitions"      -> { }
+                "creature", "item" -> currentDefinition = startDefinition(attributes)
+                "attributes"       -> currentDefinition!!.addAttributes(attributes)
+                "natural-weapon"   -> currentDefinition!!.addNaturalWeapon(attributes)
                 else               -> throw SAXException("Unknown tag: $localName")
             }
         }
 
         override fun endElement(uri: String?, localName: String?, qName: String) {
-            if (localName == "creature" || localName == "item")
-                endDefinition()
+            if (localName == "creature" || localName == "item") {
+                addDefinition(currentDefinition!!)
+                currentDefinition = null
+            }
         }
 
-        private fun startDefinition(attributes: Attributes): Unit {
-            val name = attributes.getValue("name")!!
-            val className = attributes.getValue("class")
-            val parent = attributes.getValue("parent")
-            val isAbstract = attributes.getValue("abstract") == "true"
-            val probability = attributes.getValue("probability")
-            val level = attributes.getValue("level")
-            val maximumInstances  = attributes.getValue("maximumInstances")
-            val swarmSize = attributes.getValue("swarmSize")
+        private fun startDefinition(attributes: Attributes): ObjectDefinition {
+            val name = attributes["name"]!!
+            val definition = ObjectDefinition(name, this@ObjectFactory)
 
-            val definition = ObjectDefinition(name, isAbstract, this@ObjectFactory)
-            if (className != null)
-                definition.objectClass = getClassForName(className)
+            definition.isAbstract  = attributes["abstract"]?.toBoolean() ?: false
+            definition.objectClass = attributes["class"]?.toClass()
+            definition.probability = attributes["probability"]?.toInt()
+            definition.level       = attributes["level"]?.toInt()
 
+            val parent            = attributes["parent"]
             if (parent != null)
                 definition.parent = getDefinition(parent)
 
-            if (probability != null)
-                definition.probability = probability.toInt()
-
-            if (level != null)
-                definition.level = level.toInt()
-
+            val maximumInstances = attributes["maximumInstances"]?.toInt()
             if (maximumInstances != null)
-                definition.maximumInstances = maximumInstances.toInt()
+                definition.maximumInstances = maximumInstances
 
+            val swarmSize = attributes["swarmSize"]?.toExpression()
             if (swarmSize != null)
-                definition.swarmSize = Expression.parse(swarmSize)
+                definition.swarmSize = swarmSize
 
-            this.definition = definition
+            return definition
         }
 
-        private fun endDefinition() {
-            definitions[definition!!.name] = definition!!
-            definition = null
+        private fun ObjectDefinition.addAttributes(attributes: Attributes) {
+            for ((name, value) in attributes)
+                this.attributes[name] = value
         }
 
-        private fun startAttributes(attributes: Attributes) {
-            for (i in 0..attributes.getLength() - 1) {
-                val name = attributes.getLocalName(i)!!
-                val value = attributes.getValue(i)!!
+        private fun ObjectDefinition.addNaturalWeapon(attributes: Attributes) {
+            val hit = attributes["verb"] ?: "hit"
+            val toHit = attributes["toHit"] ?: "0"
+            val damage = attributes["damage"] ?: "randint(1,3)"
 
-                definition!!.attributes[name] = value
-            }
-        }
-
-        private fun startNaturalWeapon(attributes: Attributes) {
-            val hit = attributes.getValue("verb") ?: "hit"
-            val toHit = attributes.getValue("toHit") ?: "0"
-            val damage = getAttribute(attributes, "damage", "randint(1,3)")
-
-            definition!!.attributes["naturalWeapon"] = NaturalWeapon(hit, toHit, damage)
-        }
-
-        private fun getAttribute(attributes: Attributes, name: String, def: String) =
-            attributes.getValue(name) ?: def
-
-        private fun getClassForName(name: String): Class<out Any?> {
-            try {
-                return Class.forName(name)
-            } catch (e: ClassNotFoundException) {
-                throw ConfigurationException("No such class: $name")
-            }
+            this.attributes["naturalWeapon"] = NaturalWeapon(hit, toHit, damage)
         }
     }
+
+    private fun Attributes.iterator() =
+        indices.iterator().map { i -> Pair(getLocalName(i)!!, getValue(i)!!) }
+
+    private fun Attributes.get(name: String) =
+        getValue(name)
+
+    private val Attributes.indices: IntRange
+        get() = 0..getLength()-1
+
+    private fun String.toExpression() = Expression.parse(this)
+
+    private fun String.toClass(): Class<out Any?> =
+        try {
+            Class.forName(this)
+        } catch (e: ClassNotFoundException) {
+            throw ConfigurationException("No such class: $this")
+        }
 }

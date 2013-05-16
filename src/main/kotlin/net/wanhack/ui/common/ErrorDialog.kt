@@ -18,9 +18,14 @@ package net.wanhack.ui.common
 
 import javax.swing.*
 import java.awt.*
-import java.awt.event.ActionEvent
+import kotlin.swing.*
+import net.wanhack.ui.extensions.*
 
 class ErrorDialog(parent: Frame?, title: String, val throwable: Throwable): JDialog() {
+
+    val okButton = button("Ok") {
+        setVisible(false)
+    };
 
     {
         setModal(true)
@@ -28,44 +33,35 @@ class ErrorDialog(parent: Frame?, title: String, val throwable: Throwable): JDia
         setLayout(BorderLayout())
         add(createDetailPane(), BorderLayout.CENTER)
         add(createButtonPane(), BorderLayout.SOUTH)
+        getRootPane()?.setDefaultButton(okButton)
         pack()
         setLocationRelativeTo(parent)
     }
 
-    private fun createDetailPane(): JPanel {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
-        val defaults = UIManager.getDefaults()
-        val errorIcon = defaults?.getIcon("OptionPane.errorIcon")
-        val icon = JLabel(errorIcon, SwingConstants.LEFT)
-        icon.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 5))
-        panel.add(icon)
-        val text = JLabel(throwable.toString())
-        text.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 10))
-        panel.add(text)
+    private fun createDetailPane() =
+        panel {
+            setLayout(FlowLayout(FlowLayout.LEFT))
+            add(label {
+                icon = UIManager.getDefaults()?.getIcon("OptionPane.errorIcon")
+                horizontalAlignment = SwingConstants.LEFT
+                border = BorderFactory.createEmptyBorder(10, 10, 10, 5)
+            })
 
-        val preferred = panel.getPreferredSize()!!
+            add(label(throwable.toString()) {
+                border = BorderFactory.createEmptyBorder(10, 5, 10, 10)
+            })
 
-        preferred.width = Math.max(preferred.width, 250)
-        panel.setPreferredSize(preferred)
-        return panel
-    }
-
-    private fun createButtonPane(): JPanel {
-        val panel = JPanel(FlowLayout(FlowLayout.CENTER))
-        val okButton = JButton(OkAction())
-        getRootPane()?.setDefaultButton(okButton)
-        panel.add(okButton)
-        return panel
-    }
-
-    private inner class OkAction(): AbstractAction("Ok") {
-        override fun actionPerformed(e: ActionEvent) {
-            setVisible(false)
+            preferredWidth = Math.max(preferredWidth, 250)
         }
-    }
+
+    private fun createButtonPane() =
+        panel {
+            setLayout(FlowLayout(FlowLayout.CENTER))
+            add(okButton)
+        }
 
     class object {
-        public open fun show(frame: Frame?, title: String, exception: Throwable) {
+        fun show(frame: Frame?, title: String, exception: Throwable) {
             ErrorDialog(frame, title, exception).setVisible(true)
         }
     }

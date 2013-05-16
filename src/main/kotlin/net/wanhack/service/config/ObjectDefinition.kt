@@ -25,7 +25,9 @@ import net.wanhack.utils.exp.Expression
 import net.wanhack.utils.logger
 import net.wanhack.utils.PropertyUtils
 
-class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val objectFactory: ObjectFactory) {
+class ObjectDefinition(val name: String, val objectFactory: ObjectFactory) {
+
+    var isAbstract = false
     val attributes = HashMap<String, Any>()
     var objectClass: Class<*>? = null
         get() = $objectClass ?: parent?.objectClass
@@ -51,7 +53,7 @@ class ObjectDefinition(val name: String, val abstractDefinition: Boolean, val ob
 
     fun isInstantiable(cl: Class<*>): Boolean {
         val oc = objectClass
-        return oc != null && cl.isAssignableFrom(oc) && !abstractDefinition && createdInstances < maximumInstances
+        return oc != null && cl.isAssignableFrom(oc) && !isAbstract && createdInstances < maximumInstances
     }
 
     private fun getAttributes(): Map<String, Any> {

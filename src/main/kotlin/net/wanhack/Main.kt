@@ -260,12 +260,14 @@ class Main(val wizardMode: Boolean) {
     private fun update() {
         val ref = gameRef
         if (ref != null) {
-            ref.executeQuery { game ->
-                consoleView.turnEnd()
-                regionView.repaint()
-                statisticsView.updateStatistics(game)
-                inventoryView.update(game)
-            }
+            SwingUtilities.invokeLater(Runnable {
+                ref.executeQuery { game ->
+                    consoleView.turnEnd()
+                    regionView.repaint()
+                    statisticsView.updateStatistics(game)
+                    inventoryView.update(game)
+                }
+            })
 
             ref.yieldWriteLock()
         }
