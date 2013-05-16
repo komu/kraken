@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package net.wanhack.model.region
+package net.wanhack.ui.extensions
 
-class VisibilityChecker {
-    fun getVisibleCells(from: Cell, sight: Int): CellSet {
-        val result = MutableCellSet(from.region)
+import javax.swing.Action
+import javax.swing.ActionMap
+import javax.swing.InputMap
+import javax.swing.KeyStroke
 
-        for (target in from.region)
-            if (from.distance(target) <= sight)
-                result.addVisiblePointsTowards(from, target)
+fun ActionMap.set(name: Any, action: Action?) =
+    put(name, action)
 
-        return result
-    }
+fun InputMap.set(keyStroke: KeyStroke, actionMapKey: Any?) =
+    put(keyStroke, actionMapKey)
 
-    private fun MutableCellSet.addVisiblePointsTowards(from: Cell, target: Cell) {
-        for (c in from.getCellsBetween(target)) {
-            add(c)
-            if (!c.canSeeThrough())
-                return
-        }
-        add(target)
-    }
-}
+fun InputMap.set(keyStroke: String, actionMapKey: Any?) =
+    put(KeyStroke.getKeyStroke(keyStroke), actionMapKey)

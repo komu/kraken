@@ -24,12 +24,12 @@ import net.wanhack.model.item.armor.Armor
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.model.region.Cell
-import net.wanhack.model.region.CellSet
 import net.wanhack.model.region.VisibilityChecker
 import net.wanhack.model.skill.Proficiency
 import net.wanhack.model.skill.SkillSet
 import net.wanhack.utils.RandomUtils
 import java.awt.Color
+import net.wanhack.model.region.CellSet
 
 class Player(name: String): Creature(name) {
 
@@ -122,8 +122,6 @@ class Player(name: String): Creature(name) {
         addExperience(target.killExperience)
     }
 
-    fun isFainted() = fainted
-
     fun decreaseHungriness(effectiveness: Int) {
         hunger += effectiveness
     }
@@ -175,17 +173,13 @@ class Player(name: String): Creature(name) {
             else       -> 10000000 * (level - 19)
         }
 
-    public fun seesCreatures(): Boolean {
-        for (cell in visibleCells!!) {
+    fun seesCreatures() =
+        visibleCells!!.any { cell ->
             val creature = cell.creature
-            if (creature != null && creature != this)
-                return true
+            creature != null && creature != this
         }
 
-        return false
-    }
-
-    public fun seesNonFriendlyCreatures(): Boolean =
+    fun seesNonFriendlyCreatures() =
         visibleCells!!.any { cell ->
             val creature = cell.creature
             creature != null && creature != this && !creature.friendly

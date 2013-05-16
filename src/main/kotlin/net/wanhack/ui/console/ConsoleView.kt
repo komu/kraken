@@ -70,14 +70,14 @@ class ConsoleView : JComponent(), Console {
             val words = text.split(" ")
             var x = 0
             var y = fm.getAscent()
-            for (i in 0..words.size - 1) {
-                var wordWidth = fm.stringWidth(words[i])
+            for (word in words) {
+                var wordWidth = fm.stringWidth(word)
                 if (x != 0 && x + wordWidth >= maxWidth) {
                     x = 0
                     y += fm.getHeight()
                 }
 
-                g.drawString(words[i], x, y)
+                g.drawString(word, x, y)
                 x += wordWidth + fm.charWidth(' ')
             }
         }

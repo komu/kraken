@@ -20,7 +20,7 @@ import java.awt.Dimension
 import java.util.Random
 import net.wanhack.model.common.Direction
 import net.wanhack.model.region.Cell
-import net.wanhack.model.region.CellSet
+import net.wanhack.model.region.MutableCellSet
 import net.wanhack.model.region.CellType
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
@@ -83,7 +83,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         val first = region.getCell(randomX, randomY)
         first.setType(CellType.HALLWAY_FLOOR)
 
-        val candidates = CellSet(region)
+        val candidates = MutableCellSet(region)
         var current: Cell? = first
         while (current != null) {
             current = generatePathFrom(current!!, candidates, null, 3, false)
@@ -92,7 +92,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         }
     }
 
-    private fun generatePathFrom(current: Cell, candidates: CellSet?, visited: CellSet?, gridSize: Int, stopOnEmpty: Boolean): Cell? {
+    private fun generatePathFrom(current: Cell, candidates: MutableCellSet?, visited: MutableCellSet?, gridSize: Int, stopOnEmpty: Boolean): Cell? {
         val currentX = current.x
         val currentY = current.y
 
@@ -135,16 +135,13 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
             Directions.mainDirections
 
     private fun sparsify() {
-        for (i in 0..sparseness - 1)
+        sparseness.times {
             shortenDeadEnds()
+        }
     }
 
     private fun shortenDeadEnds() {
-        val removed = CellSet(region)
-        for (cell in region)
-            if (cell.isDeadEnd())
-                removed.add(cell)
-
+        val removed = region.getMatchingCells { it.isDeadEnd() }
         for (cell in removed)
             cell.setType(CellType.WALL)
     }
@@ -156,18 +153,22 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     }
 
     private fun removeDeadEnd(start: Cell) {
-        val visited = CellSet(region)
+        val visited = MutableCellSet(region)
 
-        var current: Cell? = start
-        while (current != null) {
-            visited.add(current!!)
-            current = generatePathFrom(current!!, null, visited, 3, true)
+        var current = start
+        while (true) {
+            visited.add(current)
+            val next = generatePathFrom(current, null, visited, 3, true)
+            if (next != null)
+                current = next
+            else
+                break
         }
     }
 
     private fun addRooms() {
         val rooms = minRooms + random.nextInt(1 + maxRooms - minRooms)
-        for (i in 0..rooms - 1) {
+        rooms.times {
             addRoom()
         }
     }
@@ -191,7 +192,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         return Dimension(w, h)
     }
 
-    private fun randomCandidate(candidates: CellSet): Cell? =
+    private fun randomCandidate(candidates: MutableCellSet): Cell? =
         if (candidates.empty)
             null
         else

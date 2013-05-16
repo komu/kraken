@@ -23,9 +23,12 @@ import net.wanhack.model.item.Item
 import net.wanhack.utils.cellsAtDistance
 import net.wanhack.utils.signum
 import java.util.*
+import java.util.Collections.singletonList
+import java.util.Collections.emptyList
 import java.lang.Math.*
 import net.wanhack.model.common.Directions
 import kotlin.support.AbstractIterator
+import net.wanhack.utils.collections.maximumBy
 
 class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
@@ -69,18 +72,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     }
 
     val largestItem: Item?
-        get() {
-            var maxWeight = Integer.MIN_VALUE
-            var largest: Item? = null
-
-            for (item in items)
-                if (item.weight > maxWeight) {
-                    maxWeight = item.weight
-                    largest = item
-                }
-
-            return largest
-        }
+        get() = items.maximumBy { it.weight }
 
     fun isReachable(goal: Cell) =
         this == goal || region.findPath(this, goal) != null
@@ -150,15 +142,15 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
     fun isInteresting() = !state.cellType.isFloor() || !items.empty
 
-    fun getMatchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> {
-        val maxDistance: Int = getMaximumDistanceFromEdgeOfRegion()
+    fun matchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> {
+        val maxDistance = getMaximumDistanceFromEdgeOfRegion()
 
         return object : AbstractIterator<Cell>() {
             private var distance = 0
             private var pos = 0
             private var cellsAtCurrentDistance: List<Cell> = Collections.emptyList()
 
-            protected override fun computeNext() {
+            override fun computeNext() {
                 while (pos == cellsAtCurrentDistance.size) {
                     if (distance >= maxDistance) {
                         done()
@@ -180,20 +172,15 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     }
 
     public fun getMatchingCellsAtDistance(distance: Int, predicate: (Cell) -> Boolean): List<Cell> {
-        if (distance == 0) {
-            if (predicate(this)) {
-                return Collections.singletonList(this)
-            } else {
-                return Collections.emptyList()
-            }
-        }
+        if (distance == 0)
+            return if (predicate(this)) singletonList(this) else emptyList()
 
         val count = cellsAtDistance(distance)
         val cells = ArrayList<Cell>(count)
-        val x1: Int = x - distance
-        val y1: Int = y - distance
-        val x2: Int = x + distance
-        val y2: Int = y + distance
+        val x1 = x - distance
+        val y1 = y - distance
+        val x2 = x + distance
+        val y2 = y + distance
         for (xx in x1..x2) {
             val cell = region.getCellOrNull(xx, y1)
             if (cell != null && predicate(cell))
@@ -251,14 +238,14 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         return count
     }
 
-    fun getDirection(cell: Cell): Direction? {
+    fun getDirection(cell: Cell): Direction {
         val dx = signum(cell.x - x)
         val dy = signum(cell.y - y)
         for (d in Direction.values())
             if (dx == d.dx && dy == d.dy)
                 return d
 
-        return null
+        throw IllegalArgumentException("could not find direction of $cell from $this")
     }
 
     val adjacentCellsInMainDirections: List<Cell>
@@ -301,26 +288,21 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
             y1 = t1
         }
 
-        val deltax = x1 - x0
-        val deltay = abs(y1 - y0)
-        var error: Int = 0
-        val deltaerr = deltay
-        var y: Int = y0
-        val ystep = if ((y0 < y1)) 1 else -1
+        val deltaX = x1 - x0
+        val deltaY = abs(y1 - y0)
+        var error = 0
+        val deltaError = deltaY
+        var y = y0
+        val yStep = if ((y0 < y1)) 1 else -1
 
         for (x in x0..x1 - 1) {
             if ((x != x0 || y != y0) && (x != x1 || y != y1))
-            {
-                if (steep)
-                    cells.add(region.getCell(y, x))
-                else
-                    cells.add(region.getCell(x, y))
-            }
+                cells.add(if (steep) region.getCell(y, x) else region.getCell(x, y))
 
-            error += deltaerr
-            if (2 * error >= deltax) {
-                y += ystep
-                error -= deltax
+            error += deltaError
+            if (2 * error >= deltaX) {
+                y += yStep
+                error -= deltaX
             }
         }
 
@@ -350,6 +332,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
     private fun calculateLightSourceEffectiveness(): Int {
         var effectiveness = 0
+
         for (item in items)
             effectiveness += item.lighting
 
@@ -359,17 +342,4 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     }
 
     fun toString() = "($x, $y)"
-
-    class object {
-        public fun getDirectionOfPoint(x1: Int, y1: Int, x2: Int, y2: Int): Direction? {
-            val dx = signum(x2 - x1)
-            val dy = signum(y2 - y1)
-
-            for (d in Direction.values())
-                if (dx == d.dx && dy == d.dy)
-                    return d
-
-            return null
-        }
-    }
 }

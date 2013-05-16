@@ -16,10 +16,7 @@
 
 package net.wanhack.ui.game
 
-import java.awt.event.ActionEvent
-import javax.swing.AbstractAction
 import javax.swing.ButtonGroup
-import javax.swing.JButton
 import javax.swing.JComboBox
 import javax.swing.JDialog
 import javax.swing.JFrame
@@ -34,6 +31,7 @@ import com.jgoodies.forms.builder.DefaultFormBuilder
 import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
+import kotlin.swing.*
 
 class StartGameDialog(owner: JFrame): JDialog() {
 
@@ -83,27 +81,19 @@ class StartGameDialog(owner: JFrame): JDialog() {
         builder.addLabel("Pet", cc.xy(1, 6))
         builder.add(petCombo, cc.xy(3, 6))
         builder.add(createButtonBar(), cc.xyw(1, 8, 3))
-        setContentPane(builder.getPanel()!!)
+        setContentPane(builder.getPanel())
     }
 
     private fun createButtonBar(): JPanel {
-        val ok = JButton(OkAction())
-        val cancel = JButton(CancelAction())
-        getRootPane()?.setDefaultButton(ok)
-        return ButtonBarFactory.buildOKCancelBar(ok, cancel)!!
-    }
-
-    private inner class OkAction: AbstractAction("Ok") {
-        public override fun actionPerformed(e: ActionEvent) {
+        val ok = button("Ok") {
             configuration = createConfiguration()
             setVisible(false)
         }
-    }
-
-    private inner class CancelAction(): AbstractAction("Cancel") {
-        public override fun actionPerformed(e: ActionEvent) {
+        val cancel = button("Cancel") {
             configuration = null
             setVisible(false)
         }
+        getRootPane()?.setDefaultButton(ok)
+        return ButtonBarFactory.buildOKCancelBar(ok, cancel)
     }
 }

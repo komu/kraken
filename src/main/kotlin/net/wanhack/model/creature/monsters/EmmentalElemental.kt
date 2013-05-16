@@ -17,11 +17,11 @@
 package net.wanhack.model.creature.monsters
 
 import net.wanhack.model.creature.Monster
-import net.wanhack.model.item.Item
 import net.wanhack.utils.Probability
+import net.wanhack.definitions.Items
 
 class EmmentalElemental(name: String): Monster(name) {
 
     override fun createCorpse() =
-        createItem(javaClass<Item>(), if (Probability.check(50)) "chunk of cheese" else "big chunk of cheese")
+        if (Probability.check(50)) Items.chunkOfCheese.create() else Items.bigChunkOfCheese.create()
 }

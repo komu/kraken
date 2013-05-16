@@ -19,7 +19,6 @@ package net.wanhack.service.creature
 import net.wanhack.model.creature.Creature
 import net.wanhack.service.ServiceProvider
 import net.wanhack.service.config.ObjectDefinition
-import net.wanhack.service.config.ObjectFactory
 import java.util.ArrayList
 import java.util.Random
 
@@ -34,37 +33,33 @@ class CreatureService {
     }
 
     fun randomSwarmBetween(minLevel: Int, maxLevel: Int): Collection<Creature> {
-        val defs = objectFactory.getAvailableDefinitionsForClass(javaClass<Creature>())
+        val defs = ServiceProvider.objectFactory.getAvailableDefinitionsForClass(javaClass<Creature>())
         val def = random(defs, minLevel, maxLevel)
-        val swarmSize = def.swarmSize()
-        val swarm = ArrayList<Creature>(swarmSize)
+        val swarm = listBuilder<Creature>()
 
-        swarmSize.times {
-            swarm.add(objectFactory.create(javaClass<Creature>(), def.name))
+        def.swarmSize().times {
+            swarm.add(def.create())
         }
 
-        return swarm
+        return swarm.build()
     }
 
-    val objectFactory: ObjectFactory
-        get() = ServiceProvider.objectFactory
-
-    private fun random(defs: List<ObjectDefinition>, minLevel: Int, maxLevel: Int): ObjectDefinition {
+    private fun random<T>(defs: List<ObjectDefinition<T>>, minLevel: Int, maxLevel: Int): ObjectDefinition<T> {
         var probabilitySum: Int = 0
-        val probs = ArrayList<DefProbability>(defs.size)
+        val probabilities = ArrayList<DefProbability<T>>(defs.size)
 
         for (od in defs) {
             val level = od.level
             if (level == null || (level >= minLevel && level <= maxLevel)) {
                 val probability = od.probability ?: 100
-                probs.add(DefProbability(od, probability, level))
+                probabilities.add(DefProbability(od, probability, level))
                 probabilitySum += probability
             }
 
         }
 
         var item = random.nextInt(probabilitySum)
-        for (dp in probs) {
+        for (dp in probabilities) {
             val level = dp.level
             if (level == null || (level >= minLevel && level <= maxLevel)) {
                 if (item < dp.probability)
@@ -80,5 +75,5 @@ class CreatureService {
         val instance = CreatureService()
     }
 
-    class DefProbability(val def: ObjectDefinition, val probability: Int, val level: Int?)
+    class DefProbability<T>(val def: ObjectDefinition<T>, val probability: Int, val level: Int?)
 }

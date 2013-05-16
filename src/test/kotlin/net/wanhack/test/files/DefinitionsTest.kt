@@ -16,23 +16,19 @@
 
 package net.wanhack.test.files
 
-import net.wanhack.model.creature.Creature
-import net.wanhack.model.item.Item
-import net.wanhack.service.config.ObjectFactory
 import org.junit.Test as test
+import net.wanhack.definitions.*
 
-class DefinitionsTest() {
+class DefinitionsTest {
 
     test fun loadDefinitions() {
-        val obj = ObjectFactory()
-        obj.parse("/items/items.xml")
-        obj.parse("/items/weapons.xml")
-        obj.parse("/creatures/creatures.xml")
+        for (def in Weapons.definitions)
+            def.create()
 
-        for (def in obj.getAvailableDefinitionsForClass(javaClass<Creature>()))
-            def.createObject()
+        for (def in Items.definitions)
+            def.create()
 
-        for (def in obj.getAvailableDefinitionsForClass(javaClass<Item>()))
-            def.createObject()
+        for (def in Creatures.definitions)
+            def.create()
     }
 }

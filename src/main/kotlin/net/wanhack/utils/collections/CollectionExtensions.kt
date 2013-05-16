@@ -18,6 +18,7 @@ package net.wanhack.utils.collections
 
 import java.util.ArrayList
 import net.wanhack.utils.RandomUtils
+import java.util.Collections
 
 fun <T> Collection<T>.shuffled(): MutableList<T> {
     val result = ArrayList(this)
@@ -39,3 +40,24 @@ fun <T> Collection<*>.filterByType(cl: Class<T>): List<T> {
 
     return result.build()
 }
+
+fun <T : Any> Collection<T>.unique(): T? =
+    if (size == 1) first() else null
+
+fun <T : Any, C: Comparable<C>> Collection<T>.maximumBy(comparison: (T) -> C): T? {
+    var maxScore: C? = null
+    var largest: T? = null
+
+    for (item in this) {
+        val score = comparison(item)
+        val max = maxScore
+        if (max == null || score > max) {
+            maxScore = score
+            largest = item
+        }
+    }
+
+    return largest
+}
+
+fun <T: Any> T?.toOption(): Set<T> = if (this == null) Collections.emptySet() else Collections.singleton(this)

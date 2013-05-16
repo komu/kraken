@@ -39,12 +39,6 @@ class Armoring : Iterable<Armor> {
             return bonus
         }
 
-    fun hasArmor(part: BodyPart) =
-        armors.containsKey(part)
-
-    fun getArmor(part: BodyPart): Armor? =
-        armors[part]
-
     fun replaceArmor(armor: Armor): Armor? =
         armors.put(armor.bodyPart, armor)
 

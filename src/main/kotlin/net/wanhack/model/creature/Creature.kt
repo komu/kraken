@@ -29,7 +29,6 @@ import net.wanhack.model.item.weapon.Weapon
 import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
-import net.wanhack.service.ServiceProvider
 import net.wanhack.utils.Probability
 import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.exp.Expression
@@ -37,6 +36,7 @@ import java.awt.*
 import java.util.*
 import net.wanhack.utils.collections.filterByType
 import net.wanhack.model.common.Directions
+import net.wanhack.utils.collections.toOption
 
 abstract class Creature(var name: String): Actor, MessageTarget {
 
@@ -175,16 +175,8 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     protected fun calculateCanSee(target: Cell): Boolean =
         cell.getCellsBetween(target).all { it.canSeeThrough() }
 
-    val adjacentCreatures: Set<Creature>
-        get() {
-            val adjacent = HashSet<Creature>()
-            for (c in cell.adjacentCells) {
-                val creature = c.creature
-                if (creature != null)
-                    adjacent.add(creature)
-            }
-            return adjacent
-        }
+    val adjacentCreatures: Collection<Creature>
+        get() = cell.adjacentCells.flatMap { it.creature.toOption() }
 
     fun toString() = "$name [hp=$hitPoints]"
 
@@ -256,9 +248,6 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     protected fun removeFromGame() {
         cellOrNull = null
     }
-
-    protected fun createItem<T>(cl: Class<T>, name: String): T =
-        ServiceProvider.objectFactory.create(cl, name)
 
     val lighting: Int
         get() {

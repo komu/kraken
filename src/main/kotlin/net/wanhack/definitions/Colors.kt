@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package net.wanhack.model.region
+package net.wanhack.definitions
 
-class VisibilityChecker {
-    fun getVisibleCells(from: Cell, sight: Int): CellSet {
-        val result = MutableCellSet(from.region)
+import java.awt.Color
 
-        for (target in from.region)
-            if (from.distance(target) <= sight)
-                result.addVisiblePointsTowards(from, target)
-
-        return result
-    }
-
-    private fun MutableCellSet.addVisiblePointsTowards(from: Cell, target: Cell) {
-        for (c in from.getCellsBetween(target)) {
-            add(c)
-            if (!c.canSeeThrough())
-                return
-        }
-        add(target)
-    }
+object Colors {
+    val ALUMINIUM       = Color(220, 230, 250)
+    val BLACKISH        = Color(10, 10, 10)
+    val BROWN           = Color(100, 100, 0)
+    val BROWNISH        = Color(120, 100, 10)
+    val DARK_GREEN      = Color(0, 130, 0)
+    val GREEN           = Color(0, 150, 0)
+    val LIGHT_BLUE      = Color(100, 100, 255)
+    val LIGHT_BROWN     = Color(200, 200, 0)
+    val WHITEISH        = Color(240, 240, 230)
+    val YELLOWISH       = Color(250, 240, 140)
 }

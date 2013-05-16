@@ -68,11 +68,11 @@ open class ShortestPathSearcher(val region: Region) {
                 val openNode = openMap[successor.cell]
                 if (openNode == null || openNode.heuristic > successor.heuristic) {
                     openHeap.offer(successor)
-                    openMap.put(successor.cell, successor)
+                    openMap[successor.cell] = successor
                 }
             }
 
-            closedMap.put(current.cell, current)
+            closedMap[current.cell] = current
         }
 
         return null
@@ -88,14 +88,14 @@ open class ShortestPathSearcher(val region: Region) {
         var heuristic = 0
 
         fun successors(allowSubDirections: Boolean): List<Node> {
-            val nodes = ArrayList<Node>(7)
-            val adjacent = if (allowSubDirections) cell.adjacentCells else cell.adjacentCellsInMainDirections
+            val nodes = listBuilder<Node>()
+            val adjacentCells = if (allowSubDirections) cell.adjacentCells else cell.adjacentCellsInMainDirections
 
-            for (adj in adjacent)
-                if (adj != parent?.cell && canEnter(adj))
-                    nodes.add(Node(adj, this, cost + costToEnter(adj)))
+            for (adjacent in adjacentCells)
+                if (adjacent != parent?.cell && canEnter(adjacent))
+                    nodes.add(Node(adjacent, this, cost + costToEnter(adjacent)))
 
-            return nodes
+            return nodes.build()
         }
 
         override fun compareTo(other: Node) = heuristic - other.heuristic

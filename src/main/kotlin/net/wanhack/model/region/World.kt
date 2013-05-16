@@ -24,9 +24,7 @@ import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
 import net.wanhack.service.ServiceProvider
 import net.wanhack.service.config.ObjectDefinition
-import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.creature.CreatureService
-import net.wanhack.service.region.RegionLoader
 import net.wanhack.service.region.generators.MazeRegionGenerator
 import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator
@@ -113,7 +111,7 @@ class World(val game: Game) {
 
             getRegionGenerator().generate(this, info.id, info.level, up, down)
         } else {
-            getRegionLoader().loadRegion(this, info)
+            ServiceProvider.regionLoader.loadRegion(this, info)
         }
 
     private fun getRegionInfo(id: String): RegionInfo =
@@ -130,19 +128,20 @@ class World(val game: Game) {
             return
 
         val monsterCount = 1 + random.nextInt(2 * region.level)
-        val empty = region.getCellsForItemsAndCreatures()
+        val emptyCells = region.getCellsForItemsAndCreatures()
         val creatureService = CreatureService.instance
-        for (i in 0..monsterCount - 1) {
+
+        for (i in 1..monsterCount) {
             val creatures = creatureService.randomSwarm(region.level, player.level)
-            if (empty.empty)
+            if (emptyCells.empty)
                 return
 
-            val cell = empty.randomElement()
-            val cells = cell.getMatchingCellsNearestFirst { it.canMoveInto(true) }
+            val cell = emptyCells.randomElement()
+            val cells = cell.matchingCellsNearestFirst { it.canMoveInto(true) }
             for (creature in creatures)
                 if (cells.hasNext()) {
                     val target = cells.next()
-                    empty.remove(target)
+                    emptyCells.remove(target)
                     creature.cell = target
                 }
         }
@@ -153,7 +152,7 @@ class World(val game: Game) {
         val itemCount = random.nextInt(6)
 
         val emptyCells = region.getCellsForItemsAndCreatures()
-        for (i in 0..itemCount - 1) {
+        for (i in 1..itemCount) {
             if (emptyCells.empty)
                 return
 
@@ -164,25 +163,24 @@ class World(val game: Game) {
     }
 
     private fun randomItem(minLevel: Int, maxLevel: Int): Item {
-        val defs = getObjectFactory().getAvailableDefinitionsForClass(javaClass<Item>())
-        val def = random(defs, minLevel, maxLevel)
-        return getObjectFactory().create(javaClass<Item>(), def.name)
+        val defs = ServiceProvider.objectFactory.getAvailableDefinitionsForClass(javaClass<Item>())
+        return random(defs, minLevel, maxLevel).create()
     }
 
-    private fun random(defs: List<ObjectDefinition>, minLevel: Int, maxLevel: Int): ObjectDefinition {
+    private fun random<T>(defs: List<ObjectDefinition<T>>, minLevel: Int, maxLevel: Int): ObjectDefinition<T> {
         var probabilitySum = 0
-        val probs = ArrayList<DefProbability>(defs.size)
+        val probabilities = ArrayList<DefProbability<T>>(defs.size)
         for (od in defs) {
             val level = od.level
             if (level == null || (level >= minLevel && level <= maxLevel)) {
                 val probability = od.probability ?: 100
-                probs.add(DefProbability(od, probability, level))
+                probabilities.add(DefProbability(od, probability, level))
                 probabilitySum += probability
             }
         }
 
         var item = random.nextInt(probabilitySum)
-        for (dp in probs) {
+        for (dp in probabilities) {
             if (dp.level == null || (dp.level >= minLevel && dp.level <= maxLevel)) {
                 if (item < dp.probability)
                     return dp.def
@@ -190,16 +188,13 @@ class World(val game: Game) {
                 item -= dp.probability
             }
         }
+
         throw RuntimeException("could not randomize definition")
     }
-
-    private fun getRegionLoader(): RegionLoader = ServiceProvider.regionLoader
-
-    private fun getObjectFactory(): ObjectFactory = ServiceProvider.objectFactory
 
     class object {
         private val log = javaClass<World>().logger()
 
-        private class DefProbability(val def: ObjectDefinition, val probability: Int, val level: Int?)
+        class DefProbability<T>(val def: ObjectDefinition<T>, val probability: Int, val level: Int?)
     }
 }

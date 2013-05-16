@@ -16,24 +16,19 @@
 
 package net.wanhack.service.config
 
-import java.awt.Color
 import java.util.HashMap
-import net.wanhack.model.item.Item
-import net.wanhack.model.item.weapon.Weapon
-import net.wanhack.utils.ColorFactory
 import net.wanhack.utils.exp.Expression
 import net.wanhack.utils.logger
-import net.wanhack.utils.PropertyUtils
 
-class ObjectDefinition(val name: String, val objectFactory: ObjectFactory) {
+class ObjectDefinition<T>(val name: String) {
 
     var isAbstract = false
     val attributes = HashMap<String, Any>()
-    var objectClass: Class<*>? = null
-        get() = $objectClass ?: parent?.objectClass
-        set(objectClass: Class<*>?) = $objectClass = objectClass
+    var objectClass: Class<out T>? = null
+        get() = $objectClass ?: parent?.objectClass as Class<out T>
+        set(objectClass: Class<out T>?) = $objectClass = objectClass
 
-    var parent: ObjectDefinition? = null
+    var parent: ObjectDefinition<in T>? = null
     var swarmSize = Expression.constant(1)
 
     var probability: Int? = null
@@ -46,6 +41,8 @@ class ObjectDefinition(val name: String, val objectFactory: ObjectFactory) {
 
     var maximumInstances = Integer.MAX_VALUE
     var createdInstances = 0
+    var initHook: T.() -> Unit = { }
+
     private val log = javaClass.logger()
 
     fun swarmSize(): Int =
@@ -66,8 +63,12 @@ class ObjectDefinition(val name: String, val objectFactory: ObjectFactory) {
         }
     }
 
-    public fun createObject(): Any {
-        if (abstractDefinition)
+    fun cast<K>(cl: Class<K>): ObjectDefinition<K>? =
+        if (isInstantiable(cl))
+            this as ObjectDefinition<K> else null
+
+    fun create(): T {
+        if (isAbstract)
             throw ConfigurationException("Can't instantiate abstract definition <$name>")
 
         try {
@@ -75,57 +76,21 @@ class ObjectDefinition(val name: String, val objectFactory: ObjectFactory) {
             val ctor = oc.getConstructor(javaClass<String>())
 
             val obj = ctor.newInstance(name)!!
-            for ((key, value) in getAttributes())
-                setProperty(obj, key, value)
+
+            initialize(obj)
 
             createdInstances++
             return obj
 
         } catch (e: Exception) {
-            throw ConfigurationException("Can't construct object <" + name + ">", e)
+            throw ConfigurationException("Can't construct object <$name>", e)
         }
     }
 
-    private fun setProperty(obj: Any, name: String, value: Any) {
-        try {
-            val propertyType = PropertyUtils.getSettablePropertyType(obj, name)
-            if (propertyType == null) {
-                log.severe("invalid property <$name> for <$obj>")
-                return
-            }
-
-            PropertyUtils.setProperty(obj, name, evaluateValue(propertyType, value))
-        } catch (e: ConfigurationException) {
-            throw e
-        } catch (e: Exception) {
-            throw ConfigurationException("Can't initialize object <$obj>", e)
-        }
+    fun initialize(obj: T) {
+        parent?.initialize(obj)
+        obj.initHook()
     }
-
-    private fun evaluateValue(propertyType: Class<*>, value: Any?): Any? =
-        if (value is String)
-            evaluateStringValue(propertyType, value)
-        else
-            value
-
-    private fun evaluateStringValue(propertyType: Class<*>, exp: String): Any? =
-        when {
-            propertyType == javaClass<Int>(),
-            propertyType == javaClass<Int?>()       -> Expression.evaluate(exp)
-            propertyType == javaClass<Boolean>(),
-            propertyType == javaClass<Boolean?>()   -> "true".equalsIgnoreCase(exp)
-            propertyType == javaClass<Char>(),
-            propertyType == javaClass<Char?>()      -> exp[0]
-            propertyType == javaClass<Color>()      -> ColorFactory.getColor(exp)
-            propertyType == javaClass<Weapon>()     -> objectFactory.create(javaClass<Weapon>(), exp)
-            propertyType == javaClass<Item>()       -> objectFactory.create(javaClass<Item>(), exp)
-            propertyType == javaClass<Expression>() -> Expression.parse(exp)
-            propertyType.isEnum()                   -> enumValue(propertyType, exp)
-            else -> exp
-        }
 
     fun toString() = "ObjectDefinition [name=$name]"
-
-    fun enumValue(cl: Class<*>, name: String): Any =
-        (cl.getEnumConstants() as Array<Any>).find { (it as Enum<*>).name() == name } ?: throw ConfigurationException("$cl does not have enum constant <$name>")
 }

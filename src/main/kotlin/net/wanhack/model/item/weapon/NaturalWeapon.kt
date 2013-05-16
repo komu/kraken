@@ -20,10 +20,7 @@ import net.wanhack.model.common.Attack
 import net.wanhack.model.creature.Creature
 import net.wanhack.utils.exp.Expression
 
-open class NaturalWeapon(val verb: String, toHit: String, damage: String): Attack {
-
-    val toHit = Expression.parse(toHit)
-    val damage = Expression.parse(damage)
+open class NaturalWeapon(val verb: String, val toHit: Expression, val damage: Expression): Attack {
 
     override val weaponClass = WeaponClass.NATURAL
     override val attackVerb = verb
@@ -34,3 +31,5 @@ open class NaturalWeapon(val verb: String, toHit: String, damage: String): Attac
 
     fun toString() = "NaturalWeapon [verb=$verb, toHit=$toHit, damage=$damage]"
 }
+
+fun NaturalWeapon(verb: String, toHit: String, damage: String) = NaturalWeapon(verb, Expression.parse(toHit), Expression.parse(damage))

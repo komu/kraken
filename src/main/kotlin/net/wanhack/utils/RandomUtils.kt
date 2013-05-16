@@ -45,4 +45,5 @@ object RandomUtils {
     }
 
     fun randomInt(n: Int): Int = random.nextInt(n)
+    fun randomInt(min: Int, max:Int) = min + random.nextInt(max - min + 1)
 }

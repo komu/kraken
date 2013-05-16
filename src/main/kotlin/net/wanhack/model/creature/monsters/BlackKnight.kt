@@ -119,13 +119,8 @@ class BlackKnight(name: String): Monster(name) {
     }
 
     private fun dropToAdjacentCell(item: Item) {
-        for (cell in cell.adjacentCells.shuffled()) {
-            if (cell.canDropItemToCell()) {
-                cell.items.add(item)
-                return
-            }
-        }
-        cell.items.add(item)
+        val target = cell.adjacentCells.shuffled().find { it.canDropItemToCell() } ?: cell
+        target.items.add(item)
     }
 
     class object {

@@ -19,7 +19,6 @@ package net.wanhack.model
 import java.util.Calendar
 import net.wanhack.model.GameConfiguration.PetType
 import net.wanhack.model.common.Attack
-import net.wanhack.model.common.Console
 import net.wanhack.model.common.Direction
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
@@ -43,6 +42,9 @@ import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.isFriday
 import net.wanhack.utils.isFestivus
 import net.wanhack.utils.logger
+import net.wanhack.definitions.Weapons
+import net.wanhack.definitions.Items
+import net.wanhack.service.creature.CreatureService
 
 class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     private val globalClock = Clock()
@@ -52,6 +54,8 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     var maxDungeonLevel = 0
     private var over = false
     val selfRef = GameRef(this)
+    val console = LockSafeConsole(ServiceProvider.console, selfRef)
+
     var listener: (() -> Unit) = { };
 
     {
@@ -65,10 +69,9 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     fun start() {
         assertWriteLock()
 
-        val objectFactory = ServiceProvider.objectFactory
-        player.wieldedWeapon = objectFactory.create(javaClass<Weapon>(), "a dagger")
-        player.inventoryItems.add(objectFactory.create(javaClass<Item>(), "food ration"))
-        player.inventoryItems.add(objectFactory.create(javaClass<Item>(), "a cyanide capsule"))
+        player.wieldedWeapon = Weapons.dagger.create()
+        player.inventoryItems.add(Items.foodRation.create())
+        player.inventoryItems.add(Items.cyanideCapsule.create())
         enterRegion("start", "from up")
 
         if (config.pet == PetType.DORIS)
@@ -86,7 +89,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
             player.message("Happy Festivus!")
             player.strength += 10
             player.luck = 2
-            player.inventoryItems.add(objectFactory.create(javaClass<Item>(), "Aluminium Pole"))
+            player.inventoryItems.add(Weapons.aluminiumPole.create())
         }
 
         if (today.isFriday()) {
@@ -100,19 +103,14 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         listener()
     }
 
-    private fun putPetNextToPlayer(pet: Creature): Boolean {
-        var target: Cell? = null
-        for (cell in player.cell.adjacentCells)
-            if (cell.cellType.isFloor() && cell.creature == null)
-                target = cell
+    private fun putPetNextToPlayer(pet: Creature) {
+        val target = player.cell.adjacentCells.find { cell ->
+            cell.isFloor() && cell.creature == null
+        }
 
-        val targetCell = target
-        if (targetCell != null) {
-            pet.cell = targetCell
+        if (target != null) {
+            pet.cell = target
             regionClock.schedule(pet.tickRate, pet)
-            return true
-        } else {
-            return false
         }
     }
 
@@ -142,17 +140,24 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
             regionClock.clear()
             maxDungeonLevel = Math.max(region.level, maxDungeonLevel)
             if (oldCell != null) {
-                for (cell in oldCell.adjacentCells) {
-                    val creature = cell.creature
-                    if (creature is Pet)
-                        putPetNextToPlayer(creature)
-                }
+                val pet = oldCell.findAdjacentPet()
+                if (pet != null)
+                    putPetNextToPlayer(pet)
             }
 
-            addRegionEvent(CreateMonstersEvent(region))
+            addRegionEvent(CreateMonstersEvent(region, CreatureService.instance))
             for (creature in region.getCreatures())
                 regionClock.schedule(creature.tickRate, creature)
         }
+    }
+
+    private fun Cell.findAdjacentPet(): Pet? {
+        for (cell in adjacentCells) {
+            val pet = cell.creature as? Pet
+            if (pet != null)
+                return pet
+        }
+        return null
     }
 
     public fun addCreature(creature: Creature, target: Cell) {
@@ -162,11 +167,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun talk(): Unit {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun talk() = gameAction {
         val adjacent = player.adjacentCreatures
         if (adjacent.size == 1) {
             val creature = adjacent.iterator().next()
@@ -189,11 +190,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun openDoor() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun openDoor() = gameAction {
         val closedDoors  = player.cell.getAdjacentCellsOfType(CellType.CLOSED_DOOR)
         if (closedDoors.isEmpty()) {
             player.message("There are no closed doors around you.")
@@ -214,11 +211,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun closeDoor() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun closeDoor() = gameAction {
         val openDoors = player.cell.getAdjacentCellsOfType(CellType.OPEN_DOOR)
         if (openDoors.isEmpty()) {
             player.message("There are no open doors around you.")
@@ -236,18 +229,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    private fun closeDoor(door: Cell): Unit {
-        assertWriteLock()
-
+    private fun closeDoor(door: Cell) {
         if (door.closeDoor(player))
             tick()
     }
 
-    fun pickup() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun pickup() = gameAction {
         val cell = player.cell
         val items = cell.items
         if (items.empty) {
@@ -268,11 +255,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun wield() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun wield() = gameAction {
         val oldWeapon = player.wieldedWeapon
         val weapon = console.selectItem(javaClass<Weapon>(), "Select weapon to wield", player.getInventoryItems(javaClass<Weapon>()))
         if (weapon != null && weapon != oldWeapon) {
@@ -288,11 +271,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun wear() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun wear() = gameAction {
         val armor = console.selectItem(javaClass<Armor>(), "Select armor to wear", player.getInventoryItems(javaClass<Armor>()))
         if (armor != null ) {
             val oldArmor = player.replaceArmor(armor)
@@ -307,31 +286,23 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun drop() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun drop() = gameAction {
         for (item in console.selectItems("Select items to drop", player.inventoryItems))
-            drop(item)
+            doDrop(item)
     }
 
-    fun drop(item: Item) {
-        assertWriteLock()
-        if (over)
-            return
-
-        player.inventoryItems.remove(item)
-        player.cell.items.add(item)
-        message("Dropped %s.", item.title)
+    fun drop(item: Item) = gameAction {
+        doDrop(item)
         tick()
     }
 
-    fun eat() {
-        assertWriteLock()
-        if (over)
-            return
+    private fun doDrop(item: Item) {
+        player.inventoryItems.remove(item)
+        player.cell.items.add(item)
+        message("Dropped %s.", item.title)
+    }
 
+    fun eat() = gameAction {
         val food = console.selectItem(javaClass<Food>(), "Select food to eat", player.getInventoryItems(javaClass<Food>()))
         if (food != null) {
             player.inventoryItems.remove(food)
@@ -340,11 +311,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun search() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun search() = gameAction {
         for (cell in player.cell.adjacentCells)
             if (cell.search(player))
                 break
@@ -352,11 +319,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         tick()
     }
 
-    fun fling() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun fling() = gameAction {
         val projectile = console.selectItem(javaClass<Item>(), "Select item to throw", player.getInventoryItems(javaClass<Item>()))
         if (projectile != null) {
             val dir = console.selectDirection()
@@ -406,11 +369,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
     val score: Int
         get() = player.experience
 
-    fun movePlayer(direction: Direction) {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun movePlayer(direction: Direction) = gameAction {
         val cell = player.cell.getCellTowards(direction)
         val creatureInCell = cell.creature
         if (creatureInCell != null) {
@@ -424,101 +383,72 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun runTowards(direction: Direction) {
-        assertWriteLock()
-        if (over)
-            return
-
-        var target = player.cell.getCellTowards(direction)
+    fun runTowards(direction: Direction) = gameAction {
+        val target = player.cell.getCellTowards(direction)
         if (isInCorridor(target))
-        {
             runInCorridor(direction)
-        }
         else
-        {
             runInRoom(direction)
-        }
     }
 
     private fun isInCorridor(cell: Cell) =
         cell.countPassableMainNeighbours() == 2 && !cell.isRoomCorner()
 
-    private fun runInCorridor(initialDirection: Direction): Unit {
-        var direction = initialDirection
-        var previous: Cell? = null
-        do {
-            val target = player.cell.getCellTowards(direction)
-            if (target.canMoveInto(player.corporeal)) {
-                previous = player.cell
-                target.enter(player)
-                tick()
-            } else {
-                if (previous == null)
-                    return
+    private fun runInCorridor(initialDirection: Direction) {
+        val first = player.cell.getCellTowards(initialDirection)
+        if (first.canMoveInto(player.corporeal)) {
+            var previous = player.cell
 
-                var newTarget: Cell? = null
-                for (c in player.cell.adjacentCellsInMainDirections)
-                    if (c != previous && c.canMoveInto(player.corporeal))
-                        if (newTarget == null)
-                            newTarget = c
-                        else
-                            return
+            first.enter(player)
+            tick()
 
-                val targetCell = newTarget
-                if (targetCell != null && targetCell.canMoveInto(player.corporeal)) {
+            while (!player.cell.isInteresting(true)) {
+                val nextCandidates = player.cell.adjacentCellsInMainDirections.filter {
+                    c -> c != previous && c.canMoveInto(player.corporeal)
+                }
+
+                if (nextCandidates.size == 1) {
                     previous = player.cell
-                    direction = player.cell.getDirection(targetCell)!!
-                    targetCell.enter(player)
+                    nextCandidates.first().enter(player)
                     tick()
+
                 } else {
                     return
                 }
             }
-        } while (!isCurrentCellInteresting(true))
-    }
-
-    private fun runInRoom(direction: Direction) {
-        var first = true
-        do {
-            val target = player.cell.getCellTowards(direction)
-            if (!target.canMoveInto(player.corporeal))
-                break;
-
-            val previous = player.cell
-            target.enter(player)
-            tick()
-
-            if (!first && previous.countPassableMainNeighbours() != target.countPassableMainNeighbours())
-                break
-
-            first = false
-        } while (!isCurrentCellInteresting(false))
-    }
-
-    private fun isCurrentCellInteresting(corridor: Boolean): Boolean {
-        val cell = player.cell
-        if (cell.isInteresting() || player.seesNonFriendlyCreatures())
-            return true
-
-        if (corridor) {
-            return cell.countPassableMainNeighbours() > 2
-        } else {
-            return false
         }
     }
 
-    fun movePlayerVertically(up: Boolean) {
-        assertWriteLock()
-        if (over)
-            return
+    private fun runInRoom(direction: Direction) {
+        val first = player.cell.getCellTowards(direction)
+        if (first.canMoveInto(player.corporeal)) {
+            first.enter(player)
+            tick()
 
+            while (!player.cell.isInteresting(false)) {
+                val target = player.cell.getCellTowards(direction)
+                if (target.canMoveInto(player.corporeal)) {
+                    val previous = player.cell
+                    target.enter(player)
+                    tick()
+
+                    if (previous.countPassableMainNeighbours() != target.countPassableMainNeighbours())
+                        break
+                } else
+                    break
+            }
+        }
+    }
+
+    private fun Cell.isInteresting(corridor: Boolean) =
+        isInteresting() || player.seesNonFriendlyCreatures() || (corridor && countPassableMainNeighbours() > 2)
+
+    fun movePlayerVertically(up: Boolean) = gameAction {
         val target = player.cell.getJumpTarget(up)
         if (target != null) {
             if (target.isExit) {
-                if (ask("Really escape from the dungeon?")) {
+                if (ask("Really escape from the dungeon?"))
                     gameOver("Escaped the dungeon.")
-                    return
-                }
 
             } else {
                 log.fine("Found portal to target $target")
@@ -530,44 +460,35 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun skipTurn() {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun skipTurn() = gameAction {
         tick()
     }
 
-    fun rest(maxTurns: Int): Unit {
-        assertWriteLock()
-        if (over)
-            return
-
+    fun rest(maxTurns: Int) = gameAction {
         val startTime = globalClock.time
         if (maxTurns == -1 && player.hitPoints == player.maximumHitPoints) {
             player.message("You don't feel like you need to rest.")
-            return
-        }
+        } else {
 
-        player.message("Resting...")
-        while (maxTurns == -1 || maxTurns < startTime - globalClock.time)
-        {
-            if (player.hitPoints == player.maximumHitPoints) {
-                player.message("You feel rested!")
-                break
+            player.message("Resting...")
+            while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
+                when {
+                    player.hitPoints == player.maximumHitPoints -> {
+                        player.message("You feel rested!")
+                        break
+                    }
+                    player.getHungerLevel().hungry -> {
+                        player.message("You wake up feeling hungry.")
+                        break
+                    }
+                    player.seesNonFriendlyCreatures() -> {
+                        player.message("Your rest is interrupted.")
+                        break
+                    }
+                    else ->
+                        tick()
+                }
             }
-
-            if (player.getHungerLevel().hungry) {
-                player.message("You wake up feeling hungry.")
-                break
-            }
-
-            if (player.seesNonFriendlyCreatures()) {
-                player.message("Your rest is interrupted.")
-                break
-            }
-
-            tick()
         }
     }
 
@@ -582,7 +503,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
 
         target.onAttackedBy(attacker)
         val weapon = attacker.attack
-        val rollToHit: Int = findRollToHit(attacker, weapon, target)
+        val rollToHit = findRollToHit(attacker, weapon, target)
         if (RandomUtils.rollDie(20) <= rollToHit) {
             message("%s %s %s.", attacker.You(), attacker.verb(weapon.attackVerb), target.you())
             assignDamage(attacker, weapon, target)
@@ -628,7 +549,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
                 val ticks = player.tickRate
                 globalClock.tick(ticks, this)
                 regionClock.tick(ticks, this)
-            } while (player.alive && player.isFainted())
+            } while (player.alive && player.fainted)
 
             currentRegion.updateLighting()
             currentRegion.updateSeenCells(player.visibleCells!!)
@@ -637,15 +558,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    fun message(message: String, vararg args: Any?): Unit {
+    fun message(message: String, vararg args: Any?) {
         console.message(message.format(*args))
     }
 
     fun ask(question: String, vararg args: Any?): Boolean =
         console.ask(question.format(*args))
-
-    val console: Console 
-        get() = LockSafeConsole(ServiceProvider.console, selfRef)
 
     private fun assertWriteLock() {
         selfRef.assertWriteLockedByCurrentThread()
@@ -660,6 +578,12 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
 
     val time: Int
         get() = globalClock.time
+
+    private fun gameAction(callback: () -> Unit) {
+        assertWriteLock()
+        if (!over)
+            callback()
+    }
 
     class object {
         private val log = javaClass<Game>().logger()

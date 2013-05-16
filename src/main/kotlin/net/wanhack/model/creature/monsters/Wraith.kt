@@ -17,20 +17,19 @@
 package net.wanhack.model.creature.monsters
 
 import net.wanhack.model.creature.Monster
-import net.wanhack.model.item.Item
-import net.wanhack.model.item.food.HealingEdible
 import net.wanhack.utils.Probability
 import net.wanhack.utils.RandomUtils
+import net.wanhack.definitions.Items
 
 class Wraith(name: String): Monster(name) {
 
     override fun createCorpse() =
         if (Probability.check(10)) {
-            val essence = createItem(javaClass<HealingEdible>(), "wraith essence")
+            val essence = Items.wraithEssence.create()
             essence.healingEffect = RandomUtils.rollDie(killExperience)
             essence
         } else {
-            val rags = createItem(javaClass<Item>(), "old rags")
+            val rags = Items.oldRags.create()
             rags.color = color
             rags
         }

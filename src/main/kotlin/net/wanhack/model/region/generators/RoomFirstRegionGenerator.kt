@@ -80,7 +80,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
 
         var roomNeighbour: Cell? = null
         var hallwayNeighbour: Cell? = null
-        var walls: Int = 0
+        var walls = 0
         for (neighbour in cell.adjacentCellsInMainDirections) {
             if (neighbour.cellType == CellType.ROOM_FLOOR)
                 roomNeighbour = neighbour
@@ -91,8 +91,8 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         }
 
         if (roomNeighbour != null && hallwayNeighbour != null && walls == 2) {
-            val room = cell.getDirection(roomNeighbour!!)!!
-            val hall = cell.getDirection(hallwayNeighbour!!)!!
+            val room = cell.getDirection(roomNeighbour!!)
+            val hall = cell.getDirection(hallwayNeighbour!!)
             if (room.isOpposite(hall))
                 return true
         }

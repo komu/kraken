@@ -16,16 +16,17 @@
 
 package net.wanhack.ui.console
 
+import javax.swing.*
+import java.awt.*
+import java.util.LinkedHashSet
+import java.util.HashSet
 import com.jgoodies.forms.builder.DefaultFormBuilder
 import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
 import net.wanhack.model.item.Item
-import javax.swing.*
-import java.awt.*
-import java.awt.event.ActionEvent
-import java.util.LinkedHashSet
-import java.util.HashSet
+import net.wanhack.ui.extensions.set
+import kotlin.swing.*
 
 class SelectItemsDialog(owner: Frame, message: String, items: Collection<Item>): JDialog() {
 
@@ -38,8 +39,11 @@ class SelectItemsDialog(owner: Frame, message: String, items: Collection<Item>):
         itemList = JList<Item>(items.toArray(Array<Item>(0) { throw Exception("unexpected") }))
         itemList.setCellRenderer(ItemCellRenderer())
         initContent()
-        itemList.getInputMap()!!.put(KeyStroke.getKeyStroke("ESCAPE"), "cancel")
-        itemList.getActionMap()!!.put("cancel", CancelAction())
+
+        val inputMap = itemList.getInputMap()!!
+        val actionMap = itemList.getActionMap()!!
+        inputMap["ESCAPE"] = "cancel"
+        actionMap["cancel"] = cancelAction()
         pack()
         setLocationRelativeTo(owner)
     }
@@ -51,7 +55,7 @@ class SelectItemsDialog(owner: Frame, message: String, items: Collection<Item>):
         builder.setDefaultDialogBorder()
         builder.add(JScrollPane(itemList))
         builder.add(createButtonBar(), cc.xy(1, 3))
-        setContentPane(builder.getPanel()!!)
+        setContentPane(builder.getPanel())
     }
 
     private fun setAllowMultipleSelections(b: Boolean) {
@@ -59,24 +63,17 @@ class SelectItemsDialog(owner: Frame, message: String, items: Collection<Item>):
     }
 
     private fun createButtonBar(): JPanel {
-        val ok = JButton(OkAction())
-        val cancel = JButton(CancelAction())
-        getRootPane()!!.setDefaultButton(ok)
-
-        return ButtonBarFactory.buildOKCancelBar(ok, cancel)!!
-    }
-
-    inner class OkAction : AbstractAction("Ok") {
-        override fun actionPerformed(e: ActionEvent) {
+        val ok = button("Ok") {
             selectedItems = LinkedHashSet<Item>(itemList.getSelectedValuesList())
             setVisible(false)
         }
+        getRootPane()!!.setDefaultButton(ok)
+
+        return ButtonBarFactory.buildOKCancelBar(ok, JButton(cancelAction()))
     }
 
-    inner class CancelAction : AbstractAction("Cancel") {
-        override fun actionPerformed(e: ActionEvent) {
-            setVisible(false)
-        }
+    private fun cancelAction() = action("Cancel") {
+        setVisible(false)
     }
 
     class object {
@@ -91,11 +88,9 @@ class SelectItemsDialog(owner: Frame, message: String, items: Collection<Item>):
             val dlg = SelectItemsDialog(frame, message, items)
             dlg.setAllowMultipleSelections(false)
             dlg.setVisible(true)
+
             val selected = dlg.selectedItems
-            return if (!selected.empty)
-                selected.iterator().next()
-            else
-                null
+            return if (!selected.empty) selected.first() else null
         }
 
         class ItemCellRenderer : DefaultListCellRenderer() {

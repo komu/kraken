@@ -27,12 +27,13 @@ import java.util.Vector
 import javax.swing.BorderFactory
 import javax.swing.JList
 import javax.swing.JPanel
-import javax.swing.JPopupMenu
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 import net.wanhack.model.GameRef
 import net.wanhack.ui.game.action.DropItemAction
 import net.wanhack.model.Game
+import javax.swing.SwingUtilities
+import kotlin.swing.*
 
 class InventoryView : JPanel(BorderLayout()) {
     private val list = JList<ItemInfo>()
@@ -65,7 +66,9 @@ class InventoryView : JPanel(BorderLayout()) {
 
         Collections.sort(infos)
 
-        list.setListData(Vector<ItemInfo>(infos))
+        SwingUtilities.invokeLater(Runnable {
+            list.setListData(Vector<ItemInfo>(infos))
+        })
     }
 
     private inner class ListMouseListener(): MouseAdapter() {
@@ -88,11 +91,11 @@ class InventoryView : JPanel(BorderLayout()) {
 
             val item = list.getSelectedValue()
             if (item != null) {
-                val popup = JPopupMenu()
-                if (!item.inUse)
-                    popup.add(DropItemAction(gameRef, item.item))
-
-                popup.show(list, (e.getX()), (e.getY()))
+                val popup = popupMenu {
+                    if (!item.inUse)
+                        add(DropItemAction(gameRef, item.item))
+                }
+                popup.show(list, e.getX(), e.getY())
             }
         }
     }

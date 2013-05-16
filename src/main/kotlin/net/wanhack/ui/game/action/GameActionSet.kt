@@ -59,6 +59,7 @@ class GameActionSet {
 
             override fun actionPerformed(e: ActionEvent, game: Game) {
                 action(game)
+                game.listener()
             }
         })
     }

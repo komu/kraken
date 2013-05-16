@@ -22,23 +22,22 @@ import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.events.PersistentEvent
 import net.wanhack.model.region.Cell
-import net.wanhack.model.region.CellSet
 import net.wanhack.model.region.Region
 import net.wanhack.service.creature.CreatureService
 import net.wanhack.utils.logger
+import net.wanhack.model.region.CellSet
 
-class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
+class CreateMonstersEvent(val region: Region, val creatureService: CreatureService): PersistentEvent(500 * 100) {
 
     private val random  = Random()
 
     override fun fire(game: Game) {
-        val creatureService = CreatureService.instance
         val player = game.player
         val creatures = creatureService.randomSwarm(region.level, player.level)
-        log.fine("Created new random creatures: " + creatures)
+        log.fine("Created new random creatures: $creatures")
 
         for (creature in creatures) {
-            val target = getTargetCell(player, creature)
+            val target = findTargetCell(player, creature)
             if (target != null)
                 game.addCreature(creature, target)
             else
@@ -46,13 +45,8 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
         }
     }
 
-    private fun getTargetCell(player: Player, creature: Creature): Cell? {
-        val cell = selectRandomTargetCell(player.getInvisibleCells(), creature)
-        if (cell != null)
-            return cell
-        else
-            return selectRandomTargetCell(region.getCells(), creature)
-    }
+    private fun findTargetCell(player: Player, creature: Creature) =
+        selectRandomTargetCell(player.getInvisibleCells(), creature) ?: selectRandomTargetCell(region.getCells(), creature)
 
     private fun selectRandomTargetCell(candidates: CellSet, creature: Creature): Cell? {
         while (!candidates.isEmpty()) {

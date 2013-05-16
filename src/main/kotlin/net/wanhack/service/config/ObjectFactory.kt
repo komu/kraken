@@ -16,121 +16,30 @@
 
 package net.wanhack.service.config
 
-import net.wanhack.model.item.weapon.NaturalWeapon
-import net.wanhack.utils.exp.Expression
-import org.xml.sax.Attributes
-import org.xml.sax.SAXException
-import org.xml.sax.helpers.DefaultHandler
-import javax.xml.parsers.SAXParserFactory
-import java.io.FileNotFoundException
 import java.util.HashMap
+import net.wanhack.definitions.Definitions
+import net.wanhack.utils.collections.toOption
 
 class ObjectFactory {
-    private val definitions = HashMap<String, ObjectDefinition>()
+    private val definitions = HashMap<String, ObjectDefinition<*>>()
 
-    fun parse(definitionFile: String): Unit {
-        open(definitionFile).use { inputStream ->
-            val parserFactory = SAXParserFactory.newInstance()!!
-            parserFactory.setNamespaceAware(true)
-
-            val parser = parserFactory.newSAXParser()!!
-            parser.parse(inputStream, MySAXHandler())
-        }
-    }
-
-    fun addDefinition(definition: ObjectDefinition) {
+    fun addDefinition(definition: ObjectDefinition<*>) {
         definitions[definition.name] = definition
     }
 
-    private fun open(file: String) =
-        javaClass.getResourceAsStream(file) ?: throw FileNotFoundException("classpath:$file")
+    fun addDefinitions(definitions: Definitions) {
+        for (definition in definitions.definitions)
+            addDefinition(definition)
+    }
 
-    fun create<T>(objectClass: Class<T>, name: String): T =
-        objectClass.cast(getDefinition(name).createObject())!!
+    fun create<T : Any>(objectClass: Class<T>, name: String): T =
+        getDefinition(name).cast(objectClass)!!.create()
 
-    fun getAvailableDefinitionsForClass<T>(cl: Class<T>): List<ObjectDefinition> =
-        definitions.values().filter { it.isInstantiable(cl) }
+    fun getAvailableDefinitionsForClass<T : Any>(cl: Class<T>): List<ObjectDefinition<T>> =
+        definitions.values().flatMap { it -> it.cast(cl).toOption() }
 
     private fun getDefinition(name: String) =
         definitions[name] ?: throw ConfigurationException("No such object <$name>")
 
     fun toString() = definitions.toString()
-
-    private inner class MySAXHandler: DefaultHandler() {
-
-        private var currentDefinition: ObjectDefinition? = null
-
-        override fun startElement(uri: String?, localName: String?, qName: String, attributes: Attributes?) {
-            attributes!!
-            when (localName) {
-                "definitions"      -> { }
-                "creature", "item" -> currentDefinition = startDefinition(attributes)
-                "attributes"       -> currentDefinition!!.addAttributes(attributes)
-                "natural-weapon"   -> currentDefinition!!.addNaturalWeapon(attributes)
-                else               -> throw SAXException("Unknown tag: $localName")
-            }
-        }
-
-        override fun endElement(uri: String?, localName: String?, qName: String) {
-            if (localName == "creature" || localName == "item") {
-                addDefinition(currentDefinition!!)
-                currentDefinition = null
-            }
-        }
-
-        private fun startDefinition(attributes: Attributes): ObjectDefinition {
-            val name = attributes["name"]!!
-            val definition = ObjectDefinition(name, this@ObjectFactory)
-
-            definition.isAbstract  = attributes["abstract"]?.toBoolean() ?: false
-            definition.objectClass = attributes["class"]?.toClass()
-            definition.probability = attributes["probability"]?.toInt()
-            definition.level       = attributes["level"]?.toInt()
-
-            val parent            = attributes["parent"]
-            if (parent != null)
-                definition.parent = getDefinition(parent)
-
-            val maximumInstances = attributes["maximumInstances"]?.toInt()
-            if (maximumInstances != null)
-                definition.maximumInstances = maximumInstances
-
-            val swarmSize = attributes["swarmSize"]?.toExpression()
-            if (swarmSize != null)
-                definition.swarmSize = swarmSize
-
-            return definition
-        }
-
-        private fun ObjectDefinition.addAttributes(attributes: Attributes) {
-            for ((name, value) in attributes)
-                this.attributes[name] = value
-        }
-
-        private fun ObjectDefinition.addNaturalWeapon(attributes: Attributes) {
-            val hit = attributes["verb"] ?: "hit"
-            val toHit = attributes["toHit"] ?: "0"
-            val damage = attributes["damage"] ?: "randint(1,3)"
-
-            this.attributes["naturalWeapon"] = NaturalWeapon(hit, toHit, damage)
-        }
-    }
-
-    private fun Attributes.iterator() =
-        indices.iterator().map { i -> Pair(getLocalName(i)!!, getValue(i)!!) }
-
-    private fun Attributes.get(name: String) =
-        getValue(name)
-
-    private val Attributes.indices: IntRange
-        get() = 0..getLength()-1
-
-    private fun String.toExpression() = Expression.parse(this)
-
-    private fun String.toClass(): Class<out Any?> =
-        try {
-            Class.forName(this)
-        } catch (e: ClassNotFoundException) {
-            throw ConfigurationException("No such class: $this")
-        }
 }

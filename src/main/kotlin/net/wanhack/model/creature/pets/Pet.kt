@@ -34,18 +34,18 @@ abstract class Pet(name: String): Creature(name) {
 
     protected override fun onTick(game: Game) {
         val player = game.player
-        for (creature in adjacentCreatures)
-            if (!creature.isPlayer) {
-                game.attack(this, creature)
-                return
-            }
 
-        if (seesCreature(player)) {
+        val enemy = adjacentCreatures.find { !it.isPlayer }
+        if (enemy != null) {
+            game.attack(this, enemy)
+
+        } else if (seesCreature(player)) {
             lastKnownPlayerPosition = player.cell
             if (isAdjacentToCreature(player) || Probability.check(50))
                 moveRandomly()
             else
                 moveTowards(player.cell)
+
         } else {
             if (cell == lastKnownPlayerPosition)
                 lastKnownPlayerPosition = null

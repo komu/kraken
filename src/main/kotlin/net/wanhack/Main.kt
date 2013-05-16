@@ -36,10 +36,12 @@ import net.wanhack.ui.game.InventoryView
 import net.wanhack.ui.game.RegionView
 import net.wanhack.ui.game.StatisticsView
 import net.wanhack.ui.game.StartGameDialog
+import net.wanhack.ui.extensions.set
 import net.wanhack.utils.SystemAccess
 import net.wanhack.model.GameRef
 import net.wanhack.utils.logger
 import java.util.logging.Level
+import net.wanhack.definitions.*
 
 class Main(val wizardMode: Boolean) {
 
@@ -58,9 +60,9 @@ class Main(val wizardMode: Boolean) {
     {
         JOptionPane.setRootFrame(frame)
 
-        objectFactory.parse("/items/items.xml")
-        objectFactory.parse("/items/weapons.xml")
-        objectFactory.parse("/creatures/creatures.xml")
+        objectFactory.addDefinitions(Weapons)
+        objectFactory.addDefinitions(Items)
+        objectFactory.addDefinitions(Creatures)
 
         ServiceProvider.console = consoleView
         ServiceProvider.objectFactory = objectFactory
@@ -154,48 +156,50 @@ class Main(val wizardMode: Boolean) {
     fun initializeInputMap() {
         log.fine("Initializing input map")
 
+        val inputMap = regionView.getInputMap()!!
+
         // Movement with numlock off
 
-        addInput("UP",          Direction.NORTH);
-        addInput("DOWN",        Direction.SOUTH);
-        addInput("LEFT",        Direction.WEST);
-        addInput("RIGHT",       Direction.EAST);
-        addInput("control UP",    "run " + Direction.NORTH);
-        addInput("control DOWN",  "run " + Direction.SOUTH);
-        addInput("control LEFT",  "run " + Direction.WEST);
-        addInput("control RIGHT", "run " + Direction.EAST);
+        inputMap["UP"]              = Direction.NORTH
+        inputMap["DOWN"]            = Direction.SOUTH
+        inputMap["LEFT"]            = Direction.WEST
+        inputMap["RIGHT"]           = Direction.EAST
+        inputMap["control UP"]      = "run " + Direction.NORTH
+        inputMap["control DOWN"]    = "run " + Direction.SOUTH
+        inputMap["control LEFT"]    = "run " + Direction.WEST
+        inputMap["control RIGHT"]   = "run " + Direction.EAST
 
         // Movement with numlock on
-        addInput("NUMPAD1",   Direction.SW);
-        addInput("NUMPAD2",   Direction.SOUTH);
-        addInput("NUMPAD3",   Direction.SE);
-        addInput("NUMPAD4",   Direction.WEST);
-        addInput("NUMPAD6",   Direction.EAST);
-        addInput("NUMPAD7",   Direction.NW);
-        addInput("NUMPAD8",   Direction.NORTH);
-        addInput("NUMPAD9",   Direction.NE);
-        addInput("control NUMPAD1",   "run " + Direction.SW);
-        addInput("control NUMPAD2",   "run " + Direction.SOUTH);
-        addInput("control NUMPAD3",   "run " + Direction.SE);
-        addInput("control NUMPAD4",   "run " + Direction.WEST);
-        addInput("control NUMPAD6",   "run " + Direction.EAST);
-        addInput("control NUMPAD7",   "run " + Direction.NW);
-        addInput("control NUMPAD8",   "run " + Direction.NORTH);
-        addInput("control NUMPAD9",   "run " + Direction.NE);
+        inputMap["NUMPAD1"] = Direction.SW
+        inputMap["NUMPAD2"] = Direction.SOUTH
+        inputMap["NUMPAD3"] = Direction.SE
+        inputMap["NUMPAD4"] = Direction.WEST
+        inputMap["NUMPAD6"] = Direction.EAST
+        inputMap["NUMPAD7"] = Direction.NW
+        inputMap["NUMPAD8"] = Direction.NORTH
+        inputMap["NUMPAD9"] = Direction.NE
+        inputMap["control NUMPAD1"] = "run " + Direction.SW
+        inputMap["control NUMPAD2"] = "run " + Direction.SOUTH
+        inputMap["control NUMPAD3"] = "run " + Direction.SE
+        inputMap["control NUMPAD4"] = "run " + Direction.WEST
+        inputMap["control NUMPAD6"] = "run " + Direction.EAST
+        inputMap["control NUMPAD7"] = "run " + Direction.NW
+        inputMap["control NUMPAD8"] = "run " + Direction.NORTH
+        inputMap["control NUMPAD9"] = "run " + Direction.NE
 
         // Up/down
-        addInput("typed >",   "down");
-        addInput("typed <",   "up");
+        inputMap["typed >"]     = "down"
+        inputMap["typed <"]     = "up"
 
         // Other controls
-        addInput("NUMPAD5",   "rest");
-        addInput("SPACE",     "rest");
-        addInput("typed .",   "rest");
-        addInput("M",   "map");
+        inputMap["NUMPAD5"]     = "rest"
+        inputMap["SPACE"]       = "rest"
+        inputMap["typed ."]     = "rest"
+        inputMap["M"]           = "map"
 
         // Scrolling history
-        addInput("PAGE_UP", "history up");
-        addInput("PAGE_DOWN", "history down");
+        inputMap["PAGE_UP"]     = "history up"
+        inputMap["PAGE_DOWN"]   = "history down"
     }
 
     fun initializeActionMap() {
@@ -203,19 +207,18 @@ class Main(val wizardMode: Boolean) {
 
         val actionMap = regionView.getActionMap()!!
 
-        for (direction in Direction.values())
-            actionMap.put(direction, MovePlayerAction(direction, false))
+        for (direction in Direction.values()) {
+            actionMap[direction]        = gameAction { it.movePlayer(direction) }
+            actionMap["run $direction"] = gameAction { it.runTowards(direction) }
+        }
 
-        for (direction in Direction.values())
-            actionMap.put("run " + direction, MovePlayerAction(direction, true))
+        actionMap["down"]           = gameAction { it.movePlayerVertically(false) }
+        actionMap["up"]             = gameAction { it.movePlayerVertically(true) }
+        actionMap["rest"]           = gameAction { it.skipTurn() }
 
-        actionMap.put("down", VerticalMoveAction(false))
-        actionMap.put("up",   VerticalMoveAction(true))
-
-        actionMap.put("rest", SkipTurnAction())
-        actionMap.put("history up", HistoryScrollAction(true))
-        actionMap.put("history down", HistoryScrollAction(false))
-        actionMap.put("map",  MapAction())
+        actionMap["history up"]     = uiAction { consoleView.scrollUp() }
+        actionMap["history down"]   = uiAction { consoleView.scrollDown() }
+        actionMap["map"]            = uiAction { regionView.translate = !regionView.translate; regionView.repaint() }
     }
 
     fun startNewGame() {
@@ -252,22 +255,15 @@ class Main(val wizardMode: Boolean) {
         inventoryView.gameRef = gameRef
     }
 
-    fun addInput(keyStroke: String, actionMapKey: Any) {
-        val inputMap = regionView.getInputMap()!!
-        inputMap.put(KeyStroke.getKeyStroke(keyStroke), actionMapKey)
-    }
-
     private fun update() {
         val ref = gameRef
         if (ref != null) {
-            SwingUtilities.invokeLater(Runnable {
-                ref.executeQuery { game ->
-                    consoleView.turnEnd()
-                    regionView.repaint()
-                    statisticsView.updateStatistics(game)
-                    inventoryView.update(game)
-                }
-            })
+            ref.executeQuery { game ->
+                consoleView.turnEnd()
+                regionView.repaint()
+                statisticsView.updateStatistics(game)
+                inventoryView.update(game)
+            }
 
             ref.yieldWriteLock()
         }
@@ -293,47 +289,15 @@ class Main(val wizardMode: Boolean) {
         });
     }
 
-    inner class MovePlayerAction(val direction: Direction, val run: Boolean) : AbstractAction() {
-
-        public override fun actionPerformed(e: ActionEvent) {
-            gameRef?.scheduleAction { game ->
-                if (run)
-                    game.runTowards(direction);
-                else
-                    game.movePlayer(direction);
-            }
+    fun gameAction(callback: (Game) -> Unit) = object : AbstractAction() {
+        override fun actionPerformed(e: ActionEvent) {
+            gameRef?.scheduleAction { callback(it) }
         }
     }
 
-    inner class VerticalMoveAction(val up: Boolean) : AbstractAction() {
-
-        public override fun actionPerformed(e: ActionEvent) {
-            gameRef?.scheduleAction { it.movePlayerVertically(up) }
-        }
-    }
-
-    inner class SkipTurnAction : AbstractAction() {
-
-        public override fun actionPerformed(e: ActionEvent) {
-            gameRef?.scheduleAction { it.skipTurn() }
-        }
-    }
-
-    inner class HistoryScrollAction(val up: Boolean) : AbstractAction() {
-
-        public override fun actionPerformed(e: ActionEvent) {
-            if (up)
-                consoleView.scrollUp()
-            else
-                consoleView.scrollDown()
-        }
-    }
-
-    inner class MapAction : AbstractAction() {
-
-        public override fun actionPerformed(e: ActionEvent) {
-            regionView.translate = !regionView.translate
-            regionView.repaint()
+    fun uiAction(callback: () -> Unit) = object : AbstractAction() {
+        override fun actionPerformed(e: ActionEvent) {
+            callback()
         }
     }
 

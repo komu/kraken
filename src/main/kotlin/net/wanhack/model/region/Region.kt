@@ -20,6 +20,7 @@ import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
 import java.util.HashMap
+import net.wanhack.utils.collections.toOption
 
 class Region(val world: World, val name: String, val level: Int, val width: Int, val height: Int): Iterable<Cell> {
 
@@ -53,15 +54,8 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
         player.cell = startCells[location] ?: throw IllegalStateException("Region '$name' has no start point named '$location'.")
     }
 
-    fun getCreatures(): List<Creature> {
-        val creatures = listBuilder<Creature>()
-        for (cell in cells) {
-            val creature = cell.creature
-            if (creature != null)
-                creatures.add(creature)
-        }
-        return creatures.build()
-    }
+    fun getCreatures(): List<Creature> =
+        cells.flatMap { it.creature.toOption() }
 
     fun findPath(start: Cell, goal: Cell): List<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)
@@ -103,8 +97,8 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
         getCell(x, y).items.add(item)
     }
 
-    fun getCells(): CellSet {
-        val result = CellSet(this)
+    fun getCells(): MutableCellSet {
+        val result = MutableCellSet(this)
         for (cell in cells)
             result.add(cell)
         return result
@@ -116,8 +110,8 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     fun getRoomFloorCells(): CellSet =
         getMatchingCells { it.isInRoom() }
 
-    fun getMatchingCells(predicate: (Cell) -> Boolean): CellSet {
-        val result = CellSet(this)
+    fun getMatchingCells(predicate: (Cell) -> Boolean): MutableCellSet {
+        val result = MutableCellSet(this)
         for (cell in cells)
             if (predicate(cell))
                 result.add(cell)
