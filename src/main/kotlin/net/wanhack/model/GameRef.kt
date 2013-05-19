@@ -33,7 +33,7 @@ class GameRef(private val game: Game) {
         })
     }
 
-    fun executeQuery<T>(callback: (Game) -> T): T =
+    fun executeQuery<T>(callback: (ReadOnlyGame) -> T): T =
         lock.readLock().withLock {
             callback(game)
         }

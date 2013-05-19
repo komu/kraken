@@ -46,12 +46,12 @@ import net.wanhack.definitions.Weapons
 import net.wanhack.definitions.Items
 import net.wanhack.service.creature.CreatureService
 
-class Game(val config: GameConfiguration, val wizardMode: Boolean) {
+class Game(val config: GameConfiguration, val wizardMode: Boolean) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
-    val player = Player(config.name)
+    override val player = Player(config.name)
     private val world = World(this)
-    var maxDungeonLevel = 0
+    override var maxDungeonLevel = 0
     private var over = false
     val selfRef = GameRef(this)
     val console = LockSafeConsole(ServiceProvider.console, selfRef)
@@ -122,13 +122,13 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         regionClock.schedule(event.rate, event)
     }
 
-    val dungeonLevel: Int
+    override val dungeonLevel: Int
         get() = currentRegion.level
 
-    val cellInFocus: Cell
+    override val cellInFocus: Cell
         get() = selectedCell ?: player.cell
 
-    val selectedCell: Cell?
+    override val selectedCell: Cell?
         get() = null
 
     fun enterRegion(name: String, location: String) {
@@ -363,10 +363,10 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    val currentRegion: Region
+    override val currentRegion: Region
         get() = player.region
 
-    val score: Int
+    override val score: Int
         get() = player.experience
 
     fun movePlayer(direction: Direction) = gameAction {
@@ -576,7 +576,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) {
         }
     }
 
-    val time: Int
+    override val time: Int
         get() = globalClock.time
 
     private fun gameAction(callback: () -> Unit) {

@@ -27,6 +27,7 @@ import javax.swing.JComponent
 import net.wanhack.model.creature.HungerLevel
 import net.wanhack.model.creature.Player
 import net.wanhack.model.Game
+import net.wanhack.model.ReadOnlyGame
 
 class StatisticsView: JComponent() {
 
@@ -67,13 +68,13 @@ class StatisticsView: JComponent() {
         }
     }
 
-    fun updateStatistics(game: Game?) {
+    fun updateStatistics(game: ReadOnlyGame?) {
         line1 = getStatsLine1(game)
         line2 = getStatsLine2(game)
         repaint()
     }
 
-    private fun getStatsLine1(game: Game?): Line? {
+    private fun getStatsLine1(game: ReadOnlyGame?): Line? {
         if (game == null)
             return null
 
@@ -83,7 +84,7 @@ class StatisticsView: JComponent() {
         return line
     }
 
-    private fun getStatsLine2(game: Game?): Line? {
+    private fun getStatsLine2(game: ReadOnlyGame?): Line? {
         if (game == null)
             return null
 
