@@ -26,6 +26,7 @@ import net.wanhack.utils.Probability
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator.RegionParameters
 import net.wanhack.utils.collections.randomElement
 import net.wanhack.utils.logger
+import net.wanhack.utils.RandomUtils
 
 class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
     private val region = Region(world, name, level, rp.width, rp.height)
@@ -45,7 +46,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     }
 
     private fun createRooms(): List<Room> {
-        val roomCount = rp.minRooms + random.nextInt(rp.maxRooms - rp.minRooms + 1)
+        val roomCount = RandomUtils.randomInt(rp.minRooms, rp.maxRooms)
         val rooms = listBuilder<Room>()
 
         roomCount.times {
@@ -122,6 +123,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     private fun connect(start: Room, goal: Room) {
         val startCell = start.getRandomCell(random)
         val goalCell = goal.getRandomCell(random)
+
         var previous: Cell? = null
         for (cell in createPath(startCell, goalCell)!!) {
             if (cell.cellType != CellType.ROOM_FLOOR)
@@ -192,8 +194,8 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     }
 
     private fun randomRoom(): Room {
-        val w = rp.roomMinWidth + random.nextInt(1 + rp.roomMaxWidth - rp.roomMinWidth)
-        val h = rp.roomMinHeight + random.nextInt(1 + rp.roomMaxHeight - rp.roomMinHeight)
+        val w = RandomUtils.randomInt(rp.roomMinWidth, rp.roomMaxWidth)
+        val h = RandomUtils.randomInt(rp.roomMinHeight, rp.roomMaxHeight)
         val x = 1 + random.nextInt(region.width - w - 2)
         val y = 1 + random.nextInt(region.height - h - 2)
         return Room(region, x, y, w, h)

@@ -26,7 +26,7 @@ import net.wanhack.model.GameRef
 import net.wanhack.model.creature.Player
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
-import net.wanhack.ui.game.tile.DefaultTileProvider
+import net.wanhack.ui.game.tile.TileProvider
 
 class RegionView: JComponent() {
 
@@ -38,7 +38,7 @@ class RegionView: JComponent() {
         }
 
     var translate = true
-    private val tileProvider = DefaultTileProvider();
+    private val tileProvider = TileProvider();
 
     {
         setBackground(Color.BLACK)
