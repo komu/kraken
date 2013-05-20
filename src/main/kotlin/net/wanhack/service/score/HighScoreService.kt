@@ -17,7 +17,6 @@
 package net.wanhack.service.score
 
 import net.wanhack.common.Version
-import net.wanhack.model.GameRef
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -26,28 +25,26 @@ import java.security.AccessControlException
 import java.util.concurrent.Executors
 import net.wanhack.utils.logger
 import java.util.logging.Level
+import net.wanhack.model.ReadOnlyGame
 
 class HighScoreService {
     private val log = javaClass.logger()
     private val highScoreExecutor = Executors.newSingleThreadExecutor()
 
-    fun saveGameScore(gameRef: GameRef, killer: String) {
-        val parameters = gameRef.executeQuery { game ->
-            val params = ParameterSet()
-            val player = game.player
-            params.add("name", player.name)
-            params.add("score", game.score)
-            params.add("killed_by", killer)
-            params.add("level", player.level)
-            params.add("max_hitpoints", player.maximumHitPoints)
-            params.add("dungeon_level", game.dungeonLevel)
-            params.add("max_dungeon_level", game.maxDungeonLevel)
-            params.add("client_version", Version.fullVersion)
-            params
-        }
+    fun saveGameScore(game: ReadOnlyGame, killer: String) {
+        val params = ParameterSet()
+        val player = game.player
+        params.add("name", player.name)
+        params.add("score", game.score)
+        params.add("killed_by", killer)
+        params.add("level", player.level)
+        params.add("max_hitpoints", player.maximumHitPoints)
+        params.add("dungeon_level", game.dungeonLevel)
+        params.add("max_dungeon_level", game.maxDungeonLevel)
+        params.add("client_version", Version.fullVersion)
 
         highScoreExecutor.execute(Runnable() {
-            saveGameScoreImpl(parameters)
+            saveGameScoreImpl(params)
         })
     }
 

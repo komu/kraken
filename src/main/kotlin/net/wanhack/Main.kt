@@ -24,7 +24,6 @@ import javax.swing.Action.*
 import kotlin.swing.*
 import net.wanhack.common.Version
 import net.wanhack.model.common.Direction
-import net.wanhack.model.Game
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.region.RegionLoader
 import net.wanhack.service.ServiceProvider
@@ -42,6 +41,7 @@ import net.wanhack.model.GameRef
 import net.wanhack.utils.logger
 import java.util.logging.Level
 import net.wanhack.definitions.*
+import net.wanhack.model.GameFacade
 
 class Main(val wizardMode: Boolean) {
 
@@ -229,26 +229,20 @@ class Main(val wizardMode: Boolean) {
 
         if (config != null) {
             try {
-                val game = Game(config, wizardMode)
+                val game = GameFacade(config, wizardMode, consoleView) { update() }
                 consoleView.clear();
                 setGame(game);
                 gameRef!!.scheduleAction { it.start() }
 
             } catch (e: Exception) {
                 log.log(Level.SEVERE, "Failed to start new game", e);
-                JOptionPane.showMessageDialog(
-                        frame, e, "Failed to start new game", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, e, "Failed to start new game", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private fun setGame(game: Game?) {
-        if (game != null) {
-            game.listener = { update() }
-            this.gameRef = game.selfRef
-        } else {
-            this.gameRef = null
-        }
+    private fun setGame(game: GameFacade?) {
+        this.gameRef = if (game != null) GameRef(game) else null
 
         gameActions.gameRef = gameRef
         regionView.gameRef = gameRef
@@ -289,7 +283,7 @@ class Main(val wizardMode: Boolean) {
         });
     }
 
-    fun gameAction(callback: (Game) -> Unit) = object : AbstractAction() {
+    fun gameAction(callback: (GameFacade) -> Unit) = object : AbstractAction() {
         override fun actionPerformed(e: ActionEvent) {
             gameRef?.scheduleAction { callback(it) }
         }

@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package net.wanhack.model
+package net.wanhack.utils
 
-import java.util.concurrent.Executors
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock
 
-class GameRef(val game: GameFacade) {
-
-    private val gameExecutor = Executors.newSingleThreadExecutor()
-
-    fun scheduleAction(callback: (GameFacade) -> Unit) {
-        gameExecutor.execute(Runnable() {
-            callback(game)
-        })
+fun Lock.relinquish<T>(callback: () -> T): T =
+    try {
+        unlock()
+        callback()
+    } finally {
+        lock()
     }
 
-    fun executeQuery<T>(callback: (ReadOnlyGame) -> T): T =
-        game.query(callback)
-
-    fun yieldWriteLock()  {
-        game.yieldWriteLock()
+fun WriteLock.yield() {
+    if (isHeldByCurrentThread()) {
+        unlock()
+        lock()
     }
 }

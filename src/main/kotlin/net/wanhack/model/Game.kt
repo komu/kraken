@@ -45,16 +45,15 @@ import net.wanhack.utils.logger
 import net.wanhack.definitions.Weapons
 import net.wanhack.definitions.Items
 import net.wanhack.service.creature.CreatureService
+import net.wanhack.model.common.Console
 
-class Game(val config: GameConfiguration, val wizardMode: Boolean) : ReadOnlyGame {
+class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: Console) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
     override val player = Player(config.name)
     private val world = World(this)
     override var maxDungeonLevel = 0
-    private var over = false
-    val selfRef = GameRef(this)
-    val console = LockSafeConsole(ServiceProvider.console, selfRef)
+    var over = false
 
     var listener: (() -> Unit) = { };
 
@@ -67,8 +66,6 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) : ReadOnlyGam
     }
 
     fun start() {
-        assertWriteLock()
-
         player.wieldedWeapon = Weapons.dagger.create()
         player.inventoryItems.add(Items.foodRation.create())
         player.inventoryItems.add(Items.cyanideCapsule.create())
@@ -493,7 +490,6 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) : ReadOnlyGam
     }
 
     fun attack(attacker: Creature, target: Creature): Boolean {
-        assertWriteLock()
         if (!target.alive)
             return false
 
@@ -565,14 +561,10 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) : ReadOnlyGam
     fun ask(question: String, vararg args: Any?): Boolean =
         console.ask(question.format(*args))
 
-    private fun assertWriteLock() {
-        selfRef.assertWriteLockedByCurrentThread()
-    }
-
     fun gameOver(reason: String) {
         over = true
         if (!player.regenerated) {
-            ServiceProvider.highScoreService.saveGameScore(selfRef, reason)
+            ServiceProvider.highScoreService.saveGameScore(this, reason)
         }
     }
 
@@ -580,7 +572,6 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean) : ReadOnlyGam
         get() = globalClock.time
 
     private fun gameAction(callback: () -> Unit) {
-        assertWriteLock()
         if (!over)
             callback()
     }

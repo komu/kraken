@@ -19,7 +19,7 @@ package net.wanhack.ui.game.action
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import net.wanhack.model.GameRef
-import net.wanhack.model.Game
+import net.wanhack.model.GameFacade
 
 abstract class GameAction(name: String, gameRef: GameRef? = null): AbstractAction(name) {
 
@@ -39,5 +39,5 @@ abstract class GameAction(name: String, gameRef: GameRef? = null): AbstractActio
         }
     }
 
-    protected abstract fun actionPerformed(e: ActionEvent, game: Game)
+    protected abstract fun actionPerformed(e: ActionEvent, game: GameFacade)
 }
