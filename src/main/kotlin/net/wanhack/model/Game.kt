@@ -47,15 +47,13 @@ import net.wanhack.definitions.Items
 import net.wanhack.service.creature.CreatureService
 import net.wanhack.model.common.Console
 
-class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: Console) : ReadOnlyGame {
+class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
     override val player = Player(config.name)
     private val world = World(this)
     override var maxDungeonLevel = 0
-    var over = false
-
-    var listener: (() -> Unit) = { };
+    var over = false;
 
     {
         player.sex = config.sex
@@ -96,8 +94,6 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
 
         addGlobalEvent(HungerEvent())
         addGlobalEvent(RegainHitPointsEvent())
-
-        listener()
     }
 
     private fun putPetNextToPlayer(pet: Creature) {

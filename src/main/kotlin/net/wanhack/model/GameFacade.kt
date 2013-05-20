@@ -28,13 +28,11 @@ import net.wanhack.utils.yield
 /**
  * All commands from UI to game go through this facade.
  */
-class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Console, callback: () -> Unit) {
+class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Console, val listener: (Boolean) -> Unit) {
 
     private val lock = ReentrantReadWriteLock(true)
-    private val game = Game(config, wizardMode, LockRelinquishingConsole(console, lock.writeLock()));
-
-    {
-        game.listener = callback
+    private val game = Game(config, wizardMode, LockRelinquishingConsole(console, lock.writeLock())) {
+        listener(true)
     }
 
     fun query<T>(callback: (ReadOnlyGame) -> T): T =
@@ -116,16 +114,13 @@ class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Consol
         game.search()
     }
 
-    fun notifyListener() =
-        game.listener()
-
     private fun gameAction(body: () -> Unit) {
         lock.writeLock().withLock {
             if (!game.over)
                 body()
         }
 
-        notifyListener()
+        listener(false)
     }
 
     class LockRelinquishingConsole(val console: Console, val lock: Lock) : Console {

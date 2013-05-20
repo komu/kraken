@@ -59,7 +59,6 @@ class GameActionSet {
 
             override fun actionPerformed(e: ActionEvent, game: GameFacade) {
                 action(game)
-                game.notifyListener()
             }
         })
     }

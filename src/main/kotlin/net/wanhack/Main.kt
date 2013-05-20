@@ -229,7 +229,7 @@ class Main(val wizardMode: Boolean) {
 
         if (config != null) {
             try {
-                val game = GameFacade(config, wizardMode, consoleView) { update() }
+                val game = GameFacade(config, wizardMode, consoleView) { tick -> update(tick) }
                 consoleView.clear();
                 setGame(game);
                 gameRef!!.scheduleAction { it.start() }
@@ -249,11 +249,14 @@ class Main(val wizardMode: Boolean) {
         inventoryView.gameRef = gameRef
     }
 
-    private fun update() {
+    private fun update(tick: Boolean) {
         val ref = gameRef
         if (ref != null) {
             ref.executeQuery { game ->
-                consoleView.turnEnd()
+                if (tick)
+                    consoleView.turnEnd()
+                else
+                    consoleView.repaint()
                 regionView.repaint()
                 statisticsView.updateStatistics(game)
                 inventoryView.update(game)
