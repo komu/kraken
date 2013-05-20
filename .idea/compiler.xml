@@ -22,7 +22,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="wanhack" />
+        <module name="core" />
+        <module name="desktop" />
+        <module name="wanhack-core" />
+        <module name="wanhack-swing-ui" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

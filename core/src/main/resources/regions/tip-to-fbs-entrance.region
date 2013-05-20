@@ -1,0 +1,38 @@
+                                      
+                        #############   ######                 ######
+                        #############   ##   # ####  ####  ### #   ##
+                        ####WWWWW####        # ###   #### ###  #    #
+    >       <           ####W###W####        # ####  ##    ### #    #
+    #       #           ####W#?#W####        # ##    ####  ### #    #
+    #       #           ####W###W####        # ##    #### ###  #    #
+    #       #           ####WWWWW####        # #     #    #    #    #
+    # #   # #           #############        ###################    #
+    #########           #############                               #
+        #                     W                  ########        ####
+        #                     #                 ## ######        #  
+        #                    ###            ###### ############### 
+    #########               #####           #   ## ######        #       ####
+    ## ### ##              #######          #    ########        ####    ####
+    #########                ###            #                       #    ####
+    ## ### ##                ###            #                       #########
+    #########                ################                          #
+    #                                                                  #
+    ####################################################################      
+                                     
+; starting positions
+:start   "from up"    12,4
+:start   "from down"  4,4
+
+; portals
+:portal up      12,4   "%previous" "from down"
+:portal down    4,4    "%next"     "from up"
+
+; monsters
+;        coords  name
+
+; items - how to mark these? 
+; The scroll in position (30, 5) gives the final tip that reveals
+; what the Society is, and how to find it. Does not tell whether the
+; Society should be eliminated, or should the player try to join it.
+
+; 'W' stands for the wall where no ordinary shovel can dig into
