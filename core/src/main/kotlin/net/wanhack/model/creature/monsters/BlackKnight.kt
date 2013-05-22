@@ -25,8 +25,9 @@ import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.region.Cell
 import net.wanhack.utils.collections.shuffled
 import net.wanhack.utils.collections.randomElement
+import net.wanhack.definitions.Weapons
 
-class BlackKnight(name: String): Monster(name) {
+class BlackKnight: Monster("The Black Knight") {
 
     private var lastKnownPlayerPosition: Cell? = null
     private val bite = NaturalWeapon("bite", "1", "randint(0, 1)")
@@ -40,11 +41,19 @@ class BlackKnight(name: String): Monster(name) {
         }
 
     {
-        level = 3
-        tickRate = 50
+        level = 30
         letter = 'p'
         color = Color.BLACK
-        armorClass = 7
+
+        hitPoints = 600
+        hitBonus = 20
+        weight = 80000
+        luck = 2
+        canUseDoors = true
+        killExperience = 4000
+        armorClass = -6
+        tickRate = 60
+        wieldedWeapon = Weapons.blackSword.create()
     }
 
     override fun talk(target: Creature)  {

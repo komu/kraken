@@ -21,15 +21,17 @@ import java.util.HashMap
 import java.util.Random
 import net.wanhack.model.Game
 import net.wanhack.model.creature.Player
-import net.wanhack.model.item.Item
 import net.wanhack.service.ServiceProvider
-import net.wanhack.service.config.ObjectDefinition
 import net.wanhack.service.creature.CreatureService
 import net.wanhack.service.region.generators.MazeRegionGenerator
 import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator
 import net.wanhack.utils.Probability
 import net.wanhack.utils.logger
+import net.wanhack.definitions.ObjectDefinition
+import net.wanhack.definitions.ItemDefinition
+import net.wanhack.definitions.betweenLevels
+import net.wanhack.definitions.weightedRandom
 
 class World(val game: Game) {
     private val loadedRegions = HashMap<String, Region>()
@@ -147,54 +149,26 @@ class World(val game: Game) {
         }
     }
     private fun addRandomItems(region: Region) {
-        val minItemLevel = 0
-        val maxItemLevel = region.level
         val itemCount = random.nextInt(6)
 
+        val items = ServiceProvider.objectFactory.instantiableItems.betweenLevels(0, region.level)
         val emptyCells = region.getCellsForItemsAndCreatures()
         for (i in 1..itemCount) {
             if (emptyCells.empty)
                 return
 
-            val item = randomItem(minItemLevel, maxItemLevel)
+            val item = items.weightedRandom().create()
 
             emptyCells.randomElement().items.add(item)
         }
     }
 
-    private fun randomItem(minLevel: Int, maxLevel: Int): Item {
-        val defs = ServiceProvider.objectFactory.getAvailableDefinitionsForClass(javaClass<Item>())
-        return random(defs, minLevel, maxLevel).create()
-    }
-
-    private fun random<T>(defs: List<ObjectDefinition<T>>, minLevel: Int, maxLevel: Int): ObjectDefinition<T> {
-        var probabilitySum = 0
-        val probabilities = ArrayList<DefProbability<T>>(defs.size)
-        for (od in defs) {
-            val level = od.level
-            if (level == null || (level >= minLevel && level <= maxLevel)) {
-                val probability = od.probability ?: 100
-                probabilities.add(DefProbability(od, probability, level))
-                probabilitySum += probability
-            }
-        }
-
-        var item = random.nextInt(probabilitySum)
-        for (dp in probabilities) {
-            if (dp.level == null || (dp.level >= minLevel && dp.level <= maxLevel)) {
-                if (item < dp.probability)
-                    return dp.def
-
-                item -= dp.probability
-            }
-        }
-
-        throw RuntimeException("could not randomize definition")
-    }
+    private val items: Collection<ItemDefinition<*>>
+        get() = ServiceProvider.objectFactory.instantiableItems
 
     class object {
         private val log = javaClass<World>().logger()
 
-        class DefProbability<T>(val def: ObjectDefinition<T>, val probability: Int, val level: Int?)
+        class DefProbability<T : ObjectDefinition<*>>(val def: T, val probability: Int, val level: Int?)
     }
 }

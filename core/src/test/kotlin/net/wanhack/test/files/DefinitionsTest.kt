@@ -22,16 +22,13 @@ import net.wanhack.definitions.*
 class DefinitionsTest {
 
     test fun loadDefinitions() {
-        for (def in Weapons.definitions)
-            if (!def.isAbstract)
-                def.create()
+        for (def in Weapons.itemDefinitions)
+            def.create()
 
-        for (def in Items.definitions)
-            if (!def.isAbstract)
-                def.create()
+        for (def in Items.itemDefinitions)
+            def.create()
 
-        for (def in Creatures.definitions)
-            if (!def.isAbstract)
-                def.create()
+        for (def in Creatures.creatureDefinitions)
+            def.create()
     }
 }

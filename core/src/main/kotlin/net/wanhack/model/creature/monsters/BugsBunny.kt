@@ -22,15 +22,21 @@ import net.wanhack.model.common.Direction
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Monster
 import net.wanhack.utils.RandomUtils
+import net.wanhack.model.item.weapon.NaturalWeapon
 
-class BugsBunny(name: String): Monster(name) {
+class BugsBunny: Monster("Bugs Bunny") {
 
     {
-        level = 3
-        hitPoints = 1
+        level = 20
+        hitPoints = RandomUtils.randomInt(100, 200)
         letter = 'r'
         color = Color.WHITE
-        tickRate = 40
+        luck = 2
+        naturalWeapon = NaturalWeapon("hit", "10", "randint(4,10)")
+        killExperience = 450
+        armorClass = 0
+        tickRate = 50
+        weight = 4500
     }
 
     override fun talk(target: Creature) {

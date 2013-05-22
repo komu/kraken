@@ -14,15 +14,31 @@
  * limitations under the License.
  */
 
-package net.wanhack.model.item.weapon
+package net.wanhack.definitions
 
-import java.awt.Color
 import net.wanhack.utils.exp.Expression
+import net.wanhack.model.creature.Creature
 
-open class Sword(name: String): BasicWeapon(name, WeaponClass.SWORD, "randint(1, 6)") {
-    {
-        damage = Expression.parse("1d3")
-        letter = '†'
-        color = Color.DARK_GRAY
+class CreatureDefinition<T : Creature>(val name: String, override val level: Int, val createCreature: () -> T) : ObjectDefinition<T>() {
+
+    var swarmSize = Expression.constant(1)
+
+    val instantiable: Boolean
+        get() = true
+
+    fun createSwarm(): Collection<T> {
+        val swarm = listBuilder<T>()
+
+        swarmSize.evaluate().times {
+            swarm.add(create())
+        }
+
+        return swarm.build()
     }
+
+    override fun create(): T {
+        return createCreature()
+    }
+
+    fun toString() = "CreatureDefinition [name=$name]"
 }

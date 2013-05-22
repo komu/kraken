@@ -17,11 +17,17 @@
 package net.wanhack.model.item.armor
 
 import net.wanhack.model.item.Item
+import net.wanhack.definitions.Colors
 
 open class Armor(name: String): Item(name) {
 
     var armorBonus = 1
     var bodyPart = BodyPart.TORSO
+
+    {
+        color = Colors.BROWN
+        letter = ']'
+    }
 
     override val description: String
         get() = "ac: $armorBonus; ${super.description}"

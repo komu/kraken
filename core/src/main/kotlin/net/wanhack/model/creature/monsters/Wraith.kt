@@ -20,8 +20,15 @@ import net.wanhack.model.creature.Monster
 import net.wanhack.utils.Probability
 import net.wanhack.utils.RandomUtils
 import net.wanhack.definitions.Items
+import java.awt.Color
 
 class Wraith(name: String): Monster(name) {
+
+    {
+        letter = 'W'
+        color = Color.BLACK
+        canUseDoors = true
+    }
 
     override fun createCorpse() =
         if (Probability.check(10)) {

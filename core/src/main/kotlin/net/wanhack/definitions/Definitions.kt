@@ -17,7 +17,6 @@
 package net.wanhack.definitions
 
 import net.wanhack.model.item.Item
-import net.wanhack.service.config.ObjectDefinition
 import java.util.ArrayList
 import net.wanhack.utils.exp.Expression
 import net.wanhack.model.creature.Creature
@@ -25,53 +24,52 @@ import net.wanhack.utils.RandomUtils
 
 abstract class Definitions {
 
-    val definitions = ArrayList<ObjectDefinition<*>>()
+    val itemDefinitions = ArrayList<ItemDefinition<*>>()
+    val creatureDefinitions = ArrayList<CreatureDefinition<*>>()
 
     fun item<T : Item>(name: String,
-                       parent: ObjectDefinition<in T>? = null,
-                       isAbstract: Boolean = false,
                        level: Int? = null,
-                       objectClass: Class<T>? = null,
                        probability: Int? = null,
                        maximumInstances: Int? = null,
-                       init: T.() -> Unit): ObjectDefinition<T> {
-        val def = ObjectDefinition<T>(name)
-        def.objectClass = objectClass
-        def.isAbstract = isAbstract
-        def.parent = parent
-        def.probability = probability
-        def.level = level
+                       create: () -> T): ItemDefinition<T> {
+        val def = ItemDefinition<T>(name, create)
+
+        if (level != null)
+            def.level = level
+
+        if (probability != null)
+            def.probability = probability
+
         if (maximumInstances != null)
             def.maximumInstances = maximumInstances
-        def.initHook = init
 
-        definitions.add(def)
+        itemDefinitions.add(def)
         return def
     }
 
     fun creature<T : Creature>(name: String,
-                               parent: ObjectDefinition<in T>? = null,
-                               isAbstract: Boolean = false,
-                               level: Int? = null,
-                               objectClass: Class<T>? = null,
+                               level: Int,
                                probability: Int? = null,
                                swarmSize: Expression? = null,
-                               init: T.() -> Unit): ObjectDefinition<T> {
-        val def = ObjectDefinition<T>(name)
-        def.objectClass = objectClass
-        def.isAbstract = isAbstract
-        def.parent = parent
-        def.probability = probability
-        def.level = level
-        def.initHook = init
+                               create: () -> T): CreatureDefinition<T> {
+        val def = CreatureDefinition<T>(name, level, create)
+
+        if (probability != null)
+            def.probability = probability
+
         if (swarmSize != null)
             def.swarmSize = swarmSize
 
-        definitions.add(def)
+        creatureDefinitions.add(def)
         return def
     }
 
     fun exp(exp: String) = Expression.parse(exp)
 
     fun randint(min: Int, max: Int) = RandomUtils.randomInt(min, max)
+
+    fun <T : Any> T.init(callback: T.() -> Unit): T {
+        callback()
+        return this
+    }
 }

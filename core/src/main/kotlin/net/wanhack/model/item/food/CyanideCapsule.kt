@@ -18,7 +18,7 @@ package net.wanhack.model.item.food
 
 import net.wanhack.model.creature.Player
 
-class CyanideCapsule(title: String): Food(title) {
+class CyanideCapsule: Food("a cyanide capsule") {
 
     public override fun onEatenBy(eater: Player) {
         if (eater.ask(false, "Really take %s?", title)) {

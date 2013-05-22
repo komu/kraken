@@ -18,28 +18,36 @@ package net.wanhack.service.config
 
 import java.util.HashMap
 import net.wanhack.definitions.Definitions
-import net.wanhack.utils.collections.toOption
+import net.wanhack.definitions.ItemDefinition
+import net.wanhack.definitions.CreatureDefinition
 
 class ObjectFactory {
-    private val definitions = HashMap<String, ObjectDefinition<*>>()
+    private val creatures = HashMap<String, CreatureDefinition<*>>()
+    private val items = HashMap<String, ItemDefinition<*>>()
 
-    fun addDefinition(definition: ObjectDefinition<*>) {
-        definitions[definition.name] = definition
-    }
+    val instantiableItems: Collection<ItemDefinition<*>>
+        get() = items.values().filter { it.instantiable }
+
+    val instantiableCreatures: Collection<CreatureDefinition<*>>
+        get() = creatures.values().filter { it.instantiable }
 
     fun addDefinitions(definitions: Definitions) {
-        for (definition in definitions.definitions)
-            addDefinition(definition)
+        for (definition in definitions.itemDefinitions)
+            items[definition.name] = definition
+
+        for (definition in definitions.creatureDefinitions)
+            creatures[definition.name] = definition
     }
 
-    fun create<T : Any>(objectClass: Class<T>, name: String): T =
-        getDefinition(name).cast(objectClass)!!.create()
+    fun createCreature(name: String) =
+        getCreatureDefinition(name).create()
 
-    fun getAvailableDefinitionsForClass<T : Any>(cl: Class<T>): List<ObjectDefinition<T>> =
-        definitions.values().flatMap { it -> it.cast(cl).toOption() }
+    fun createItem(name: String) =
+        getItemDefinition(name).create()
 
-    private fun getDefinition(name: String) =
-        definitions[name] ?: throw ConfigurationException("No such object <$name>")
+    private fun getItemDefinition(name: String) =
+        items[name] ?: throw ConfigurationException("No such item <$name>")
 
-    fun toString() = definitions.toString()
+    private fun getCreatureDefinition(name: String) =
+        creatures[name] ?: throw ConfigurationException("No such creature <$name>")
 }

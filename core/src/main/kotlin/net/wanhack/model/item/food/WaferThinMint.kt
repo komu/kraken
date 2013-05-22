@@ -19,7 +19,7 @@ package net.wanhack.model.item.food
 import net.wanhack.model.creature.HungerLevel
 import net.wanhack.model.creature.Player
 
-class WaferThinMint(name: String): Food(name) {
+class WaferThinMint: Food("wafer-thin mint") {
 
     {
         weight = 20

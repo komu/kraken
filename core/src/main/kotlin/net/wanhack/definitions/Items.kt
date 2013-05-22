@@ -20,6 +20,7 @@ import net.wanhack.model.item.*
 import net.wanhack.model.item.armor.BodyPart.*
 import net.wanhack.model.item.food.*
 import java.awt.Color
+import net.wanhack.model.item.armor.Armor
 
 object Items : Definitions() {
 
@@ -27,131 +28,144 @@ object Items : Definitions() {
 
     // Rocks
 
-    val rock = item("a rock", objectClass = javaClass<Item>()) {
+    fun rock(name: String, probability: Int? = null) = item(name, probability=probability) {
+        Item(name).init {
+            letter = '*'
+        }
+    }
+
+    val rock = rock("a rock").init {
         weight = 200
     }
 
-    val verySmallRock = item("a very small rock", parent = rock, probability = 10) {
+    val verySmallRock = rock("a very small rock", probability = 10).init {
         weight = 0
     }
 
-    val boulder = item("a boulder", parent = rock, probability = 5) {
+    val boulder = rock("a boulder", probability = 5).init {
         weight = 80000
     }
 
     // Light sources
 
-    val lightSource = item("light source", objectClass = javaClass<LightSource>(), isAbstract = true) {
-        color = Color.YELLOW
-        letter = '~'
+    val torch = item("a torch", level = 1, probability = 75) {
+        LightSource("a torch").init {
+            color = Colors.BROWN
+            weight = 300
+        }
     }
 
-    val torch = item("a torch", parent = lightSource, level = 1, probability = 75) {
-        color = Colors.BROWN
-        weight = 300
+    val lantern = item("a lantern", level = 10, probability = 10) {
+        LightSource("a lantern").init {
+            color = Colors.LIGHT_BROWN
+            weight = 600
+        }
     }
 
-    val lantern = item("a lantern", parent = lightSource, level = 10, probability = 10) {
-        color = Colors.LIGHT_BROWN
-        weight = 600
-    }
-
-    val norwegianLantern = item("a Norwegian lantern", parent = lightSource, level = 25, probability = 15, maximumInstances = 5) {
-        color = Color.RED
-        weight = 820
+    val norwegianLantern = item("a Norwegian lantern", level = 25, probability = 15, maximumInstances = 5) {
+        LightSource("a Norwegian lantern").init {
+            color = Color.RED
+            weight = 820
+        }
     }
 
     // EDIBLES
 
-    val foodRation = item("food ration", objectClass = javaClass<Food>()) {
-        letter = '%'
+    fun food(name: String, probability: Int? = null, init: Food.() -> Unit) = item(name, probability=probability) {
+        Food(name).init { init() }
+    }
+
+    val foodRation = food("food ration") {
         effectiveness = 1000
         weight = 500
     }
 
-    val chunkOfCheese = item("chunk of cheese", objectClass = javaClass<Food>()) {
-        letter = '%'
+    val chunkOfCheese = food("chunk of cheese") {
         color = Color.YELLOW
         effectiveness = 600
         weight = 350
     }
 
-    val bigChunkOfCheese = item("big chunk of cheese", parent = chunkOfCheese) {
+    val bigChunkOfCheese = food("big chunk of cheese") {
+        color = Color.YELLOW
         effectiveness = 1200
         weight = 1100
     }
 
-    val bun = item("bun", objectClass = javaClass<Food>(), probability = 60) {
+    val bun = food("bun", probability = 60) {
         letter = '%'
         color = Colors.BROWNISH
         effectiveness = 80
         weight = 60
     }
 
-    val fridayBun = item("Friday bun", objectClass = javaClass<HealingEdible>(), probability = 30) {
-        letter = '%'
-        color = Colors.BROWNISH
-        effectiveness = 400
-        healingEffect = 5
-        weight = 120
+    val fridayBun = item("Friday bun", probability = 30) {
+        HealingEdible("Friday bun").init {
+            color = Colors.BROWNISH
+            effectiveness = 400
+            healingEffect = 5
+            weight = 120
+        }
     }
 
-    val wraithEssence = item("wraith essence", objectClass = javaClass<HealingEdible>(), probability = 0) {
-        letter = '%'
-        color = Color.WHITE
-        effectiveness = 100
-        weight = 4
+    val wraithEssence = item("wraith essence", probability = 0) {
+        HealingEdible("wraith essence").init {
+            color = Color.WHITE
+            effectiveness = 100
+            weight = 4
+        }
     }
 
-    val waferThinMint = item("wafer-thin mint", objectClass = javaClass<WaferThinMint>(), probability = 20) {
-    }
+    val waferThinMint = item("wafer-thin mint", probability = 20) { WaferThinMint() }
 
-    val cyanideCapsule = item("a cyanide capsule", objectClass = javaClass<CyanideCapsule>(), probability = 0) {
-    }
+    val cyanideCapsule = item("a cyanide capsule", probability = 0) { CyanideCapsule() }
 
     // POTIONS
 
-    val potion = item("potion", objectClass = javaClass<Item>(), isAbstract = true) {
-        color = Colors.BROWN
-        letter = '!'
-    }
-
-    val healingPotion = item<HealingEdible>("healing potion", objectClass = javaClass<HealingEdible>(), parent = potion, probability = 25) {
-        color = Colors.LIGHT_BLUE
-        effectiveness = 10
-        healingEffect = 10
-        weight = 250
-        letter = '!'
+    val healingPotion = item("healing potion", probability = 25) {
+        HealingEdible("healing potion").init {
+            color = Colors.LIGHT_BLUE
+            effectiveness = 10
+            healingEffect = 10
+            weight = 250
+            letter = '!'
+        }
     }
 
     // SCROLLS
 
-    val scroll = item("scroll", objectClass = javaClass<Item>(), isAbstract = true) {
-        color = Color.WHITE
-        letter = '?'
+    fun scroll(name: String) = item(name) {
+        Item(name).init {
+            color = Color.WHITE
+            letter = '?'
+        }
     }
-
 
     // WANDS  
 
-    val wand = item("wand", objectClass = javaClass<Item>(), isAbstract = true) {
-        color = Colors.BROWN
-        letter = '-'
+    fun wand(name: String) = item(name) {
+        Item(name).init {
+            color = Colors.BROWN
+            letter = '-'
+        }
     }
 
     // STAVES 
 
-    val staff = item("staff", objectClass = javaClass<Item>(), isAbstract = true) {
-        color = Colors.BROWN
-        letter = '_'
+    fun staff(name: String) = item(name) {
+        Item(name).init {
+            color = Colors.BROWN
+            letter = '_'
+        }
     }
-
 
     // RINGS  
 
-    val ring = item("ring", objectClass = javaClass<Item>(), isAbstract = true) {
-        color = Colors.BROWN
-        letter = '='
+    fun ring(name: String) = item(name) {
+        Item(name).init {
+            color = Colors.BROWN
+            letter = '='
+        }
     }
 
     // AMULETS
@@ -160,39 +174,49 @@ object Items : Definitions() {
 
     // Light armors
 
-    val lightArmor = item("light armor", objectClass = javaClass<armor.Armor>(), isAbstract = true) {
-        letter = ']'
-        color = Colors.BROWN
-        bodyPart = TORSO
-    }
+    fun lightArmor(name: String, level: Int, probability: Int? = null, maximumInstances: Int? = null, init: Armor.() -> Unit) =
+        item(name, level = level, probability = probability, maximumInstances = maximumInstances) {
+            Armor(name).init {
+                letter = ']'
+                init()
+            }
+        }
 
-    val oldRags = item("old rags", parent = lightArmor, level = 1, probability = 30) {
+    fun heavyArmor(name: String, level: Int, probability: Int? = null, maximumInstances: Int? = null, init: Armor.() -> Unit) =
+        item(name, level = level, probability = probability, maximumInstances = maximumInstances) {
+            Armor(name).init {
+                letter = '['
+                init()
+            }
+        }
+
+    val oldRags = lightArmor("old rags", level = 1, probability = 30) {
         weight = 500
         color = Color.RED
         bodyPart = TORSO
         armorBonus = 0
     }
 
-    val clothes = item("clothes", parent = lightArmor, level = 1) {
+    val clothes = lightArmor("clothes", level = 1) {
         weight = 500
         color = Color.BLUE
         bodyPart = TORSO
         armorBonus = 1
     }
 
-    val softLeatherArmor = item("a soft leather armor", parent = lightArmor, level = 4) {
+    val softLeatherArmor = lightArmor("a soft leather armor", level = 4) {
         weight = 2300
         bodyPart = TORSO
         armorBonus = 2
     }
 
-    val hardLeatherArmor = item("a hard leather armor", parent = lightArmor, level = 4, probability = 70) {
+    val hardLeatherArmor = lightArmor("a hard leather armor", level = 4, probability = 70) {
         weight = 3000
         bodyPart = TORSO
         armorBonus = 3
     }
 
-    val studdedLeatherArmor = item("a studded leather armor", parent = lightArmor, level = 9, probability = 60) {
+    val studdedLeatherArmor = lightArmor("a studded leather armor", level = 9, probability = 60) {
         weight = 3500
         bodyPart = TORSO
         armorBonus = 4
@@ -200,25 +224,19 @@ object Items : Definitions() {
 
     // Heavy armors
 
-    val heavyArmor = item("heavy armor", objectClass = javaClass<armor.Armor>(), isAbstract = true) {
-        letter = '['
-        color = Colors.BROWN
-        bodyPart = TORSO
-    }
-
-    val ringMail = item("a ring mail", parent = heavyArmor, level = 15, probability = 40) {
+    val ringMail = heavyArmor("a ring mail", level = 15, probability = 40) {
         weight = 4600
         bodyPart = TORSO
         armorBonus = 5
     }
 
-    val chainMail = item("a chain mail", parent = heavyArmor, level = 30, probability = 30) {
+    val chainMail = heavyArmor("a chain mail", level = 30, probability = 30) {
         weight = 6000
         bodyPart = TORSO
         armorBonus = 6
     }
 
-    val plateMail = item("a plate mail", parent = heavyArmor, level = 50, probability = 20) {
+    val plateMail = heavyArmor("a plate mail", level = 50, probability = 20) {
         weight = 12000
         bodyPart = TORSO
         armorBonus = 7
@@ -226,31 +244,31 @@ object Items : Definitions() {
 
     // Helmets
 
-    val leatherCap = item("a leather cap", parent = lightArmor, level = 1) {
+    val leatherCap = lightArmor("a leather cap", level = 1) {
         weight = 200
         bodyPart = HEAD
         armorBonus = 1
     }
 
-    val metalCap = item("a metal cap", parent = heavyArmor, level = 5) {
+    val metalCap = heavyArmor("a metal cap", level = 5) {
         weight = 400
         bodyPart = HEAD
         armorBonus = 2
     }
 
-    val chainCoif = item("a chain coif", parent = heavyArmor, level = 10) {
+    val chainCoif = heavyArmor("a chain coif", level = 10) {
         weight = 2100
         bodyPart = HEAD
         armorBonus = 3
     }
 
-    val ironHelmet = item("an iron helmet", parent = heavyArmor, level = 20, probability = 60) {
+    val ironHelmet = heavyArmor("an iron helmet", level = 20, probability = 60) {
         weight = 3500
         bodyPart = HEAD
         armorBonus = 4
     }
 
-    val steelHelmet = item("a steel helmet", parent = heavyArmor, level = 30, probability = 25) {
+    val steelHelmet = heavyArmor("a steel helmet", level = 30, probability = 25) {
         weight = 3300
         bodyPart = HEAD
         armorBonus = 5
@@ -258,25 +276,25 @@ object Items : Definitions() {
 
     // Shields
 
-    val smallWoodenShield = item("a small wooden shield", parent = lightArmor, level = 1) {
+    val smallWoodenShield = lightArmor("a small wooden shield", level = 1) {
         weight = 700
         bodyPart = SHIELD
         armorBonus = 1
     }
 
-    val smallMetalShield = item("a small metal shield", parent = lightArmor, level = 4) {
+    val smallMetalShield = lightArmor("a small metal shield", level = 4) {
         weight = 1500
         bodyPart = SHIELD
         armorBonus = 2
     }
 
-    val largeWoodenShield = item("a large wooden shield", parent = heavyArmor, level = 13, probability = 80) {
+    val largeWoodenShield = lightArmor("a large wooden shield", level = 13, probability = 80) {
         weight = 3200
         bodyPart = SHIELD
         armorBonus = 3
     }
 
-    val largeMetalShield = item("a large metal shield", parent = heavyArmor, level = 18, probability = 40) {
+    val largeMetalShield = heavyArmor("a large metal shield", level = 18, probability = 40) {
         weight = 4500
         bodyPart = SHIELD
         armorBonus = 4
@@ -285,13 +303,13 @@ object Items : Definitions() {
 
     // Gloves, gauntlets
 
-    val leatherGloves = item("a pair of leather gloves", parent = lightArmor, level = 3) {
+    val leatherGloves = lightArmor("a pair of leather gloves", level = 3) {
         weight = 200
         bodyPart = HANDS
         armorBonus = 1
     }
 
-    val gauntlets = item("a pair of gauntlets", parent = heavyArmor, level = 9, probability = 60) {
+    val gauntlets = lightArmor("a pair of gauntlets", level = 9, probability = 60) {
         weight = 450
         bodyPart = HANDS
         armorBonus = 2
@@ -300,19 +318,19 @@ object Items : Definitions() {
 
     // Boots, shoes
 
-    val leatherShoes = item("a pair of leather shoes", parent = lightArmor, level = 1) {
+    val leatherShoes = lightArmor("a pair of leather shoes", level = 1) {
         weight = 380
         bodyPart = FEET
         armorBonus = 1
     }
 
-    val leatherBoots = item("a pair of leather boots", parent = lightArmor, level = 8) {
+    val leatherBoots = lightArmor("a pair of leather boots", level = 8) {
         weight = 1200
         bodyPart = FEET
         armorBonus = 2
     }
 
-    val steelBoots = item("a pair of steel boots", parent = heavyArmor, level = 23, probability = 80) {
+    val steelBoots = heavyArmor("a pair of steel boots", level = 23, probability = 80) {
         weight = 2700
         bodyPart = FEET
         armorBonus = 3
@@ -322,15 +340,18 @@ object Items : Definitions() {
 
     // ARTIFACT ITEMS
 
-    val grailShapedLantern = item("the Grail-shaped lantern", parent = lightSource, level = 30, probability = 0, maximumInstances = 5) {
-        color = Color.YELLOW
-        weight = 800
+    val grailShapedLantern = item("the Grail-shaped lantern", level = 30, probability = 0, maximumInstances = 5) {
+        LightSource("the Grail-shaped lantern").init {
+            weight = 800
+        }
     }
 
     // TODO: class for digger items - pick-axe, pick, shovel at least
-    val unordinaryShovel = item("the Unordinary Shovel", objectClass = javaClass<Item>(), level = 0, probability = 0, maximumInstances = 1) {
-        color = Color.WHITE
-        letter = 'ٱ'
-        weight = 2500
+    val unordinaryShovel = item("the Unordinary Shovel", level = 0, probability = 0, maximumInstances = 1) {
+        Item("the Unordinary Shovel").init {
+            color = Color.WHITE
+            letter = 'ٱ'
+            weight = 2500
+        }
     }
 }

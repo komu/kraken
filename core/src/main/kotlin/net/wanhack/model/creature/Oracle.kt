@@ -21,7 +21,7 @@ import net.wanhack.model.Game
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.utils.collections.randomElement
 
-class Oracle(name: String): Creature(name) {
+class Oracle(): Creature("The Oracle") {
 
     private val curse = NaturalWeapon("curse", "20", "0");
 

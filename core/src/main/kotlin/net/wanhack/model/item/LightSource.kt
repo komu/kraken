@@ -16,6 +16,14 @@
 
 package net.wanhack.model.item
 
+import java.awt.Color
+
 open class LightSource(name: String): Item(name) {
+
+    {
+        letter = '~'
+        color = Color.YELLOW
+    }
+
     override val lighting = 100
 }

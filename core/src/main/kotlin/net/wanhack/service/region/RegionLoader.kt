@@ -16,8 +16,6 @@
 
 package net.wanhack.service.region
 
-import net.wanhack.model.creature.Creature
-import net.wanhack.model.item.Item
 import net.wanhack.model.region.CellType
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.RegionInfo
@@ -80,8 +78,8 @@ class RegionLoader(val objectFactory: ObjectFactory) {
         when (d) {
             is StartDirective    -> region.addStartPoint(d.name, d.x, d.y)
             is LightDirective    -> region.getCell(d.x, d.y).lightPower = d.power
-            is CreatureDirective -> region.addCreature(d.x, d.y, objectFactory.create(javaClass<Creature>(), d.name))
-            is ItemDirective     -> region.addItem(d.x, d.y, objectFactory.create(javaClass<Item>(), d.name))
+            is CreatureDirective -> region.addCreature(d.x, d.y, objectFactory.createCreature(d.name))
+            is ItemDirective     -> region.addItem(d.x, d.y, objectFactory.createItem(d.name))
             is PortalDirective   -> region.addPortal(d.x, d.y, getRegion(d.target, regionAliases), d.location, d.up)
             else                 -> log.severe("unknown directive: $d")
         }
