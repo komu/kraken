@@ -322,16 +322,16 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
                 var nextCell = currentCell.getCellTowards(dir)
                 val range = player.getThrowRange(projectile.weight)
 
-                var d = 0
-                while (d < range && nextCell.isPassable()) {
+                var distance = 0
+                while (distance < range && nextCell.isPassable()) {
                     currentCell = nextCell
                     nextCell = currentCell.getCellTowards(dir)
                     val creature = currentCell.creature
                     if (creature != null)
-                        if (throwAttack(player, projectile, creature, d))
+                        if (throwAttack(player, projectile, creature))
                             break
 
-                    d++
+                    distance++
                 }
                 currentCell.items.add(projectile)
                 tick()
@@ -339,7 +339,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
         }
     }
 
-    private fun throwAttack(attacker: Creature, projectile: Item, target: Creature, distance: Int): Boolean {
+    private fun throwAttack(attacker: Creature, projectile: Item, target: Creature): Boolean {
         target.onAttackedBy(attacker)
         val rollToHit = findRollToHit(attacker, projectile, target)
         if (RandomUtils.rollDie(20) <= rollToHit) {
