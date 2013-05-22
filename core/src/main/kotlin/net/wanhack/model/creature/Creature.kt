@@ -33,6 +33,7 @@ import net.wanhack.utils.Probability
 import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.exp.Expression
 import java.awt.*
+import java.lang.Math.max
 import java.util.*
 import net.wanhack.utils.collections.filterByType
 import net.wanhack.model.common.Directions
@@ -86,6 +87,12 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     val armoring = Armoring()
     val inventoryItems = HashSet<Item>()
 
+    /** Numbers of ticks that this creature is paralyzed for */
+    var paralyzedTicks = 0
+        set(ticks) {
+            $paralyzedTicks = max(0, ticks)
+        }
+
     val game: Game
         get() = region.world.game
 
@@ -125,7 +132,14 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     val alive: Boolean
         get() = hitPoints > 0 && cellOrNull != null
 
+    val paralyzed: Boolean
+        get() = paralyzedTicks > 0
+
     override fun act(game: Game): Int {
+        if (paralyzed) {
+            paralyzedTicks -= tickRate
+            return tickRate
+        }
         onTick(game)
         return tickRate
     }

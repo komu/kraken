@@ -453,8 +453,9 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
         }
     }
 
-    fun skipTurn() = gameAction {
-        tick()
+    fun skipTurn() {
+        if (!over)
+            tick()
     }
 
     fun rest(maxTurns: Int) = gameAction {
@@ -539,6 +540,10 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
         if (player.alive) {
             do {
                 val ticks = player.tickRate
+
+                if (player.paralyzed)
+                    player.paralyzedTicks -= ticks
+
                 globalClock.tick(ticks, this)
                 regionClock.tick(ticks, this)
             } while (player.alive && player.fainted)
@@ -568,8 +573,13 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
         get() = globalClock.time
 
     private fun gameAction(callback: () -> Unit) {
-        if (!over)
-            callback()
+        if (!over) {
+            if (!player.paralyzed) {
+                callback()
+            } else {
+                message("You are paralyzed.")
+            }
+        }
     }
 
     class object {
