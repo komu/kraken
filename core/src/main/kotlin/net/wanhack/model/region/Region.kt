@@ -74,9 +74,8 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     fun containsPoint(x: Int, y: Int) = x >= 0 && x < width && y >= 0 && y < height
 
     fun updateSeenCells(seen: Set<Cell>) {
-        for (cell in cells)
-            if (cell in seen)
-                cell.hasBeenSeen = true
+        for (cell in seen)
+            cell.hasBeenSeen = true
     }
 
     fun addPortal(x: Int, y: Int, target: String, location: String, up: Boolean) {
