@@ -67,6 +67,16 @@ class ObjectDefinition<T>(val name: String) {
         if (isInstantiable(cl))
             this as ObjectDefinition<K> else null
 
+    fun createSwarm(): Collection<T> {
+        val swarm = listBuilder<T>()
+
+        swarmSize().times {
+            swarm.add(create())
+        }
+
+        return swarm.build()
+    }
+
     fun create(): T {
         if (isAbstract)
             throw ConfigurationException("Can't instantiate abstract definition <$name>")

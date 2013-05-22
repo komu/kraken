@@ -35,13 +35,8 @@ class CreatureService {
     fun randomSwarmBetween(minLevel: Int, maxLevel: Int): Collection<Creature> {
         val defs = ServiceProvider.objectFactory.getAvailableDefinitionsForClass(javaClass<Creature>())
         val def = random(defs, minLevel, maxLevel)
-        val swarm = listBuilder<Creature>()
 
-        def.swarmSize().times {
-            swarm.add(def.create())
-        }
-
-        return swarm.build()
+        return def.createSwarm()
     }
 
     private fun random<T>(defs: List<ObjectDefinition<T>>, minLevel: Int, maxLevel: Int): ObjectDefinition<T> {
