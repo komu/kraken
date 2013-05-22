@@ -46,13 +46,14 @@ import net.wanhack.definitions.Weapons
 import net.wanhack.definitions.Items
 import net.wanhack.service.creature.CreatureService
 import net.wanhack.model.common.Console
+import net.wanhack.utils.MaximumCounter
 
 class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
     override val player = Player(config.name)
     private val world = World(this)
-    override var maxDungeonLevel = 0
+    val maximumDungeonLevel = MaximumCounter(0)
     var over = false;
 
     {
@@ -115,6 +116,9 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
         regionClock.schedule(event.rate, event)
     }
 
+    override val maxDungeonLevel: Int
+        get() = maximumDungeonLevel.value
+
     override val dungeonLevel: Int
         get() = currentRegion.level
 
@@ -131,7 +135,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
         region.setPlayerLocation(player, location)
         if (region != oldRegion) {
             regionClock.clear()
-            maxDungeonLevel = Math.max(region.level, maxDungeonLevel)
+            maximumDungeonLevel.update(region.level)
             if (oldCell != null) {
                 val pet = oldCell.findAdjacentPet()
                 if (pet != null)
