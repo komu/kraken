@@ -7,7 +7,7 @@
 
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="14" />
 
-    <application android:label="Wanhack">
+    <application android:label="Wanhack" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <activity android:name=".GameActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
