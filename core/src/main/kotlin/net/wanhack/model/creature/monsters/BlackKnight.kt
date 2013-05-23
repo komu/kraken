@@ -16,7 +16,6 @@
 
 package net.wanhack.model.creature.monsters
 
-import java.awt.Color
 import net.wanhack.model.Game
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Monster
@@ -26,6 +25,7 @@ import net.wanhack.model.region.Cell
 import net.wanhack.utils.collections.shuffled
 import net.wanhack.utils.collections.randomElement
 import net.wanhack.definitions.Weapons
+import net.wanhack.model.common.Color
 
 class BlackKnight: Monster("The Black Knight") {
 

@@ -16,11 +16,11 @@
 
 package net.wanhack.model.item
 
-import java.awt.Color
 import net.wanhack.model.common.Attack
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.utils.RandomUtils
+import net.wanhack.model.common.Color
 
 open class Item(title: String): Attack {
 

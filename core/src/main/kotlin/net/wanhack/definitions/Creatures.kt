@@ -16,7 +16,7 @@
 
 package net.wanhack.definitions
 
-import java.awt.Color
+import net.wanhack.model.common.Color
 import net.wanhack.model.creature.*
 import net.wanhack.model.creature.monsters.*
 import net.wanhack.model.item.weapon.NaturalWeapon
@@ -47,7 +47,7 @@ object Creatures : Definitions() {
     val whiteAnt = ant("white ant", level = 4) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randint(3, 7)
-        color = Color.WHITE
+        color = Color.RED
         level = 4
         luck = 0
         killExperience = 5
@@ -59,7 +59,7 @@ object Creatures : Definitions() {
     val greyAnt = ant("grey ant", level = 6) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,4)"))
         hitPoints = randint(4, 8)
-        color = Color.GRAY
+        color = Color.RED
         level = 6
         luck = 0
         killExperience = 8
@@ -107,7 +107,7 @@ object Creatures : Definitions() {
     val greenAnt = ant("green ant", level = 14, swarmSize = exp("randint(4, 6)")) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(2,7)"))
         hitPoints = randint(20, 35)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 14
         luck = 2
         killExperience = 28
@@ -173,7 +173,7 @@ object Creatures : Definitions() {
     val giantBat = bat("giant bat", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randint(2, 5)
-        color = Colors.BROWN
+        color = Color.BROWN
         level = 1
         luck = 0
         killExperience = 2
@@ -209,7 +209,7 @@ object Creatures : Definitions() {
     val giantGreenBat = bat("giant green bat", level = 8, swarmSize = exp("randint(3, 5)")) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(3,7)"))
         hitPoints = randint(8, 13)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 8
         luck = 2
         killExperience = 9
@@ -222,7 +222,7 @@ object Creatures : Definitions() {
     val siameseBat = bat("siamese bat", level = 8, swarmSize = exp("randint(3, 5)")) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(3,8)"))
         hitPoints = randint(9, 15)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 8
         luck = 2
         killExperience = 13
@@ -324,7 +324,7 @@ object Creatures : Definitions() {
     val giantGreenCentipede = centipede("giant green centipede", level = 4) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(1,6)"))
         hitPoints = randint(6, 10)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 4
         luck = 3
         killExperience = 5
@@ -358,7 +358,7 @@ object Creatures : Definitions() {
     val jackal = canine("jackal", level = 1, swarmSize = exp("randint(3, 6)")) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randint(1, 5)
-        color = Colors.BROWNISH
+        color = Color.BROWNISH
         level = 1
         luck = 0
         killExperience = 1
@@ -370,7 +370,7 @@ object Creatures : Definitions() {
     val wildDog = canine("wild dog", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randint(3, 5)
-        color = Colors.BROWN
+        color = Color.BROWN
         level = 2
         luck = 2
         killExperience = 3
@@ -578,7 +578,7 @@ object Creatures : Definitions() {
     val lion = feline("lion", level = 12) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,8)"))
         hitPoints = randint(21, 45)
-        color = Colors.YELLOWISH
+        color = Color.YELLOWISH
         level = 12
         luck = 1
         killExperience = 11
@@ -615,7 +615,7 @@ object Creatures : Definitions() {
     val clayGolem = golem("clay golem", level = 10) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,8)"))
         hitPoints = randint(30, 80)
-        color = Colors.BROWN
+        color = Color.BROWN
         level = 10
         luck = -1
         canUseDoors = false
@@ -675,7 +675,7 @@ object Creatures : Definitions() {
     val ghost = baseGhost("ghost", level = 13) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,9)"))
         hitPoints = randint(23, 33)
-        color = Colors.WHITEISH
+        color = Color.WHITEISH
         level = 13
         luck = 1
         killExperience = 19
@@ -699,7 +699,7 @@ object Creatures : Definitions() {
     val bunshee = baseGhost("bunshee", level = 23, probability = 30) {
         naturalWeapon = NaturalWeapon("hit", exp("5"), exp("randint(6,13)"))
         hitPoints = randint(53, 73)
-        color = Colors.BROWNISH
+        color = Color.BROWNISH
         level = 23
         luck = 3
         killExperience = 25
@@ -812,7 +812,7 @@ object Creatures : Definitions() {
     val greenJelly = jelly("green jelly", level = 8) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(3,6)"))
         hitPoints = randint(26, 35)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 3
         luck = 0
         killExperience = 7
@@ -834,7 +834,7 @@ object Creatures : Definitions() {
     val gardenSnake = baseSnake("garden snake", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(1,4)"))
         hitPoints = randint(3, 5)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 1
         luck = -1
         killExperience = 2
@@ -846,7 +846,7 @@ object Creatures : Definitions() {
     val rattlesnake = baseSnake("rattlesnake", level = 10) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(3,8)"))
         hitPoints = randint(15, 25)
-        color = Colors.BROWNISH
+        color = Color.BROWNISH
         level = 10
         luck = -1
         killExperience = 9
@@ -916,7 +916,7 @@ object Creatures : Definitions() {
     val greenMold = mold("green mold", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randint(4, 8)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 2
         luck = 3
         killExperience = 2
@@ -928,7 +928,7 @@ object Creatures : Definitions() {
     val brownMold = mold("brown mold", level = 3) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(2,6)"))
         hitPoints = randint(5, 9)
-        color = Colors.BROWN
+        color = Color.BROWN
         level = 3
         luck = 0
         killExperience = 3
@@ -957,7 +957,7 @@ object Creatures : Definitions() {
     fun baseOrc(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
         monster(name, level = level, swarmSize = swarmSize, probability = probability) {
             letter = 'o'
-            color = Colors.DARK_GREEN
+            color = Color.DARK_GREEN
             canUseDoors = true
             corpsePoisonousness = exp("3")
             init()
@@ -979,7 +979,7 @@ object Creatures : Definitions() {
         hitPoints = randint(30, 50)
         level = 14
         luck = 0
-        color = Colors.BROWN
+        color = Color.BROWN
         killExperience = 19
         armorClass = 8
         tickRate = 100
@@ -991,7 +991,7 @@ object Creatures : Definitions() {
     fun baseOgre(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
         monster(name, level = level, swarmSize = swarmSize, probability = probability) {
             letter = 'O'
-            color = Colors.BROWN
+            color = Color.BROWN
             canUseDoors = true
             corpsePoisonousness = exp("1")
             init()
@@ -1023,7 +1023,7 @@ object Creatures : Definitions() {
     val knightOfNi = person("knight of ni", swarmSize = exp("randint(1, 5)"), create = { KnightOfNi(it) }, level = 8) {
         hitPoints = randint(20, 30)
         level = 8
-        color = Colors.BLACKISH
+        color = Color.BLACKISH
         luck = 2
         wieldedWeapon = Weapons.scimitar.create()
         killExperience = 25
@@ -1051,7 +1051,7 @@ object Creatures : Definitions() {
     fun giant(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
         monster(name, level = level, swarmSize = swarmSize, probability = probability) {
             letter = 'P'
-            color = Colors.BROWN
+            color = Color.BROWN
             canUseDoors = true
             corpsePoisonousness = exp("1")
             init()
@@ -1096,7 +1096,7 @@ object Creatures : Definitions() {
     fun baseLizard(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
         monster(name, level = level, swarmSize = swarmSize, probability = probability) {
             letter = 'R'
-            color = Colors.GREEN
+            color = Color.GREEN
             corpsePoisonousness = exp("0")
             init()
         }
@@ -1116,7 +1116,7 @@ object Creatures : Definitions() {
     val lizard = baseLizard("lizard", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randint(2, 4)
-        color = Colors.GREEN
+        color = Color.GREEN
         level = 2
         luck = 2
         killExperience = 2
@@ -1128,7 +1128,7 @@ object Creatures : Definitions() {
     val crocodile = baseLizard("crocodile", level = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("7"), exp("randint(4,7)"))
         hitPoints = randint(50, 80)
-        color = Colors.DARK_GREEN
+        color = Color.DARK_GREEN
         level = 20
         luck = 0
         killExperience = 15
@@ -1189,7 +1189,7 @@ object Creatures : Definitions() {
     fun baseTroll(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
         monster(name, level = level, swarmSize = swarmSize, probability = probability) {
             letter = 'T'
-            color = Colors.DARK_GREEN
+            color = Color.DARK_GREEN
             canUseDoors = true
             corpsePoisonousness = exp("2")
             init()
@@ -1220,7 +1220,7 @@ object Creatures : Definitions() {
         hitPoints = randint(60, 90)
         level = 15
         luck = 2
-        color = Colors.GREEN
+        color = Color.GREEN
         killExperience = 21
         armorClass = 12
         tickRate = 80
@@ -1298,7 +1298,7 @@ object Creatures : Definitions() {
         hitPoints = randint(60, 90)
         level = 25
         luck = 2
-        color = Colors.GREEN
+        color = Color.GREEN
         killExperience = 29
         armorClass = 6
         tickRate = 90
@@ -1335,7 +1335,7 @@ object Creatures : Definitions() {
         hitPoints = randint(35, 55)
         level = 14
         luck = 0
-        color = Colors.DARK_GREEN
+        color = Color.DARK_GREEN
         killExperience = 16
         armorClass = 10
         tickRate = 100
@@ -1347,7 +1347,7 @@ object Creatures : Definitions() {
         hitPoints = randint(100, 170)
         level = 20
         luck = 1
-        color = Colors.GREEN
+        color = Color.GREEN
         canUseDoors = true
         killExperience = 31
         armorClass = 7

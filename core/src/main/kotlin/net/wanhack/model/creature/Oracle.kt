@@ -16,10 +16,10 @@
 
 package net.wanhack.model.creature
 
-import java.awt.Color
 import net.wanhack.model.Game
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.utils.collections.randomElement
+import net.wanhack.model.common.Color
 
 class Oracle(): Creature("The Oracle") {
 

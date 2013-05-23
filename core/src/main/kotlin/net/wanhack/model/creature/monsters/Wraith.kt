@@ -20,7 +20,7 @@ import net.wanhack.model.creature.Monster
 import net.wanhack.utils.Probability
 import net.wanhack.utils.RandomUtils
 import net.wanhack.definitions.Items
-import java.awt.Color
+import net.wanhack.model.common.Color
 
 class Wraith(name: String): Monster(name) {
 

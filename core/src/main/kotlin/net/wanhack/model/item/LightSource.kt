@@ -16,7 +16,7 @@
 
 package net.wanhack.model.item
 
-import java.awt.Color
+import net.wanhack.model.common.Color
 
 open class LightSource(name: String): Item(name) {
 

@@ -16,13 +16,13 @@
 
 package net.wanhack.model.creature.monsters
 
-import java.awt.Color
 import net.wanhack.model.Game
 import net.wanhack.model.common.Direction
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Monster
 import net.wanhack.utils.RandomUtils
 import net.wanhack.model.item.weapon.NaturalWeapon
+import net.wanhack.model.common.Color
 
 class BugsBunny: Monster("Bugs Bunny") {
 

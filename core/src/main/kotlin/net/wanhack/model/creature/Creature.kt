@@ -32,12 +32,12 @@ import net.wanhack.model.region.Region
 import net.wanhack.utils.Probability
 import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.exp.Expression
-import java.awt.*
 import java.lang.Math.max
 import java.util.*
 import net.wanhack.utils.collections.filterByType
 import net.wanhack.model.common.Directions
 import net.wanhack.utils.collections.toOption
+import net.wanhack.model.common.Color
 
 abstract class Creature(var name: String): Actor, MessageTarget {
 
