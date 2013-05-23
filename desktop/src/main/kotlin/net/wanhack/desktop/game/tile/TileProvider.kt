@@ -52,7 +52,7 @@ class TileProvider {
 
     fun drawCreature(g: Graphics2D, cell: Cell, creature: Creature) {
         drawFloor(g, cell, true, true)
-        drawLetter(g, cell.x, cell.y, creature.letter, creature.color)
+        drawLetter(g, cell.x, cell.y, creature.letter, creature.color.toPaint())
     }
     
     fun drawSelection(g: Graphics2D, cell: Cell) {
@@ -62,7 +62,7 @@ class TileProvider {
 
     fun drawItem(g: Graphics2D, cell: Cell, item: Item) {
         drawFloor(g, cell, true, true)
-        drawLetter(g, cell.x, cell.y, item.letter, item.color)
+        drawLetter(g, cell.x, cell.y, item.letter, item.color.toPaint())
     }
 
     private fun drawLetter(g: Graphics2D, x: Int, y: Int, letter: Char, paint: Paint) {
@@ -115,4 +115,6 @@ class TileProvider {
         private val DOOR_VISIBLE = Color(100, 100, 0)
         private val DOOR_INVISIBLE = DOOR_VISIBLE.darker()
     }
+
+    fun net.wanhack.model.common.Color.toPaint() = Color(r, g, b)
 }

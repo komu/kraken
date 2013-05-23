@@ -19,8 +19,8 @@ package net.wanhack.definitions
 import net.wanhack.model.item.*
 import net.wanhack.model.item.armor.BodyPart.*
 import net.wanhack.model.item.food.*
-import java.awt.Color
 import net.wanhack.model.item.armor.Armor
+import net.wanhack.model.common.Color
 
 object Items : Definitions() {
 
@@ -50,14 +50,14 @@ object Items : Definitions() {
 
     val torch = item("a torch", level = 1, probability = 75) {
         LightSource("a torch").init {
-            color = Colors.BROWN
+            color = Color.BROWN
             weight = 300
         }
     }
 
     val lantern = item("a lantern", level = 10, probability = 10) {
         LightSource("a lantern").init {
-            color = Colors.LIGHT_BROWN
+            color = Color.LIGHT_BROWN
             weight = 600
         }
     }
@@ -94,14 +94,14 @@ object Items : Definitions() {
 
     val bun = food("bun", probability = 60) {
         letter = '%'
-        color = Colors.BROWNISH
+        color = Color.BROWNISH
         effectiveness = 80
         weight = 60
     }
 
     val fridayBun = item("Friday bun", probability = 30) {
         HealingEdible("Friday bun").init {
-            color = Colors.BROWNISH
+            color = Color.BROWNISH
             effectiveness = 400
             healingEffect = 5
             weight = 120
@@ -124,7 +124,7 @@ object Items : Definitions() {
 
     val healingPotion = item("healing potion", probability = 25) {
         HealingEdible("healing potion").init {
-            color = Colors.LIGHT_BLUE
+            color = Color.LIGHT_BLUE
             effectiveness = 10
             healingEffect = 10
             weight = 250
@@ -145,7 +145,7 @@ object Items : Definitions() {
 
     fun wand(name: String) = item(name) {
         Item(name).init {
-            color = Colors.BROWN
+            color = Color.BROWN
             letter = '-'
         }
     }
@@ -154,7 +154,7 @@ object Items : Definitions() {
 
     fun staff(name: String) = item(name) {
         Item(name).init {
-            color = Colors.BROWN
+            color = Color.BROWN
             letter = '_'
         }
     }
@@ -163,7 +163,7 @@ object Items : Definitions() {
 
     fun ring(name: String) = item(name) {
         Item(name).init {
-            color = Colors.BROWN
+            color = Color.BROWN
             letter = '='
         }
     }

@@ -17,7 +17,7 @@
 package net.wanhack.model.item.armor
 
 import net.wanhack.model.item.Item
-import net.wanhack.definitions.Colors
+import net.wanhack.model.common.Color
 
 open class Armor(name: String): Item(name) {
 
@@ -25,7 +25,7 @@ open class Armor(name: String): Item(name) {
     var bodyPart = BodyPart.TORSO
 
     {
-        color = Colors.BROWN
+        color = Color.BROWN
         letter = ']'
     }
 

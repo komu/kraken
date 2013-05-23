@@ -17,7 +17,7 @@
 package net.wanhack.definitions
 
 import net.wanhack.model.item.weapon.*
-import java.awt.Color
+import net.wanhack.model.common.Color
 
 object Weapons : Definitions() {
 
@@ -118,7 +118,7 @@ object Weapons : Definitions() {
             val w = BluntWeapon(name)
             w.damage = exp("1d3")
             w.letter = '/'
-            w.color = Colors.BROWN
+            w.color = Color.BROWN
             w.init()
             w
         }
@@ -161,7 +161,7 @@ object Weapons : Definitions() {
             item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
                 val w = PointedWeapon(name)
                 w.letter = '\\'
-                w.color = Colors.BROWN
+                w.color = Color.BROWN
                 w.init()
                 w
             }
@@ -186,7 +186,7 @@ object Weapons : Definitions() {
             val w = Projectile(name)
             w.damage = exp("1d3")
             w.letter = '}'
-            w.color = Colors.BROWN
+            w.color = Color.BROWN
             w.init()
             w
         }
@@ -200,13 +200,13 @@ object Weapons : Definitions() {
     val arrow = projectile("an arrow", level=1, probability=0) {
         damage = exp("2d4")
         weight = 120
-        color = Colors.BROWNISH
+        color = Color.BROWNISH
     }
     
     val bolt = projectile("a bolt", level=1, probability=0) {
         damage = exp("2d4+1randint(4, 9)")
         weight = 160
-        color = Colors.BROWNISH
+        color = Color.BROWNISH
     }
     
     val dart = projectile("a dart", level=1, probability=0) {
@@ -222,7 +222,7 @@ object Weapons : Definitions() {
             val w = MissileLauncher(name)
             w.damage = exp("randint(1, 3)")
             w.letter = '{'
-            w.color = Colors.BROWN
+            w.color = Color.BROWN
             w.init()
             w
         }
@@ -248,6 +248,6 @@ object Weapons : Definitions() {
         toHit = exp("2")
         damage = exp("4d5+1")
         weight = 1000
-        color = Colors.ALUMINIUM
+        color = Color.ALUMINIUM
     }
 }

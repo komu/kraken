@@ -16,8 +16,8 @@
 
 package net.wanhack.model.item.weapon
 
-import java.awt.Color
 import net.wanhack.utils.exp.Expression
+import net.wanhack.model.common.Color
 
 open class Sword(name: String): BasicWeapon(name, WeaponClass.SWORD, "randint(1, 6)") {
     {

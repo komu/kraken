@@ -28,8 +28,8 @@ import net.wanhack.model.region.VisibilityChecker
 import net.wanhack.model.skill.Proficiency
 import net.wanhack.model.skill.SkillSet
 import net.wanhack.utils.RandomUtils
-import java.awt.Color
 import net.wanhack.model.region.CellSet
+import net.wanhack.model.common.Color
 
 class Player(name: String): Creature(name) {
 
