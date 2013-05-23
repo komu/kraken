@@ -10,7 +10,7 @@
         <version>0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>desktop</artifactId>
+    <artifactId>wanhack-desktop</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
