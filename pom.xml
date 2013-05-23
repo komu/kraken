@@ -20,11 +20,13 @@
     <modules>
         <module>core</module>
         <module>desktop</module>
+        <module>android</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>0.5.429</kotlin.version>
+        <androidPlatform>14</androidPlatform>
     </properties>
 
     <dependencyManagement>
@@ -51,6 +53,13 @@
                 <groupId>com.jgoodies</groupId>
                 <artifactId>forms</artifactId>
                 <version>1.2.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.android</groupId>
+                <artifactId>android</artifactId>
+                <version>4.0.1.2</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- Test dependencies -->
@@ -110,6 +119,20 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>android-maven-plugin</artifactId>
+                    <configuration>
+                        <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
+                        <assetsDirectory>${project.basedir}/assets</assetsDirectory>
+                        <resourceDirectory>${project.basedir}/res</resourceDirectory>
+                        <sdk>
+                            <platform>${androidPlatform}</platform>
+                        </sdk>
+                    </configuration>
+                    <extensions>true</extensions>
                 </plugin>
             </plugins>
         </pluginManagement>

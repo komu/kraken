@@ -22,8 +22,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="android" />
         <module name="core" />
         <module name="desktop" />
+        <module name="wanhack-android" />
         <module name="wanhack-core" />
         <module name="wanhack-swing-ui" />
       </profile>
