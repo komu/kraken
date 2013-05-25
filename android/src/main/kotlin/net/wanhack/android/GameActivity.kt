@@ -85,6 +85,9 @@ class GameActivity : Activity() {
     public override fun onContextItemSelected(item: MenuItem?): Boolean {
         val game = this.game!!
         when (item!!.getItemId()) {
+            R.id.skipTurn   -> game.skipTurn()
+            R.id.moveUp     -> game.movePlayerVertically(true)
+            R.id.moveDown   -> game.movePlayerVertically(false)
             R.id.wield      -> game.wield()
             R.id.wear       -> game.wear()
             R.id.rest       -> game.rest(-1)
@@ -96,7 +99,6 @@ class GameActivity : Activity() {
             R.id.eat        -> game.eat()
             R.id.fling      -> game.fling()
             R.id.search     -> game.search()
-            R.id.skipTurn   -> game.skipTurn()
             else            -> return super<Activity>.onContextItemSelected(item)
         }
         return true
