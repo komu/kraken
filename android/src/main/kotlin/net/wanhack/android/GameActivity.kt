@@ -36,12 +36,14 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import net.wanhack.model.common.Directions
+import java.util.concurrent.Executors
 
 class GameActivity : Activity() {
 
     var game: GameFacade? = null
     val gameView: GameView
         get() = findViewById(R.id.gameView) as GameView
+    val gameExecutor = Executors.newSingleThreadExecutor()
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super<Activity>.onCreate(savedInstanceState)
@@ -66,7 +68,9 @@ class GameActivity : Activity() {
 
         game = GameFacade(GameConfiguration(), false, myConsole) { b ->
             Log.d(tag, "game updated: $b")
-            gameView.invalidate()
+            runOnUiThread(Runnable {
+                gameView.invalidate()
+            })
         }
 
         gameView.game = game!!
@@ -83,25 +87,30 @@ class GameActivity : Activity() {
     }
 
     public override fun onContextItemSelected(item: MenuItem?): Boolean {
-        val game = this.game!!
         when (item!!.getItemId()) {
-            R.id.skipTurn   -> game.skipTurn()
-            R.id.moveUp     -> game.movePlayerVertically(true)
-            R.id.moveDown   -> game.movePlayerVertically(false)
-            R.id.wield      -> game.wield()
-            R.id.wear       -> game.wear()
-            R.id.rest       -> game.rest(-1)
-            R.id.talk       -> game.talk()
-            R.id.open_door  -> game.openDoor()
-            R.id.close_door -> game.closeDoor()
-            R.id.pickup     -> game.pickup()
-            R.id.drop       -> game.drop()
-            R.id.eat        -> game.eat()
-            R.id.fling      -> game.fling()
-            R.id.search     -> game.search()
+            R.id.skipTurn   -> gameAction { it.skipTurn() }
+            R.id.moveUp     -> gameAction { it.movePlayerVertically(true) }
+            R.id.moveDown   -> gameAction { it.movePlayerVertically(false) }
+            R.id.wield      -> gameAction { it.wield() }
+            R.id.wear       -> gameAction { it.wear() }
+            R.id.rest       -> gameAction { it.rest(-1) }
+            R.id.talk       -> gameAction { it.talk() }
+            R.id.open_door  -> gameAction { it.openDoor() }
+            R.id.close_door -> gameAction { it.closeDoor() }
+            R.id.pickup     -> gameAction { it.pickup() }
+            R.id.drop       -> gameAction { it.drop() }
+            R.id.eat        -> gameAction { it.eat() }
+            R.id.fling      -> gameAction { it.fling() }
+            R.id.search     -> gameAction { it.search() }
             else            -> return super<Activity>.onContextItemSelected(item)
         }
         return true
+    }
+    
+    fun gameAction(action: (GameFacade) -> Unit) {
+        gameExecutor.execute(Runnable {
+            action(game!!)
+        })
     }
 
     inner class MyGestureListener : SimpleOnGestureListener() {
@@ -130,7 +139,7 @@ class GameActivity : Activity() {
         }
     }
 
-    class MyConsole : Console {
+    inner class MyConsole : Console {
 
         override fun message(message: String) {
             Log.d(tag, "message: $message")
