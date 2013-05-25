@@ -16,16 +16,23 @@
 
 package net.wanhack.common
 
-import java.io.FileNotFoundException
-import java.io.IOException
 import java.util.Properties
+import net.wanhack.service.resources.ResourceLoader
 
 class Version(val version: String, val revision: String) {
 
     class object {
-        private var myInstance: Version? = null
+        val instance = ResourceLoader.openStream("/version.properties").use { inputStream ->
+            val properties = Properties()
+            properties.load(inputStream)
 
-        public val fullVersion: String
+            val version = properties.getProperty("version") ?: "unknown"
+            val revision = properties.getProperty("revision") ?: ""
+
+            Version(version, revision)
+        }
+
+        val fullVersion: String
             get() {
                 val version = instance
                 return if (version.revision != "")
@@ -34,36 +41,10 @@ class Version(val version: String, val revision: String) {
                     version.version
             }
 
-        public val version: String
+        val version: String
             get() = instance.version
 
-        public val revision: String
+        val revision: String
             get() = instance.revision
-
-        private val instance: Version
-            get() {
-                try {
-                    if (myInstance == null)
-                        myInstance = loadVersion()
-
-                    return myInstance!!
-                } catch (e: IOException) {
-                    return Version("unknown", "")
-                }
-            }
-
-        private fun loadVersion(): Version =
-            openResource("/version.properties").use { inputStream ->
-                val properties = Properties()
-                properties.load(inputStream)
-
-                val version = properties.getProperty("version") ?: "unknown"
-                val revision = properties.getProperty("revision") ?: ""
-
-                Version(version, revision)
-            }
-
-        private fun openResource(name: String) =
-            javaClass<Version>().getResourceAsStream(name) ?: throw FileNotFoundException("resource:" + name)
     }
 }
