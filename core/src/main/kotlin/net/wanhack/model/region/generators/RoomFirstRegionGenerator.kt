@@ -233,7 +233,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region =
             RoomFirstRegionGenerator(world, name, level, regionParameters(level), up, down).generate()
 
-        private fun regionParameters(level: Int): RegionParameters {
+        fun regionParameters(level: Int): RegionParameters {
             val rp = RegionParameters()
             if (level < 5) {
                 rp.width = 80

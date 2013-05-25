@@ -19,7 +19,6 @@ package net.wanhack.service.creature
 import net.wanhack.model.creature.Creature
 import net.wanhack.service.ServiceProvider
 import net.wanhack.definitions.weightedRandom
-import net.wanhack.definitions.CreatureDefinition
 import net.wanhack.definitions.betweenLevels
 
 class CreatureService {
@@ -28,11 +27,9 @@ class CreatureService {
         val minLevel = regionLevel / 6
         val maxLevel = (regionLevel + playerLevel) / 2
 
+        val creatures = ServiceProvider.objectFactory.instantiableCreatures
         return creatures.betweenLevels(minLevel, maxLevel).weightedRandom().createSwarm()
     }
-
-    private val creatures: Collection<CreatureDefinition<*>>
-        get() = ServiceProvider.objectFactory.instantiableCreatures
 
     class object {
         val instance = CreatureService()
