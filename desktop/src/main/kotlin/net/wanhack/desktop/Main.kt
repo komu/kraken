@@ -207,17 +207,17 @@ class Main(val wizardMode: Boolean) {
         val actionMap = regionView.getActionMap()!!
 
         for (direction in Direction.values()) {
-            actionMap[direction]        = gameAction { it.movePlayer(direction) }
-            actionMap["run $direction"] = gameAction { it.runTowards(direction) }
+            actionMap[direction]        = action("") { gameFacade?.movePlayer(direction) }
+            actionMap["run $direction"] = action("") { gameFacade?.runTowards(direction) }
         }
 
-        actionMap["down"]           = gameAction { it.movePlayerVertically(false) }
-        actionMap["up"]             = gameAction { it.movePlayerVertically(true) }
-        actionMap["rest"]           = gameAction { it.skipTurn() }
+        actionMap["down"]           = action("") { gameFacade?.movePlayerVertically(false) }
+        actionMap["up"]             = action("") { gameFacade?.movePlayerVertically(true) }
+        actionMap["rest"]           = action("") { gameFacade?.skipTurn() }
 
-        actionMap["history up"]     = uiAction { consoleView.scrollUp() }
-        actionMap["history down"]   = uiAction { consoleView.scrollDown() }
-        actionMap["map"]            = uiAction { regionView.translate = !regionView.translate; regionView.repaint() }
+        actionMap["history up"]     = action("") { consoleView.scrollUp() }
+        actionMap["history down"]   = action("") { consoleView.scrollDown() }
+        actionMap["map"]            = action("") { regionView.translate = !regionView.translate; regionView.repaint() }
     }
 
     fun startNewGame() {
@@ -268,20 +268,6 @@ class Main(val wizardMode: Boolean) {
         SwingUtilities.invokeLater(Runnable {
             Thread.currentThread().setUncaughtExceptionHandler(eh)
         });
-    }
-
-    fun gameAction(callback: (GameFacade) -> Unit) = object : AbstractAction() {
-        override fun actionPerformed(e: ActionEvent) {
-            val facade = gameFacade
-            if (facade != null)
-                callback(facade)
-        }
-    }
-
-    fun uiAction(callback: () -> Unit) = object : AbstractAction() {
-        override fun actionPerformed(e: ActionEvent) {
-            callback()
-        }
     }
 
     fun showAbout() {
