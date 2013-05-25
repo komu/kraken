@@ -16,7 +16,16 @@
 
 package net.wanhack.model.common
 
+import java.lang.Math.max
+
 data class Color(val r: Int, val g: Int, val b: Int) {
+
+    val FACTOR = 0.7
+
+    fun darker(): Color =
+        Color(max((0.7*r).toInt(), 0),
+              max((0.7*g).toInt(), 0),
+              max((0.7*b).toInt(), 0))
 
     class object {
         val ALUMINIUM       = Color(220, 230, 250)
