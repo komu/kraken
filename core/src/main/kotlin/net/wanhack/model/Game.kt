@@ -254,7 +254,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
 
     fun wield() = gameAction {
         val oldWeapon = player.wieldedWeapon
-        val weapon = console.selectItem(javaClass<Weapon>(), "Select weapon to wield", player.getInventoryItems(javaClass<Weapon>()))
+        val weapon = console.selectItem("Select weapon to wield", player.getInventoryItems(javaClass<Weapon>()))
         if (weapon != null && weapon != oldWeapon) {
             player.wieldedWeapon = weapon
             player.inventoryItems.remove(weapon)
@@ -269,7 +269,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
     }
 
     fun wear() = gameAction {
-        val armor = console.selectItem(javaClass<Armor>(), "Select armor to wear", player.getInventoryItems(javaClass<Armor>()))
+        val armor = console.selectItem("Select armor to wear", player.getInventoryItems(javaClass<Armor>()))
         if (armor != null ) {
             val oldArmor = player.replaceArmor(armor)
             player.inventoryItems.remove(armor)
@@ -300,7 +300,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
     }
 
     fun eat() = gameAction {
-        val food = console.selectItem(javaClass<Food>(), "Select food to eat", player.getInventoryItems(javaClass<Food>()))
+        val food = console.selectItem("Select food to eat", player.getInventoryItems(javaClass<Food>()))
         if (food != null) {
             player.inventoryItems.remove(food)
             food.onEatenBy(player)
@@ -317,7 +317,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
     }
 
     fun fling() = gameAction {
-        val projectile = console.selectItem(javaClass<Item>(), "Select item to throw", player.getInventoryItems(javaClass<Item>()))
+        val projectile = console.selectItem("Select item to throw", player.getInventoryItems(javaClass<Item>()))
         if (projectile != null) {
             val dir = console.selectDirection()
             if (dir != null) {

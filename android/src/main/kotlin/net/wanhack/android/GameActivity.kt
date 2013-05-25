@@ -186,12 +186,12 @@ class GameActivity : Activity() {
             return result
         }
 
-        override fun <T: Item> selectItem(itemType: Class<T>, message: String, items: Collection<T>): T? {
+        override fun <T: Item> selectItem(message: String, items: Collection<T>): T? {
+            val itemList = items.toList()
             var selected: T? = null
             val latch = CountDownLatch(1)
 
-            val itemList = items.toList()
-            val titles = Array<String>(items.size) { i -> itemList[i].title }
+            val titles = Array<String>(itemList.size) { i -> itemList[i].title }
 
             runOnUiThread(Runnable {
                 val builder = AlertDialog.Builder(this@GameActivity)
@@ -212,22 +212,23 @@ class GameActivity : Activity() {
             return selected
         }
 
-        override fun selectItems(message: String, items: Collection<Item>): Set<Item> {
-            val selections = HashSet<Item>()
+        override fun selectItems<T: Item>(message: String, items: Collection<T>): Set<T> {
+            val itemList = items.toList()
+            val selections = HashSet<T>()
             val latch = CountDownLatch(1)
 
-            val itemList = items.toList()
-            val titles = Array<String>(items.size) { i -> itemList[i].title }
+            val titles = Array<String>(itemList.size) { i -> itemList[i].title }
 
             runOnUiThread(Runnable {
                 val builder = AlertDialog.Builder(this@GameActivity)
 
                 builder.setTitle(message)
                 builder.setMultiChoiceItems(titles, null, DialogInterface.OnMultiChoiceClickListener { (dialog, which, isChecked) ->
+                    val item = itemList[which]
                     if (isChecked) {
-                        selections.add(itemList[which])
+                        selections.add(item)
                     } else {
-                        selections.remove(itemList[which])
+                        selections.remove(item)
                     }
                 })
 

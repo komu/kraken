@@ -28,15 +28,15 @@ import net.wanhack.model.item.Item
 import net.wanhack.desktop.extensions.set
 import kotlin.swing.*
 
-private class SelectItemsDialog(owner: Frame, message: String, items: Collection<Item>): JDialog() {
+private class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: Collection<T>): JDialog() {
 
-    private val itemList: JList<Item>
-    private var selectedItems = HashSet<Item>();
+    private val itemList: JList<T>
+    private var selectedItems = HashSet<T>();
 
     {
         setModal(true)
 
-        itemList = JList<Item>(items.toArray(Array<Item>(0) { throw Exception("unexpected") }))
+        itemList = JList<T>(items.toArray(Array<T>(0) { throw Exception("unexpected") }))
         itemList.setCellRenderer(ItemCellRenderer())
         initContent()
 
@@ -64,7 +64,7 @@ private class SelectItemsDialog(owner: Frame, message: String, items: Collection
 
     private fun createButtonBar(): JPanel {
         val ok = button("Ok") {
-            selectedItems = LinkedHashSet<Item>(itemList.getSelectedValuesList())
+            selectedItems = LinkedHashSet<T>(itemList.getSelectedValuesList())
             setVisible(false)
         }
         getRootPane()!!.setDefaultButton(ok)
@@ -77,14 +77,14 @@ private class SelectItemsDialog(owner: Frame, message: String, items: Collection
     }
 
     class object {
-        public open fun selectItems(frame: Frame, message: String, items: Collection<Item>): MutableSet<Item> {
+        fun selectItems<T : Item>(frame: Frame, message: String, items: Collection<T>): Set<T> {
             val dlg = SelectItemsDialog(frame, message, items)
             dlg.setAllowMultipleSelections(true)
             dlg.setVisible(true)
             return dlg.selectedItems
         }
 
-        public open fun selectItem(frame: Frame, message: String, items: Collection<Item>): Item? {
+        fun selectItem<T : Item>(frame: Frame, message: String, items: Collection<T>): T? {
             val dlg = SelectItemsDialog(frame, message, items)
             dlg.setAllowMultipleSelections(false)
             dlg.setVisible(true)

@@ -115,10 +115,10 @@ class ConsoleView : JComponent(), Console {
     override fun selectDirection(): Direction? =
         SelectDirectionDialog.selectDirection(frame)
 
-    override fun <T: Item> selectItem(itemType: Class<T>, message: String, items: Collection<T>): T? =
-        itemType.cast(SelectItemsDialog.selectItem(frame, message, items))
+    override fun selectItem<T: Item> (message: String, items: Collection<T>) =
+        SelectItemsDialog.selectItem(frame, message, items)
 
-    override fun selectItems(message: String, items: Collection<Item>): Set<Item> =
+    override fun selectItems<T : Item>(message: String, items: Collection<T>) =
         SelectItemsDialog.selectItems(frame, message, items)
 
     fun clear() {

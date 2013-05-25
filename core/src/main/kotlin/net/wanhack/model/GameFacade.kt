@@ -133,10 +133,10 @@ class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Consol
         override fun selectDirection() =
             lock.relinquish { console.selectDirection() }
 
-        override fun <T: Item> selectItem(itemType: Class<T>, message: String, items: Collection<T>) =
-            lock.relinquish { console.selectItem(itemType, message, items) }
+        override fun <T: Item> selectItem(message: String, items: Collection<T>) =
+            lock.relinquish { console.selectItem(message, items) }
 
-        override fun selectItems(message: String, items: Collection<Item>) =
+        override fun selectItems<T: Item>(message: String, items: Collection<T>) =
             lock.relinquish { console.selectItems(message, items) }
     }
 }
