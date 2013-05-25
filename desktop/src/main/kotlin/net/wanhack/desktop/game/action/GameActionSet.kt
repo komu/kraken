@@ -21,19 +21,18 @@ import java.awt.event.KeyEvent.*
 import java.util.ArrayList
 import javax.swing.KeyStroke
 import javax.swing.Action
-import net.wanhack.model.GameRef
 import net.wanhack.model.GameFacade
 
 class GameActionSet {
 
     val actions = ArrayList<GameAction>()
 
-    var gameRef: GameRef? = null
-        set(gameRef: GameRef?) {
-            $gameRef = gameRef
+    var gameFacade: GameFacade? = null
+        set(gameFacade) {
+            $gameFacade = gameFacade
 
             for (action in actions)
-                action.gameRef = gameRef
+                action.game = gameFacade
         }
 
     {

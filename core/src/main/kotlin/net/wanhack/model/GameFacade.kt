@@ -24,23 +24,22 @@ import java.util.concurrent.locks.Lock
 import kotlin.concurrent.withLock
 import net.wanhack.utils.relinquish
 import net.wanhack.utils.yield
+import java.util.concurrent.Executors
 
 /**
  * All commands from UI to game go through this facade.
  */
 class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Console, val listener: (Boolean) -> Unit) {
 
+    private val gameExecutor = Executors.newSingleThreadExecutor()
     private val lock = ReentrantReadWriteLock(true)
     private val game = Game(config, wizardMode, LockRelinquishingConsole(console, lock.writeLock())) {
         listener(true)
+        lock.writeLock().yield()
     }
 
     fun query<T>(callback: (ReadOnlyGame) -> T): T =
         lock.readLock().withLock { callback(game) }
-
-    fun yieldWriteLock() {
-        lock.writeLock().yield()
-    }
 
     fun start() = gameAction {
         game.start()
@@ -115,12 +114,14 @@ class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Consol
     }
 
     private fun gameAction(body: () -> Unit) {
-        lock.writeLock().withLock {
-            if (!game.over)
-                body()
-        }
+        gameExecutor.execute(Runnable {
+            lock.writeLock().withLock {
+                if (!game.over)
+                    body()
+            }
 
-        listener(false)
+            listener(false)
+        })
     }
 
     class LockRelinquishingConsole(val console: Console, val lock: Lock) : Console {

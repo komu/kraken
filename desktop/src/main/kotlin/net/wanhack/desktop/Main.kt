@@ -37,7 +37,6 @@ import net.wanhack.desktop.game.StatisticsView
 import net.wanhack.desktop.game.StartGameDialog
 import net.wanhack.desktop.extensions.set
 import net.wanhack.utils.SystemAccess
-import net.wanhack.model.GameRef
 import net.wanhack.utils.logger
 import java.util.logging.Level
 import net.wanhack.definitions.*
@@ -51,7 +50,7 @@ class Main(val wizardMode: Boolean) {
     private val statisticsView = StatisticsView()
     private val objectFactory = ObjectFactory()
     private val regionLoader = RegionLoader(objectFactory)
-    private var gameRef: GameRef? = null
+    private var gameFacade: GameFacade? = null
     private val regionView = RegionView()
     private val log = javaClass<Main>().logger()
     private val logFrame = if (wizardMode) LogFrame() else null
@@ -137,7 +136,7 @@ class Main(val wizardMode: Boolean) {
                     mnemonic = VK_D
 
                     add(action("Reveal Current Region", mnemonic=VK_R) {
-                        gameRef?.scheduleAction { it.revealCurrentRegion() }
+                        gameFacade?.revealCurrentRegion()
                         regionView.repaint()
                     })
 
@@ -231,8 +230,12 @@ class Main(val wizardMode: Boolean) {
             try {
                 val game = GameFacade(config, wizardMode, consoleView) { tick -> update(tick) }
                 consoleView.clear();
-                setGame(game);
-                gameRef!!.scheduleAction { it.start() }
+                gameActions.gameFacade = game
+                regionView.gameFacade = game
+                inventoryView.gameFacade = game
+
+                gameFacade = game
+                game.start()
 
             } catch (e: Exception) {
                 log.log(Level.SEVERE, "Failed to start new game", e);
@@ -241,37 +244,24 @@ class Main(val wizardMode: Boolean) {
         }
     }
 
-    private fun setGame(game: GameFacade?) {
-        this.gameRef = if (game != null) GameRef(game) else null
-
-        gameActions.gameRef = gameRef
-        regionView.gameRef = gameRef
-        inventoryView.gameRef = gameRef
-    }
-
     private fun update(tick: Boolean) {
-        val ref = gameRef
-        if (ref != null) {
-            ref.executeQuery { game ->
-                if (tick)
-                    consoleView.turnEnd()
-                else
-                    consoleView.repaint()
-                regionView.repaint()
-                statisticsView.updateStatistics(game)
-                inventoryView.update(game)
-            }
-
-            ref.yieldWriteLock()
+        gameFacade?.query { game ->
+            if (tick)
+                consoleView.turnEnd()
+            else
+                consoleView.repaint()
+            regionView.repaint()
+            statisticsView.updateStatistics(game)
+            inventoryView.update(game)
         }
     }
 
     fun initUncaughtExceptionHandler() {
         setAWTUncaughtExceptionHandler(object : Thread.UncaughtExceptionHandler {
-            override fun uncaughtException(t: Thread, e: Throwable) {
-                log.log(Level.SEVERE, "Uncaught exception", e)
+            override fun uncaughtException(thread: Thread, ex: Throwable) {
+                log.log(Level.SEVERE, "Uncaught exception", ex)
 
-                ErrorDialog.show(frame, "Unexpected Error", e)
+                ErrorDialog.show(frame, "Unexpected Error", ex)
 
                 // The thread is about to die, set this same handler
                 // for the newly created AWT event handler thread.
@@ -288,7 +278,9 @@ class Main(val wizardMode: Boolean) {
 
     fun gameAction(callback: (GameFacade) -> Unit) = object : AbstractAction() {
         override fun actionPerformed(e: ActionEvent) {
-            gameRef?.scheduleAction { callback(it) }
+            val facade = gameFacade
+            if (facade != null)
+                callback(facade)
         }
     }
 

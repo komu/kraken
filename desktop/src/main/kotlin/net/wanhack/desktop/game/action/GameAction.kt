@@ -18,15 +18,14 @@ package net.wanhack.desktop.game.action
 
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
-import net.wanhack.model.GameRef
 import net.wanhack.model.GameFacade
 
-abstract class GameAction(name: String, gameRef: GameRef? = null): AbstractAction(name) {
+abstract class GameAction(name: String, game: GameFacade? = null): AbstractAction(name) {
 
-    var gameRef: GameRef? = gameRef
-        set(gameRef: GameRef?) {
-            $gameRef = gameRef
-            setEnabled(gameRef != null)
+    var game: GameFacade? = game
+        set(game: GameFacade?) {
+            $game = game
+            setEnabled(game != null)
         }
 
     {
@@ -34,9 +33,9 @@ abstract class GameAction(name: String, gameRef: GameRef? = null): AbstractActio
     }
 
     public override fun actionPerformed(e: ActionEvent) {
-        gameRef?.scheduleAction { game ->
-            actionPerformed(e, game)
-        }
+        val g = game
+        if (g != null)
+            actionPerformed(e, g)
     }
 
     protected abstract fun actionPerformed(e: ActionEvent, game: GameFacade)

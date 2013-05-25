@@ -22,18 +22,18 @@ import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import javax.swing.JComponent
-import net.wanhack.model.GameRef
 import net.wanhack.model.creature.Player
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
 import net.wanhack.desktop.game.tile.TileProvider
+import net.wanhack.model.GameFacade
 
 class RegionView: JComponent() {
 
-    var gameRef: GameRef? = null
-        get() = $gameRef
-        set(gameRef: GameRef?) {
-            $gameRef = gameRef
+    var gameFacade: GameFacade? = null
+        get() = $gameFacade
+        set(gameFacade) {
+            $gameFacade = gameFacade
             repaint()
         }
 
@@ -51,7 +51,7 @@ class RegionView: JComponent() {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF)
         paintBackground(g2)
 
-        gameRef?.executeQuery { game ->
+        gameFacade?.query { game ->
             if (game.player.cellOrNull != null) {
                 transformFocusToCell(g2, game.cellInFocus)
                 val player = game.player

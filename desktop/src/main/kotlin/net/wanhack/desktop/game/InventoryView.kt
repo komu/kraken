@@ -29,15 +29,15 @@ import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
-import net.wanhack.model.GameRef
 import net.wanhack.desktop.game.action.DropItemAction
 import javax.swing.SwingUtilities
 import kotlin.swing.*
 import net.wanhack.model.ReadOnlyGame
+import net.wanhack.model.GameFacade
 
 class InventoryView : JPanel(BorderLayout()) {
     private val list = JList<ItemInfo>()
-    var gameRef: GameRef? = null;
+    var gameFacade: GameFacade? = null;
 
     {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -93,7 +93,7 @@ class InventoryView : JPanel(BorderLayout()) {
             if (item != null) {
                 val popup = popupMenu {
                     if (!item.inUse)
-                        add(DropItemAction(gameRef, item.item))
+                        add(DropItemAction(gameFacade, item.item))
                 }
                 popup.show(list, e.getX(), e.getY())
             }

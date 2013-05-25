@@ -36,7 +36,6 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import net.wanhack.model.common.Directions
-import java.util.concurrent.Executors
 import android.content.DialogInterface
 import java.util.concurrent.CountDownLatch
 import android.app.AlertDialog
@@ -48,7 +47,6 @@ class GameActivity : Activity() {
     var game: GameFacade? = null
     val gameView: GameView
         get() = findViewById(R.id.gameView) as GameView
-    val gameExecutor = Executors.newSingleThreadExecutor()
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super<Activity>.onCreate(savedInstanceState)
@@ -112,9 +110,7 @@ class GameActivity : Activity() {
     }
     
     fun gameAction(action: (GameFacade) -> Unit) {
-        gameExecutor.execute(Runnable {
-            action(game!!)
-        })
+        action(game!!)
     }
 
     inner class MyGestureListener : SimpleOnGestureListener() {

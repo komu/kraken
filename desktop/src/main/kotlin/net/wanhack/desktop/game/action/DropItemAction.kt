@@ -17,11 +17,10 @@
 package net.wanhack.desktop.game.action
 
 import java.awt.event.ActionEvent
-import net.wanhack.model.GameRef
 import net.wanhack.model.item.Item
 import net.wanhack.model.GameFacade
 
-class DropItemAction(game: GameRef?, val item: Item): GameAction("Drop", game) {
+class DropItemAction(game: GameFacade?, val item: Item): GameAction("Drop", game) {
 
     override fun actionPerformed(e: ActionEvent, game: GameFacade) {
         game.drop(item)
