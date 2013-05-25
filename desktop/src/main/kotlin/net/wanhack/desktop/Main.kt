@@ -208,7 +208,8 @@ class Main(val wizardMode: Boolean) {
         val config = dialog.showDialog();
 
         if (config != null) {
-            val game = GameFacade(config, wizardMode, consoleView) { tick -> update(tick) }
+            config.wizardMode = wizardMode
+            val game = GameFacade(config, consoleView) { tick -> update(tick) }
             consoleView.clear();
             gameActions.gameFacade = game
             regionView.gameFacade = game

@@ -94,7 +94,7 @@ class Player(name: String): Creature(name) {
         }
 
     override fun die(killer: String) {
-        if (game.wizardMode && !game.ask("Die?")) {
+        if (game.config.wizardMode && !game.ask("Die?")) {
             regenerate()
             game.message("You regenerate.")
         } else {

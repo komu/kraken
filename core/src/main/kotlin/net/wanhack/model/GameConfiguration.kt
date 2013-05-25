@@ -26,6 +26,7 @@ class GameConfiguration {
 
     var sex = RandomUtils.randomEnum(javaClass<Sex>())
     var pet = PetType.DORIS
+    var wizardMode = false
 
     class object {
         enum class PetType(val name: String) {

@@ -29,11 +29,11 @@ import java.util.concurrent.Executors
 /**
  * All commands from UI to game go through this facade.
  */
-class GameFacade(config: GameConfiguration, wizardMode: Boolean, console: Console, val listener: (Boolean) -> Unit) {
+class GameFacade(config: GameConfiguration, console: Console, val listener: (Boolean) -> Unit) {
 
     private val gameExecutor = Executors.newSingleThreadExecutor()
     private val lock = ReentrantReadWriteLock(true)
-    private val game = Game(config, wizardMode, LockRelinquishingConsole(console, lock.writeLock())) {
+    private val game = Game(config, LockRelinquishingConsole(console, lock.writeLock())) {
         listener(true)
         lock.writeLock().yield()
     }

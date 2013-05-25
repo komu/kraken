@@ -55,7 +55,7 @@ class GameActivity : Activity() {
             gestureDetector.onTouchEvent(event)
         })
 
-        game = GameFacade(GameConfiguration(), false, MyConsole()) { b ->
+        game = GameFacade(GameConfiguration(), MyConsole()) { b ->
             runOnUiThread(Runnable {
                 gameView.invalidate()
             })

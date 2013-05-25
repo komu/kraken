@@ -49,7 +49,7 @@ import net.wanhack.utils.MaximumCounter
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.score.HighScoreService
 
-class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
+class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
     override val player = Player(config.name)
