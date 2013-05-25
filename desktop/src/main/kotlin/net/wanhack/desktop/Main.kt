@@ -23,9 +23,6 @@ import javax.swing.*
 import kotlin.swing.*
 import net.wanhack.common.Version
 import net.wanhack.model.common.Direction
-import net.wanhack.service.config.ObjectFactory
-import net.wanhack.service.region.RegionLoader
-import net.wanhack.service.ServiceProvider
 import net.wanhack.desktop.common.ErrorDialog
 import net.wanhack.desktop.console.ConsoleView
 import net.wanhack.desktop.game.action.GameActionSet
@@ -37,7 +34,6 @@ import net.wanhack.desktop.extensions.set
 import net.wanhack.utils.SystemAccess
 import net.wanhack.utils.logger
 import java.util.logging.Level
-import net.wanhack.definitions.*
 import net.wanhack.model.GameFacade
 
 class Main(val wizardMode: Boolean) {
@@ -46,8 +42,6 @@ class Main(val wizardMode: Boolean) {
     private val consoleView = ConsoleView()
     private val inventoryView = InventoryView()
     private val statisticsView = StatisticsView()
-    private val objectFactory = ObjectFactory()
-    private val regionLoader = RegionLoader(objectFactory)
     private var gameFacade: GameFacade? = null
     private val regionView = RegionView()
     private val log = javaClass<Main>().logger()
@@ -55,14 +49,6 @@ class Main(val wizardMode: Boolean) {
 
     {
         JOptionPane.setRootFrame(frame)
-
-        objectFactory.addDefinitions(Weapons)
-        objectFactory.addDefinitions(Items)
-        objectFactory.addDefinitions(Creatures)
-
-        ServiceProvider.console = consoleView
-        ServiceProvider.objectFactory = objectFactory
-        ServiceProvider.regionLoader = regionLoader
 
         frame.jmenuBar = createMenuBar()
         initializeInputMap()

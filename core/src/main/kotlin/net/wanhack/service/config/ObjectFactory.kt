@@ -20,6 +20,9 @@ import java.util.HashMap
 import net.wanhack.definitions.Definitions
 import net.wanhack.definitions.ItemDefinition
 import net.wanhack.definitions.CreatureDefinition
+import net.wanhack.model.creature.Creature
+import net.wanhack.definitions.betweenLevels
+import net.wanhack.definitions.weightedRandom
 
 class ObjectFactory {
     private val creatures = HashMap<String, CreatureDefinition<*>>()
@@ -44,6 +47,13 @@ class ObjectFactory {
 
     fun createItem(name: String) =
         getItemDefinition(name).create()
+
+    fun randomSwarm(regionLevel: Int, playerLevel: Int): Collection<Creature> {
+        val minLevel = regionLevel / 6
+        val maxLevel = (regionLevel + playerLevel) / 2
+
+        return instantiableCreatures.betweenLevels(minLevel, maxLevel).weightedRandom().createSwarm()
+    }
 
     private fun getItemDefinition(name: String) =
         items[name] ?: throw ConfigurationException("No such item <$name>")

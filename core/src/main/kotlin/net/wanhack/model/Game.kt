@@ -37,27 +37,35 @@ import net.wanhack.model.region.Cell
 import net.wanhack.model.region.CellType
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
-import net.wanhack.service.ServiceProvider
 import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.isFriday
 import net.wanhack.utils.isFestivus
 import net.wanhack.utils.logger
-import net.wanhack.definitions.Weapons
+import net.wanhack.definitions.Creatures
 import net.wanhack.definitions.Items
-import net.wanhack.service.creature.CreatureService
+import net.wanhack.definitions.Weapons
 import net.wanhack.model.common.Console
 import net.wanhack.utils.MaximumCounter
+import net.wanhack.service.config.ObjectFactory
+import net.wanhack.service.score.HighScoreService
 
 class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
     override val player = Player(config.name)
     private val world = World(this)
+
+    val objectFactory = ObjectFactory()
+
     val maximumDungeonLevel = MaximumCounter(0)
     var over = false;
 
     {
         player.sex = config.sex
+
+        objectFactory.addDefinitions(Weapons)
+        objectFactory.addDefinitions(Items)
+        objectFactory.addDefinitions(Creatures)
     }
 
     fun revealCurrentRegion() {
@@ -142,7 +150,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
                     putPetNextToPlayer(pet)
             }
 
-            addRegionEvent(CreateMonstersEvent(region, CreatureService.instance))
+            addRegionEvent(CreateMonstersEvent(region))
             for (creature in region.getCreatures())
                 regionClock.schedule(creature.tickRate, creature)
         }
@@ -569,7 +577,7 @@ class Game(val config: GameConfiguration, val wizardMode: Boolean, val console: 
     fun gameOver(reason: String) {
         over = true
         if (!player.regenerated) {
-            ServiceProvider.highScoreService.saveGameScore(this, reason)
+            HighScoreService().saveGameScore(this, reason)
         }
     }
 

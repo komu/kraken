@@ -21,17 +21,15 @@ import java.util.HashMap
 import java.util.Random
 import net.wanhack.model.Game
 import net.wanhack.model.creature.Player
-import net.wanhack.service.ServiceProvider
-import net.wanhack.service.creature.CreatureService
 import net.wanhack.service.region.generators.MazeRegionGenerator
 import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator
 import net.wanhack.utils.Probability
 import net.wanhack.utils.logger
 import net.wanhack.definitions.ObjectDefinition
-import net.wanhack.definitions.ItemDefinition
 import net.wanhack.definitions.betweenLevels
 import net.wanhack.definitions.weightedRandom
+import net.wanhack.service.region.RegionLoader
 
 class World(val game: Game) {
     private val loadedRegions = HashMap<String, Region>()
@@ -113,7 +111,7 @@ class World(val game: Game) {
 
             getRegionGenerator().generate(this, info.id, info.level, up, down)
         } else {
-            ServiceProvider.regionLoader.loadRegion(this, info)
+            RegionLoader(this).loadRegion(info)
         }
 
     private fun getRegionInfo(id: String): RegionInfo =
@@ -131,10 +129,9 @@ class World(val game: Game) {
 
         val monsterCount = 1 + random.nextInt(2 * region.level)
         val emptyCells = region.getCellsForItemsAndCreatures()
-        val creatureService = CreatureService.instance
 
         for (i in 1..monsterCount) {
-            val creatures = creatureService.randomSwarm(region.level, player.level)
+            val creatures = game.objectFactory.randomSwarm(region.level, player.level)
             if (emptyCells.empty)
                 return
 
@@ -151,7 +148,7 @@ class World(val game: Game) {
     private fun addRandomItems(region: Region) {
         val itemCount = random.nextInt(6)
 
-        val items = ServiceProvider.objectFactory.instantiableItems.betweenLevels(0, region.level)
+        val items = game.objectFactory.instantiableItems.betweenLevels(0, region.level)
         val emptyCells = region.getCellsForItemsAndCreatures()
         for (i in 1..itemCount) {
             if (emptyCells.empty)
@@ -162,9 +159,6 @@ class World(val game: Game) {
             emptyCells.randomElement().items.add(item)
         }
     }
-
-    private val items: Collection<ItemDefinition<*>>
-        get() = ServiceProvider.objectFactory.instantiableItems
 
     class object {
         private val log = javaClass<World>().logger()

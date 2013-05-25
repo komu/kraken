@@ -24,11 +24,7 @@ import net.wanhack.model.GameConfiguration
 import net.wanhack.model.common.Console
 import net.wanhack.model.item.Item
 import net.wanhack.model.common.Direction
-import net.wanhack.definitions.*
 import android.util.Log
-import net.wanhack.service.config.ObjectFactory
-import net.wanhack.service.ServiceProvider
-import net.wanhack.service.region.RegionLoader
 import android.view.ContextMenu
 import android.view.View
 import android.view.MenuItem
@@ -51,16 +47,6 @@ class GameActivity : Activity() {
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super<Activity>.onCreate(savedInstanceState)
 
-        val objectFactory = ObjectFactory()
-        objectFactory.addDefinitions(Weapons)
-        objectFactory.addDefinitions(Items)
-        objectFactory.addDefinitions(Creatures)
-
-        val myConsole = MyConsole()
-        ServiceProvider.console = myConsole
-        ServiceProvider.objectFactory = objectFactory
-        ServiceProvider.regionLoader = RegionLoader(objectFactory)
-
         setContentView(R.layout.game)
         registerForContextMenu(gameView)
 
@@ -69,7 +55,7 @@ class GameActivity : Activity() {
             gestureDetector.onTouchEvent(event)
         })
 
-        game = GameFacade(GameConfiguration(), false, myConsole) { b ->
+        game = GameFacade(GameConfiguration(), false, MyConsole()) { b ->
             runOnUiThread(Runnable {
                 gameView.invalidate()
             })

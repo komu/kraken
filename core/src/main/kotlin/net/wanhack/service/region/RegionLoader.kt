@@ -20,7 +20,6 @@ import net.wanhack.model.region.CellType
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.RegionInfo
 import net.wanhack.model.region.World
-import net.wanhack.service.config.ObjectFactory
 import java.util.ArrayList
 import java.util.HashMap
 import net.wanhack.utils.logger
@@ -28,9 +27,9 @@ import net.wanhack.utils.withIndices
 import net.wanhack.service.resources.ResourceLoader
 import net.wanhack.utils.maxLength
 
-class RegionLoader(val objectFactory: ObjectFactory) {
+class RegionLoader(val world: World) {
 
-    fun loadRegion(world: World, info: RegionInfo): Region {
+    fun loadRegion(info: RegionInfo): Region {
         val lines = ArrayList<String>()
         val directives = ArrayList<Directive>()
 
@@ -75,6 +74,7 @@ class RegionLoader(val objectFactory: ObjectFactory) {
     }
 
     private fun processDirective(d: Directive, region: Region, regionAliases: Map<String, String>) {
+        val objectFactory = world.game.objectFactory
         when (d) {
             is StartDirective    -> region.addStartPoint(d.name, d.x, d.y)
             is LightDirective    -> region.getCell(d.x, d.y).lightPower = d.power
