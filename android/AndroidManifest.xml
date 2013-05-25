@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application android:label="Wanhack" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-        <activity android:name=".GameActivity">
+        <activity android:name=".GameActivity" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
