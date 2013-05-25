@@ -63,7 +63,9 @@ class Main(val wizardMode: Boolean) {
         }
 
         val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, inventoryView)
-        splitPane.setDividerSize(1)
+        splitPane.setDividerSize(2)
+        splitPane.setContinuousLayout(true)
+        splitPane.setResizeWeight(1.0)
 
         frame.contentPane!!.add(splitPane, BorderLayout.CENTER)
 
