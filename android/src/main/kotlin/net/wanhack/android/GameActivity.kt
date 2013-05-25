@@ -37,6 +37,11 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import net.wanhack.model.common.Directions
 import java.util.concurrent.Executors
+import android.content.DialogInterface
+import java.util.concurrent.CountDownLatch
+import android.app.AlertDialog
+import java.util.HashSet
+import android.widget.Toast
 
 class GameActivity : Activity() {
 
@@ -143,25 +148,135 @@ class GameActivity : Activity() {
 
         override fun message(message: String) {
             Log.d(tag, "message: $message")
+            runOnUiThread(Runnable {
+                Toast.makeText(this@GameActivity, message, Toast.LENGTH_LONG)!!.show()
+            })
         }
 
         override fun ask(question: String): Boolean {
             Log.d(tag, "ask: $question")
-            return false
+
+            var result = false
+            val latch = CountDownLatch(1)
+
+            runOnUiThread(Runnable {
+                val builder = AlertDialog.Builder(this@GameActivity)
+                builder.setTitle(question)
+
+                builder.setPositiveButton("Yes", DialogInterface.OnClickListener { (dialog, id) ->
+                    result = true
+                    latch.countDown()
+                })
+
+                builder.setNegativeButton("No", DialogInterface.OnClickListener { (dialog, id) ->
+                    result = false
+                    latch.countDown()
+                })
+
+                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                    result = false
+                    latch.countDown()
+                })
+
+                builder.create()!!.show()
+            })
+
+            latch.await()
+
+            return result
         }
 
         override fun <T: Item> selectItem(itemType: Class<T>, message: String, items: Collection<T>): T? {
-            Log.d(tag, "selectItem: $message")
-            return null
+            var selected: T? = null
+            val latch = CountDownLatch(1)
+
+            val itemList = items.toList()
+            val titles = Array<String>(items.size) { i -> itemList[i].title }
+
+            runOnUiThread(Runnable {
+                val builder = AlertDialog.Builder(this@GameActivity)
+                builder.setTitle(message)
+                builder.setItems(titles, DialogInterface.OnClickListener { (dialog, which) ->
+                    selected = itemList[which]
+                    latch.countDown()
+                })
+                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                    selected = null
+                    latch.countDown()
+                })
+                builder.create()!!.show()
+            })
+
+            latch.await()
+
+            return selected
         }
+
         override fun selectItems(message: String, items: Collection<Item>): Set<Item> {
-            Log.d(tag, "selectItems: $message")
-            return setOf()
+            val selections = HashSet<Item>()
+            val latch = CountDownLatch(1)
+
+            val itemList = items.toList()
+            val titles = Array<String>(items.size) { i -> itemList[i].title }
+
+            runOnUiThread(Runnable {
+                val builder = AlertDialog.Builder(this@GameActivity)
+
+                builder.setTitle(message)
+                builder.setMultiChoiceItems(titles, null, DialogInterface.OnMultiChoiceClickListener { (dialog, which, isChecked) ->
+                    if (isChecked) {
+                        selections.add(itemList[which])
+                    } else {
+                        selections.remove(itemList[which])
+                    }
+                })
+
+                builder.setPositiveButton("Ok", DialogInterface.OnClickListener { (dialog, id) ->
+                    latch.countDown()
+                })
+
+                builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { (dialog, id) ->
+                    selections.clear()
+                    latch.countDown()
+                })
+
+                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                    selections.clear()
+                    latch.countDown()
+                })
+
+                builder.create()!!.show()
+            })
+
+            latch.await()
+
+            return selections
         }
 
         override fun selectDirection(): Direction? {
-            Log.d(tag, "selectDirection")
-            return null
+            var selected: Direction? = null
+            val latch = CountDownLatch(1)
+
+            val directions = Direction.values()
+            val titles = Array<String>(directions.size) { i -> directions[i].shortName }
+
+            runOnUiThread(Runnable {
+                val builder = AlertDialog.Builder(this@GameActivity)
+                builder.setTitle("Select direction")
+                builder.setItems(titles, DialogInterface.OnClickListener { (dialog, which) ->
+                    selected = directions[which]
+                    latch.countDown()
+                })
+                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                    selected = null
+                    latch.countDown()
+                })
+                builder.create()!!.show()
+            })
+
+            latch.await()
+
+            return selected
         }
     }
 
