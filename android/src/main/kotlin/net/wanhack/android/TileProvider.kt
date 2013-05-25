@@ -26,12 +26,12 @@ import net.wanhack.model.item.Item
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 
 class TileProvider {
 
-    val tileWidth = 8
-    val tileHeight = 13
-
+    val tileWidth = 16
+    val tileHeight = 26
 
     fun drawCell(g: Canvas, cell: Cell, visible: Boolean) {
         when (cell.cellType) {
@@ -57,8 +57,14 @@ class TileProvider {
 
     private fun drawLetter(g: Canvas, x: Int, y: Int, letter: Char, paint: Paint) {
         // g.setFont(font)
+
+        val bounds = Rect()
+        paint.setTextSize(20.toFloat())
+
         chars[0] = letter
-        g.drawText(chars, 0, 1, (x * tileWidth).toFloat(), (y * tileHeight + 10).toFloat(), paint)
+        paint.getTextBounds(chars, 0, 1, bounds);
+
+        g.drawText(chars, 0, 1, (x * tileWidth).toFloat(), (y * tileHeight - bounds.top).toFloat(), paint)
     }
 
     private fun drawStairs(g: Canvas, cell: Cell, up: Boolean, visible: Boolean) {
