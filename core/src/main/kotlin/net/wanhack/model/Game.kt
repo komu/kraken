@@ -553,9 +553,6 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             do {
                 val ticks = player.tickRate
 
-                if (player.paralyzed)
-                    player.paralyzedTicks -= ticks
-
                 globalClock.tick(ticks, this)
                 regionClock.tick(ticks, this)
             } while (player.alive && player.fainted)
