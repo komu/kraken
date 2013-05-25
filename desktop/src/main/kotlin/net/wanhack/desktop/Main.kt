@@ -227,20 +227,14 @@ class Main(val wizardMode: Boolean) {
         val config = dialog.showDialog();
 
         if (config != null) {
-            try {
-                val game = GameFacade(config, wizardMode, consoleView) { tick -> update(tick) }
-                consoleView.clear();
-                gameActions.gameFacade = game
-                regionView.gameFacade = game
-                inventoryView.gameFacade = game
+            val game = GameFacade(config, wizardMode, consoleView) { tick -> update(tick) }
+            consoleView.clear();
+            gameActions.gameFacade = game
+            regionView.gameFacade = game
+            inventoryView.gameFacade = game
 
-                gameFacade = game
-                game.start()
-
-            } catch (e: Exception) {
-                log.log(Level.SEVERE, "Failed to start new game", e);
-                JOptionPane.showMessageDialog(frame, e, "Failed to start new game", JOptionPane.ERROR_MESSAGE);
-            }
+            gameFacade = game
+            game.start()
         }
     }
 
