@@ -16,6 +16,7 @@
 
 package net.wanhack.android
 
+import java.lang.Math.abs
 import android.app.Activity
 import android.os.Bundle
 import net.wanhack.model.GameFacade
@@ -31,6 +32,10 @@ import net.wanhack.service.region.RegionLoader
 import android.view.ContextMenu
 import android.view.View
 import android.view.MenuItem
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
+import net.wanhack.model.common.Directions
 
 class GameActivity : Activity() {
 
@@ -54,6 +59,11 @@ class GameActivity : Activity() {
         setContentView(R.layout.game)
         registerForContextMenu(gameView)
 
+        val gestureDetector = GestureDetector(this, MyGestureListener())
+        gameView.setOnTouchListener(View.OnTouchListener { (v, event) ->
+            gestureDetector.onTouchEvent(event)
+        })
+
         game = GameFacade(GameConfiguration(), false, myConsole) { b ->
             Log.d(tag, "game updated: $b")
             gameView.invalidate()
@@ -64,6 +74,9 @@ class GameActivity : Activity() {
         game!!.start()
     }
 
+    fun moveTowards(dir: Direction) {
+        game!!.movePlayer(dir)
+    }
 
     public override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         getMenuInflater()!!.inflate(R.menu.game_actions, menu)
@@ -87,6 +100,32 @@ class GameActivity : Activity() {
             else            -> return super<Activity>.onContextItemSelected(item)
         }
         return true
+    }
+
+    inner class MyGestureListener : SimpleOnGestureListener() {
+
+        val SWIPE_MIN_DISTANCE = 120
+        val SWIPE_MAX_OFF_PATH = 250
+        val SWIPE_THRESHOLD_VELOCITY = 200
+
+        public override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+            e1!!
+            e2!!
+
+            var dx = 0
+            var dy = 0
+
+            if (abs(velocityX) > SWIPE_THRESHOLD_VELOCITY && abs(e1.getX() - e2.getX()) > SWIPE_MIN_DISTANCE)
+                dx = if (e1.getX() < e2.getX()) 1 else -1
+
+            if (abs(velocityY) > SWIPE_THRESHOLD_VELOCITY && abs(e1.getY() - e2.getY()) > SWIPE_MIN_DISTANCE)
+                dy = if (e1.getY() < e2.getY()) 1 else -1
+
+            val direction = Directions.forDeltas(dx, dy)
+            if (direction != null)
+                moveTowards(direction)
+            return false
+        }
     }
 
     class MyConsole : Console {

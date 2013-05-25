@@ -35,4 +35,7 @@ object Directions {
     val mainDirections = listOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
 
     fun randomDirection() = Direction.values().randomElement()
+
+    fun forDeltas(dx: Int, dy: Int): Direction? =
+        Direction.values().find { d -> dx == d.dx && dy == d.dy }
 }
