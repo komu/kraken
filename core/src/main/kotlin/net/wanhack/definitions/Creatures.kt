@@ -47,7 +47,7 @@ object Creatures : Definitions() {
     val whiteAnt = ant("white ant", level = 4) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randint(3, 7)
-        color = Color.RED
+        color = Color.WHITE
         level = 4
         luck = 0
         killExperience = 5
@@ -59,7 +59,7 @@ object Creatures : Definitions() {
     val greyAnt = ant("grey ant", level = 6) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,4)"))
         hitPoints = randint(4, 8)
-        color = Color.RED
+        color = Color.GRAY
         level = 6
         luck = 0
         killExperience = 8
