@@ -28,9 +28,13 @@ import android.util.Log
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.ServiceProvider
 import net.wanhack.service.region.RegionLoader
+import android.view.ContextMenu
+import android.view.View
+import android.view.MenuItem
 
 class GameActivity : Activity() {
 
+    var game: GameFacade? = null
     val gameView: GameView
         get() = findViewById(R.id.gameView) as GameView
 
@@ -48,15 +52,41 @@ class GameActivity : Activity() {
         ServiceProvider.regionLoader = RegionLoader(objectFactory)
 
         setContentView(R.layout.game)
+        registerForContextMenu(gameView)
 
-        val game = GameFacade(GameConfiguration(), false, myConsole) { b ->
+        game = GameFacade(GameConfiguration(), false, myConsole) { b ->
             Log.d(tag, "game updated: $b")
             gameView.invalidate()
         }
 
-        gameView.game = game
+        gameView.game = game!!
 
-        game.start()
+        game!!.start()
+    }
+
+
+    public override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        getMenuInflater()!!.inflate(R.menu.game_actions, menu)
+    }
+
+    public override fun onContextItemSelected(item: MenuItem?): Boolean {
+        val game = this.game!!
+        when (item!!.getItemId()) {
+            R.id.wield      -> game.wield()
+            R.id.wear       -> game.wear()
+            R.id.rest       -> game.rest(-1)
+            R.id.talk       -> game.talk()
+            R.id.open_door  -> game.openDoor()
+            R.id.close_door -> game.closeDoor()
+            R.id.pickup     -> game.pickup()
+            R.id.drop       -> game.drop()
+            R.id.eat        -> game.eat()
+            R.id.fling      -> game.fling()
+            R.id.search     -> game.search()
+            R.id.skipTurn   -> game.skipTurn()
+            else            -> return super<Activity>.onContextItemSelected(item)
+        }
+        return true
     }
 
     class MyConsole : Console {

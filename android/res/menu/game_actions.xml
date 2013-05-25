@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/wield"
+          android:title="Wield Weapon" />
+    <item android:id="@+id/wear"
+          android:title="Wear Armor" />
+    <item android:id="@+id/rest"
+          android:title="Rest" />
+    <item android:id="@+id/talk"
+          android:title="Talk" />
+    <item android:id="@+id/open_door"
+          android:title="Open Door" />
+    <item android:id="@+id/close_door"
+          android:title="Close Door" />
+    <item android:id="@+id/pickup"
+          android:title="Pick Up" />
+    <item android:id="@+id/drop"
+          android:title="Drop" />
+    <item android:id="@+id/eat"
+          android:title="Eat" />
+    <item android:id="@+id/fling"
+          android:title="Fling" />
+    <item android:id="@+id/search"
+          android:title="Search" />
+    <item android:id="@+id/skipTurn"
+          android:title="Skip Turn" />
+
+</menu>
