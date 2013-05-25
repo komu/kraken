@@ -157,18 +157,13 @@ open class ExpressionParser(val expression: String) {
         private fun parseVariableOrDie(token: String): Expression {
             val m = DIE_PATTERN.matcher(token)
             if (m.matches()) {
-                val multiplier = parseInt(m.group(1), 1)
+                val dieCount = m.group(1)
+                val multiplier = if (dieCount != null && dieCount != "") dieCount.toInt() else 1
                 val sides = m.group(2)!!.toInt()
                 return DieExpression(multiplier, sides)
             } else {
                 return VariableExpression(token)
             }
         }
-
-        private fun parseInt(value: String?, defaultValue: Int): Int =
-            if (value != null && value != "")
-                value.toInt()
-            else
-                defaultValue
     }
 }
