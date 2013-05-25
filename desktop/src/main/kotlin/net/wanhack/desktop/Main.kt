@@ -20,7 +20,6 @@ import java.awt.BorderLayout
 import java.awt.event.*
 import java.awt.event.KeyEvent.*
 import javax.swing.*
-import javax.swing.Action.*
 import kotlin.swing.*
 import net.wanhack.common.Version
 import net.wanhack.model.common.Direction
@@ -29,7 +28,6 @@ import net.wanhack.service.region.RegionLoader
 import net.wanhack.service.ServiceProvider
 import net.wanhack.desktop.common.ErrorDialog
 import net.wanhack.desktop.console.ConsoleView
-import net.wanhack.desktop.debug.LogFrame
 import net.wanhack.desktop.game.action.GameActionSet
 import net.wanhack.desktop.game.InventoryView
 import net.wanhack.desktop.game.RegionView
@@ -53,7 +51,6 @@ class Main(val wizardMode: Boolean) {
     private var gameFacade: GameFacade? = null
     private val regionView = RegionView()
     private val log = javaClass<Main>().logger()
-    private val logFrame = if (wizardMode) LogFrame() else null
     private val gameActions = GameActionSet();
 
     {
@@ -139,8 +136,6 @@ class Main(val wizardMode: Boolean) {
                         gameFacade?.revealCurrentRegion()
                         regionView.repaint()
                     })
-
-                    add(ShowLogFrameAction(logFrame!!).menuItem)
                 }
             }
 
@@ -282,26 +277,6 @@ class Main(val wizardMode: Boolean) {
         JOptionPane.showMessageDialog(
                 frame, message,
                 "About Wanhack", JOptionPane.INFORMATION_MESSAGE)
-    }
-
-    class ShowLogFrameAction(val frame: LogFrame) : AbstractAction("Log") {
-
-        val menuItem = JCheckBoxMenuItem(this);
-
-        {
-            putValue(MNEMONIC_KEY, VK_L);
-            frame.addWindowListener(object : WindowAdapter() {
-                public override fun windowClosing(e: WindowEvent) {
-                    menuItem.setSelected(false);
-                }
-            });
-        }
-
-        public override fun actionPerformed(e: ActionEvent) {
-            val newState = !frame.isVisible()
-            frame.setVisible(newState)
-            menuItem.setSelected(newState)
-        }
     }
 }
 
