@@ -69,10 +69,10 @@ class BlackKnight: Monster("The Black Knight") {
         target.say(this, yells.randomElement())
     }
 
-    private val hitPointPercentage: Int
+    val hitPointPercentage: Int
         get() = 100 * hitPoints / maxHitPoints
 
-    private val fullyCrippled: Boolean
+    val fullyCrippled: Boolean
         get() = hitPointPercentage < 20
 
     override fun onTick(game: Game) {
