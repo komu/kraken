@@ -72,7 +72,6 @@ class GameActivity : Activity() {
         })
 
         game = GameFacade(GameConfiguration(), false, myConsole) { b ->
-            Log.d(tag, "game updated: $b")
             runOnUiThread(Runnable {
                 gameView.invalidate()
             })
@@ -84,7 +83,7 @@ class GameActivity : Activity() {
     }
 
     fun moveTowards(dir: Direction) {
-        game!!.movePlayer(dir)
+        gameAction { it.movePlayer(dir) }
     }
 
     public override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
