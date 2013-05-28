@@ -135,16 +135,14 @@ class Player(name: String): Creature(name) {
             message("You faint.")
             hitPoints = 1
             fainted = true
-            val ticks = 100 * (5 + RandomUtils.rollDie(45))
-            game.addGlobalEvent(object : OneTimeEvent(ticks) {
-                override fun fire(game: Game) {
-                    if (fainted) {
-                        message("You wake up.")
-                        if (hunger <= 0)
-                            hunger = 10
+            val ticks = 100 * RandomUtils.randomInt(5, 50)
+            game.addGlobalEvent(OneTimeEvent(ticks) {
+                if (fainted) {
+                    message("You wake up.")
+                    if (hunger <= 0)
+                        hunger = 10
 
-                        fainted = false
-                    }
+                    fainted = false
                 }
             })
         }

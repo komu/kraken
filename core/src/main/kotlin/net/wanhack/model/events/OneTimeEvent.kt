@@ -18,13 +18,11 @@ package net.wanhack.model.events
 
 import net.wanhack.model.Game
 
-abstract class OneTimeEvent(rate: Int): GameEvent(rate) {
+class OneTimeEvent(rate: Int, val callback: (Game) -> Unit): GameEvent(rate) {
 
     override fun act(game: Game): Int {
-        fire(game)
+        callback(game)
         rate = 0
         return 0
     }
-
-    protected abstract fun fire(game: Game)
 }
