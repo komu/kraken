@@ -120,6 +120,8 @@ object Items : Definitions() {
 
     val cyanideCapsule = item("a cyanide capsule", probability = 0) { CyanideCapsule() }
 
+    val potionOfColdCoffee = item("potion of cold coffee", probability = 10) { ColdCoffee() }
+
     // POTIONS
 
     val healingPotion = item("healing potion", probability = 25) {
