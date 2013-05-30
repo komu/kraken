@@ -210,24 +210,16 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         get() {
             val adjacent = ArrayList<Cell>(8)
             for (d in Direction.values()) {
-                val cell = region.getCellOrNull(x + d.dx, y + d.dy)
-                if (cell != null)
-                    adjacent.add(cell)
+                val xx = x + d.dx
+                val yy = y + d.dy
+                if (region.containsPoint(xx, yy))
+                    adjacent.add(region.getCell(xx, yy))
             }
             return adjacent
         }
 
-    fun getAdjacentCellsOfType(cellType: CellType): List<Cell> {
-        val adjacent = ArrayList<Cell>(8)
-
-        for (d in Direction.values()) {
-            val cell = region.getCellOrNull(x + d.dx, y + d.dy)
-            if (cell != null && cell.cellType == cellType)
-                adjacent.add(cell)
-        }
-
-        return adjacent
-    }
+    fun getAdjacentCellsOfType(cellType: CellType)=
+        adjacentCells.filter { it.cellType == cellType }
 
     fun countPassableMainNeighbours(): Int {
         var count = 0
@@ -252,9 +244,10 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
             val adjacent = ArrayList<Cell>(4)
 
             for (d in Directions.mainDirections) {
-                val cell = region.getCellOrNull(x + d.dx, y + d.dy)
-                if (cell != null)
-                    adjacent.add(cell)
+                val xx = x + d.dx
+                val yy = y + d.dy
+                if (region.containsPoint(xx, yy))
+                    adjacent.add(region.getCell(xx, yy))
             }
 
             return adjacent
