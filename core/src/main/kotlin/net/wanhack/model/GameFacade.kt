@@ -31,7 +31,7 @@ import java.util.concurrent.Executors
  */
 class GameFacade(config: GameConfiguration, console: Console, val listener: (Boolean) -> Unit) {
 
-    private val gameExecutor = Executors.newSingleThreadExecutor()
+    private val gameExecutor = Executors.newSingleThreadExecutor(java.util.concurrent.ThreadFactory { Thread(it, "game") })
     private val lock = ReentrantReadWriteLock(true)
     private val game = Game(config, LockRelinquishingConsole(console, lock.writeLock())) {
         listener(true)

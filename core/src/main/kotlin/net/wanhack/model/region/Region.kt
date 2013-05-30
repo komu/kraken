@@ -63,14 +63,6 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     fun getCell(x: Int, y: Int): Cell =
         cells[x + y * width]
 
-    fun getCellOrNull(x: Int, y: Int): Cell? {
-        val index = x + y * width
-        return if (index >= 0 && index < cells.size)
-            cells[index]
-        else
-            null
-    }
-
     fun containsPoint(x: Int, y: Int) = x >= 0 && x < width && y >= 0 && y < height
 
     fun updateSeenCells(seen: Set<Cell>) {

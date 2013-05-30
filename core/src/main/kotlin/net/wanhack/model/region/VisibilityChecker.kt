@@ -16,23 +16,15 @@
 
 package net.wanhack.model.region
 
-class VisibilityChecker {
+object VisibilityChecker {
     fun getVisibleCells(from: Cell, sight: Int): CellSet {
-        val result = MutableCellSet(from.region)
+        val visible = MutableCellSet(from.region)
 
-        for (target in from.region)
-            if (from.distance(target) <= sight)
-                result.addVisiblePointsTowards(from, target)
+        visible.add(from)
 
-        return result
-    }
+        for (distance in 1..sight)
+            visible.addAll(from.getMatchingCellsAtDistance(distance) { it.hasLineOfSight(from) })
 
-    private fun MutableCellSet.addVisiblePointsTowards(from: Cell, target: Cell) {
-        for (c in from.getCellsBetween(target)) {
-            add(c)
-            if (!c.canSeeThrough())
-                return
-        }
-        add(target)
+        return visible
     }
 }

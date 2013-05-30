@@ -187,7 +187,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     }
 
     protected fun calculateCanSee(target: Cell): Boolean =
-        cell.getCellsBetween(target).all { it.canSeeThrough() }
+        cell.hasLineOfSight(target)
 
     val adjacentCreatures: Collection<Creature>
         get() = cell.adjacentCells.flatMap { it.creature.toOption() }
