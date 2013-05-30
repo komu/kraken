@@ -253,6 +253,9 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
             return adjacent
         }
 
+    fun hasLineOfSight(target: Cell) =
+        getCellsBetween(target).all { it.canSeeThrough() }
+
     fun getCellsBetween(target: Cell): List<Cell> {
         val cells = ArrayList<Cell>(distance(target))
         var x0 = x
@@ -312,7 +315,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         val lightSourceEffectiveness = calculateLightSourceEffectiveness()
         if (lightSourceEffectiveness > 0) {
             val sight = lightSourceEffectiveness / 10
-            val cells = VisibilityChecker().getVisibleCells(this, sight)
+            val cells = VisibilityChecker.getVisibleCells(this, sight)
             for (cell in cells) {
                 val distance = distance(cell)
                 val level = lightSourceEffectiveness - 10 * distance
