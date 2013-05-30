@@ -98,7 +98,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         if (countPassableMainNeighbours() != 2)
             return false
 
-        var previousPassable: Int = 0
+        var previousPassable = 0
         for (d in Direction.values()) {
             val cell = getCellTowards(d)
             if (cell.isPassable()) {
@@ -207,27 +207,27 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     }
 
     val adjacentCells: List<Cell>
-        get() {
-            val adjacent = ArrayList<Cell>(8)
-            for (d in Direction.values()) {
-                val xx = x + d.dx
-                val yy = y + d.dy
-                if (region.containsPoint(xx, yy))
-                    adjacent.add(region.getCell(xx, yy))
-            }
-            return adjacent
+        get() = adjacentCells(Directions.allDirections)
+
+    val adjacentCellsInMainDirections: List<Cell>
+        get() = adjacentCells(Directions.mainDirections)
+
+    fun adjacentCells(directions: Collection<Direction>): List<Cell> {
+        val adjacent = ArrayList<Cell>(directions.size)
+        for (d in directions) {
+            val xx = x + d.dx
+            val yy = y + d.dy
+            if (region.containsPoint(xx, yy))
+                adjacent.add(region.getCell(xx, yy))
         }
+        return adjacent
+    }
 
     fun getAdjacentCellsOfType(cellType: CellType)=
         adjacentCells.filter { it.cellType == cellType }
 
-    fun countPassableMainNeighbours(): Int {
-        var count = 0
-        for (d in Directions.mainDirections)
-            if (getCellTowards(d).isPassable())
-                count++
-        return count
-    }
+    fun countPassableMainNeighbours() =
+        Directions.mainDirections.count { getCellTowards(it).isPassable() }
 
     fun getDirection(cell: Cell): Direction {
         val dx = signum(cell.x - x)
@@ -238,20 +238,6 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
         throw IllegalArgumentException("could not find direction of $cell from $this")
     }
-
-    val adjacentCellsInMainDirections: List<Cell>
-        get() {
-            val adjacent = ArrayList<Cell>(4)
-
-            for (d in Directions.mainDirections) {
-                val xx = x + d.dx
-                val yy = y + d.dy
-                if (region.containsPoint(xx, yy))
-                    adjacent.add(region.getCell(xx, yy))
-            }
-
-            return adjacent
-        }
 
     fun hasLineOfSight(target: Cell) =
         getCellsBetween(target).all { it.canSeeThrough() }
@@ -311,17 +297,12 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         lighting = defaultLighting
     }
 
-    fun updateLighting(): Unit {
+    fun updateLighting() {
         val lightSourceEffectiveness = calculateLightSourceEffectiveness()
         if (lightSourceEffectiveness > 0) {
-            val sight = lightSourceEffectiveness / 10
-            val cells = VisibilityChecker.getVisibleCells(this, sight)
-            for (cell in cells) {
-                val distance = distance(cell)
-                val level = lightSourceEffectiveness - 10 * distance
-                if (level > 0)
-                    cell.lighting += level
-            }
+            val cells = VisibilityChecker.getVisibleCells(this, lightSourceEffectiveness / 10)
+            for (cell in cells)
+                cell.lighting += max(lightSourceEffectiveness - 10 * distance(cell), 0)
         }
     }
 

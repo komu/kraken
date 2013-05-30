@@ -32,6 +32,7 @@ enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
 }
 
 object Directions {
+    val allDirections = Direction.values().toList()
     val mainDirections = listOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
 
     fun randomDirection() = Direction.values().randomElement()
