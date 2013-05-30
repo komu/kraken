@@ -23,7 +23,6 @@ import net.wanhack.model.item.Item
 import net.wanhack.utils.cellsAtDistance
 import net.wanhack.utils.signum
 import java.util.*
-import java.util.Collections.singletonList
 import java.util.Collections.emptyList
 import java.lang.Math.*
 import net.wanhack.model.common.Directions
@@ -173,34 +172,34 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
     public fun getMatchingCellsAtDistance(distance: Int, predicate: (Cell) -> Boolean): List<Cell> {
         if (distance == 0)
-            return if (predicate(this)) singletonList(this) else emptyList()
+            return if (predicate(this)) listOf(this) else emptyList()
 
         val count = cellsAtDistance(distance)
         val cells = ArrayList<Cell>(count)
-        val x1 = x - distance
-        val y1 = y - distance
-        val x2 = x + distance
-        val y2 = y + distance
+        val x1 = max(0, x - distance)
+        val y1 = max(0, y - distance)
+        val x2 = min(region.width-1, x + distance)
+        val y2 = min(region.height-1, y + distance)
+
         for (xx in x1..x2) {
-            val cell = region.getCellOrNull(xx, y1)
-            if (cell != null && predicate(cell))
+            val cell = region.getCell(xx, y1)
+            if (predicate(cell))
                 cells.add(cell)
         }
 
         for (yy in y1 + 1..y2 - 1) {
-            val left = region.getCellOrNull(x1, yy)
-            if (left != null && predicate(left))
+            val left = region.getCell(x1, yy)
+            if (predicate(left))
                 cells.add(left)
 
-            val right = region.getCellOrNull(x2, yy)
-            if (right != null && predicate(right))
+            val right = region.getCell(x2, yy)
+            if (predicate(right))
                 cells.add(right)
-
         }
 
         for (xx in x1..x2) {
-            val cell = region.getCellOrNull(xx, y2)
-            if (cell != null && predicate(cell))
+            val cell = region.getCell(xx, y2)
+            if (predicate(cell))
                 cells.add(cell)
         }
 
