@@ -16,7 +16,6 @@
 
 package net.wanhack.model.events.region
 
-import java.util.Random
 import net.wanhack.model.Game
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
@@ -28,7 +27,7 @@ import net.wanhack.model.region.CellSet
 
 class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
 
-    private val random  = Random()
+    private val log = javaClass.logger()
 
     override fun fire(game: Game) {
         val player = game.player
@@ -48,16 +47,12 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
         selectRandomTargetCell(player.getInvisibleCells(), creature) ?: selectRandomTargetCell(region.getCells(), creature)
 
     private fun selectRandomTargetCell(candidates: CellSet, creature: Creature): Cell? {
-        // TODO: this could end up being infinite loop
-        while (!candidates.isEmpty()) {
+        var tries = 0
+        while (!candidates.isEmpty() && tries++ < 100) {
             val cell = candidates.randomElement()
             if (cell.creature == null && cell.canMoveInto(creature.corporeal))
                 return cell
         }
         return null
-    }
-
-    class object {
-        private val log = javaClass<CreateMonstersEvent>().logger()
     }
 }

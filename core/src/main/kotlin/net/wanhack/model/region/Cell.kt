@@ -20,7 +20,7 @@ import net.wanhack.model.common.Direction
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
-import net.wanhack.utils.cellsAtDistance
+import net.wanhack.utils.countOfCellsAtDistance
 import net.wanhack.utils.signum
 import java.util.*
 import java.util.Collections.emptyList
@@ -28,6 +28,7 @@ import java.lang.Math.*
 import net.wanhack.model.common.Directions
 import kotlin.support.AbstractIterator
 import net.wanhack.utils.collections.maximumBy
+import net.wanhack.utils.square
 
 class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
@@ -73,14 +74,12 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     val largestItem: Item?
         get() = items.maximumBy { it.weight }
 
-    fun isReachable(goal: Cell) =
-        this == goal || region.findPath(this, goal) != null
+    fun isReachable(goal: Cell) = this == goal || region.findPath(this, goal) != null
 
     fun getCellTowards(direction: Direction) =
         region.getCell(x + direction.dx, y + direction.dy)
 
-    fun getJumpTarget(up: Boolean): JumpTarget? =
-        portal?.getTarget(up)
+    fun getJumpTarget(up: Boolean) = portal?.getTarget(up)
 
     fun isFloor() = state.cellType.isFloor()
 
@@ -88,29 +87,25 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
     fun isClosedDoor() = state.cellType == CellType.CLOSED_DOOR
 
-    fun isAdjacent(cell: Cell): Boolean {
-        val dx = abs(x - cell.x)
-        val dy = abs(y - cell.y)
-        return cell != this && dx < 2 && dy < 2
-    }
+    fun isAdjacent(cell: Cell) = cell != this && abs(x - cell.x) < 2 && abs(y - cell.y) < 2
 
     fun isRoomCorner(): Boolean {
         if (countPassableMainNeighbours() != 2)
             return false
 
         var previousPassable = 0
-        for (d in Direction.values()) {
-            val cell = getCellTowards(d)
+
+        for (cell in adjacentCells) {
             if (cell.isPassable()) {
-                if (previousPassable == 2) {
+                if (previousPassable == 2)
                     return true
-                } else {
+                else
                     previousPassable++
-                }
             } else {
                 previousPassable = 0
             }
         }
+
         return false
     }
 
@@ -133,18 +128,13 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
     fun canMoveInto(corporeal: Boolean) = creature == null && state.cellType.canMoveInto(corporeal)
 
-    fun distance(cell: Cell): Int {
-        val dx = x - cell.x
-        val dy = y - cell.y
-        return sqrt((dx * dx + dy * dy).toDouble()).toInt()
-    }
+    fun distance(cell: Cell) = sqrt((square(x - cell.x) + square(y - cell.y)).toDouble()).toInt()
 
     fun isInteresting() = !state.cellType.isFloor() || !items.empty
 
-    fun matchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> {
-        val maxDistance = getMaximumDistanceFromEdgeOfRegion()
-
-        return object : AbstractIterator<Cell>() {
+    fun matchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> =
+        object : AbstractIterator<Cell>() {
+            private val maxDistance = max(max(x, region.width - x), max(y, region.height - y))
             private var distance = 0
             private var pos = 0
             private var cellsAtCurrentDistance: List<Cell> = Collections.emptyList()
@@ -162,20 +152,12 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
                 setNext(cellsAtCurrentDistance[pos++])
             }
         }
-    }
 
-    private fun getMaximumDistanceFromEdgeOfRegion(): Int {
-        val maxX = max(x, region.width - x)
-        val maxY = max(y, region.height - y)
-        return max(maxX, maxY)
-    }
-
-    public fun getMatchingCellsAtDistance(distance: Int, predicate: (Cell) -> Boolean): List<Cell> {
+    fun getMatchingCellsAtDistance(distance: Int, predicate: (Cell) -> Boolean): List<Cell> {
         if (distance == 0)
             return if (predicate(this)) listOf(this) else emptyList()
 
-        val count = cellsAtDistance(distance)
-        val cells = ArrayList<Cell>(count)
+        val cells = ArrayList<Cell>(countOfCellsAtDistance(distance))
         val x1 = max(0, x - distance)
         val y1 = max(0, y - distance)
         val x2 = min(region.width-1, x + distance)
@@ -212,7 +194,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     val adjacentCellsInMainDirections: List<Cell>
         get() = adjacentCells(Directions.mainDirections)
 
-    fun adjacentCells(directions: Collection<Direction>): List<Cell> {
+    private fun adjacentCells(directions: Collection<Direction>): List<Cell> {
         val adjacent = ArrayList<Cell>(directions.size)
         for (d in directions) {
             val xx = x + d.dx
@@ -223,20 +205,15 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         return adjacent
     }
 
-    fun getAdjacentCellsOfType(cellType: CellType)=
-        adjacentCells.filter { it.cellType == cellType }
-
     fun countPassableMainNeighbours() =
         Directions.mainDirections.count { getCellTowards(it).isPassable() }
 
     fun getDirection(cell: Cell): Direction {
         val dx = signum(cell.x - x)
         val dy = signum(cell.y - y)
-        for (d in Direction.values())
-            if (dx == d.dx && dy == d.dy)
-                return d
 
-        throw IllegalArgumentException("could not find direction of $cell from $this")
+        return Direction.values().find { dx == it.dx && dy == it.dy } ?:
+            throw IllegalArgumentException("could not find direction of $cell from $this")
     }
 
     fun hasLineOfSight(target: Cell) =

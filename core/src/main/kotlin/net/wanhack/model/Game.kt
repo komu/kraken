@@ -137,7 +137,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         get() = null
 
     fun enterRegion(name: String, location: String) {
-        val region = world.getRegion(player, name)
+        val region = world.getRegion(name)
         val oldCell = player.cellOrNull
         val oldRegion = oldCell?.region
         region.setPlayerLocation(player, location)
@@ -151,7 +151,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             }
 
             addRegionEvent(CreateMonstersEvent(region))
-            for (creature in region.getCreatures())
+            for (creature in region.creatures)
                 regionClock.schedule(creature.tickRate, creature)
         }
     }
@@ -196,7 +196,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun openDoor() = gameAction {
-        val closedDoors  = player.cell.getAdjacentCellsOfType(CellType.CLOSED_DOOR)
+        val closedDoors  = player.cell.adjacentCells.filter { it.cellType == CellType.CLOSED_DOOR }
         if (closedDoors.isEmpty()) {
             player.message("There are no closed doors around you.")
         } else if (closedDoors.size == 1) {
@@ -217,7 +217,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun closeDoor() = gameAction {
-        val openDoors = player.cell.getAdjacentCellsOfType(CellType.OPEN_DOOR)
+        val openDoors = player.cell.adjacentCells.filter { it.cellType == CellType.OPEN_DOOR }
         if (openDoors.isEmpty()) {
             player.message("There are no open doors around you.")
         } else if (openDoors.size == 1) {

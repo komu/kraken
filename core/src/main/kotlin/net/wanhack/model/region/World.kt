@@ -20,13 +20,10 @@ import java.util.ArrayList
 import java.util.HashMap
 import java.util.Random
 import net.wanhack.model.Game
-import net.wanhack.model.creature.Player
 import net.wanhack.service.region.generators.MazeRegionGenerator
-import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.service.region.generators.RoomFirstRegionGenerator
 import net.wanhack.utils.Probability
 import net.wanhack.utils.logger
-import net.wanhack.definitions.ObjectDefinition
 import net.wanhack.definitions.betweenLevels
 import net.wanhack.definitions.weightedRandom
 import net.wanhack.service.region.RegionLoader
@@ -35,40 +32,15 @@ class World(val game: Game) {
     private val loadedRegions = HashMap<String, Region>()
     private val regions = ArrayList<RegionInfo>()
     private val random = Random()
-    private val mazeProbability = Probability(5);
+    private val mazeProbability = Probability(5)
+    private val log = javaClass.logger();
 
     {
         addNonRandomRegion(0, "start")
-        addRandomRegion(1, "level1")
-        addRandomRegion(2, "level2")
-        addRandomRegion(3, "level3")
-        addRandomRegion(4, "level4")
-        addRandomRegion(5, "level5")
-        addRandomRegion(6, "level6")
-        addRandomRegion(7, "level7")
-        addRandomRegion(8, "level8")
-        addRandomRegion(9, "level9")
-        addRandomRegion(10, "level10")
-        addRandomRegion(11, "level11")
-        addRandomRegion(12, "level12")
-        addRandomRegion(13, "level13")
-        addRandomRegion(14, "level14")
-        addRandomRegion(15, "level15")
-        addRandomRegion(16, "level16")
-        addRandomRegion(17, "level17")
-        addRandomRegion(18, "level18")
-        addRandomRegion(19, "level19")
-        addRandomRegion(20, "level20")
-        addRandomRegion(21, "level21")
-        addRandomRegion(22, "level22")
-        addRandomRegion(23, "level23")
-        addRandomRegion(24, "level24")
-        addRandomRegion(25, "level25")
-        addRandomRegion(26, "level26")
-        addRandomRegion(27, "level27")
-        addRandomRegion(28, "level28")
-        addRandomRegion(29, "level29")
-        addRandomRegion(30, "level30")
+
+        for (n in 1..30)
+            addRandomRegion(n, "level$n")
+
         addNonRandomRegion(31, "end")
 
         var previous: RegionInfo? = null
@@ -91,39 +63,27 @@ class World(val game: Game) {
         regions.add(RegionInfo(id, level, false))
     }
 
-    fun getRegion(player: Player, name: String): Region =
+    fun getRegion(name: String): Region =
         loadedRegions.getOrPut(name) {
-            initRegion(player, name)
+            initRegion(name)
         }
 
-    private fun initRegion(player: Player, name: String): Region {
-        val info = getRegionInfo(name)
+    private fun initRegion(name: String): Region {
+        val info = regions.find { it.id == name } ?: throw IllegalArgumentException("unknown region <$name>")
         val region = loadRegion(info)
-        addRandomCreatures(player, region)
+        addRandomCreatures(region)
         addRandomItems(region)
         return region
     }
 
-    private fun loadRegion(info: RegionInfo): Region =
+    private fun loadRegion(info: RegionInfo) =
         if (info.random) {
-            val up = info.previous?.id
-            val down = info.next?.id
-
-            getRegionGenerator().generate(this, info.id, info.level, up, down)
-        } else {
+            val generator = if (mazeProbability.check()) MazeRegionGenerator else RoomFirstRegionGenerator
+            generator.generate(this, info.id, info.level, info.previous?.id, info.next?.id)
+        } else
             RegionLoader(this).loadRegion(info)
-        }
 
-    private fun getRegionInfo(id: String): RegionInfo =
-        regions.find { id == it.id } ?: throw IllegalArgumentException("unknown region <$id>")
-
-    private fun getRegionGenerator(): RegionGenerator =
-        if (mazeProbability.check())
-            MazeRegionGenerator
-        else
-            RoomFirstRegionGenerator
-
-    private fun addRandomCreatures(player: Player, region: Region) {
+    private fun addRandomCreatures(region: Region) {
         if (region.level == 0)
             return
 
@@ -131,7 +91,7 @@ class World(val game: Game) {
         val emptyCells = region.getCellsForItemsAndCreatures()
 
         for (i in 1..monsterCount) {
-            val creatures = game.objectFactory.randomSwarm(region.level, player.level)
+            val creatures = game.objectFactory.randomSwarm(region.level, game.player.level)
             if (emptyCells.empty)
                 return
 
@@ -145,24 +105,16 @@ class World(val game: Game) {
                 }
         }
     }
+
     private fun addRandomItems(region: Region) {
-        val itemCount = random.nextInt(6)
+        val emptyCells = region.getCellsForItemsAndCreatures()
+        if (emptyCells.empty)
+            return
 
         val items = game.objectFactory.instantiableItems.betweenLevels(0, region.level)
-        val emptyCells = region.getCellsForItemsAndCreatures()
-        for (i in 1..itemCount) {
-            if (emptyCells.empty)
-                return
-
+        random.nextInt(6).times {
             val item = items.weightedRandom().create()
-
             emptyCells.randomElement().items.add(item)
         }
-    }
-
-    class object {
-        private val log = javaClass<World>().logger()
-
-        class DefProbability<T : ObjectDefinition<*>>(val def: T, val probability: Int, val level: Int?)
     }
 }

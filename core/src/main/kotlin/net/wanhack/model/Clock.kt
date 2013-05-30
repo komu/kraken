@@ -16,10 +16,10 @@
 
 package net.wanhack.model
 
+import java.lang.Math.max
 import java.util.PriorityQueue
 import net.wanhack.model.common.Actor
 import net.wanhack.utils.logger
-import java.util.logging.Level
 
 class Clock {
     var time = 0
@@ -27,8 +27,7 @@ class Clock {
     private val actors = PriorityQueue<ActorInfo>()
 
     fun tick(ticks: Int, game: Game) {
-        if (log.isLoggable(Level.FINER))
-            log.finer("ticking the clock for $ticks ticks")
+        log.finer("ticking the clock for $ticks ticks")
 
         tick(game, time + ticks)
     }
@@ -36,7 +35,7 @@ class Clock {
     private fun tick(game: Game, maxTime: Int) {
         while (!actors.empty && actors.element().nextTick <= maxTime) {
             val actor = actors.remove()
-            time = Math.max(time, actor.nextTick)
+            time = max(time, actor.nextTick)
             if (!actor.destroyed) {
                 val reschedule = actor.tick(game, time)
                 if (reschedule)

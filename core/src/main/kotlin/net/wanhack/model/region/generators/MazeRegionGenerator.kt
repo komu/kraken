@@ -100,7 +100,8 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         for (dir in pathDirections()) {
             val xx = currentX + gridSize * dir.dx
             val yy = currentY + gridSize * dir.dy
-            if (isOk(xx, yy) && (visited == null || !visited.contains(xx, yy))) {
+
+            if (isCandidateForPath(xx, yy) && (visited == null || !visited.contains(xx, yy))) {
                 val cell = region.getCell(xx, yy)
                 if (!cell.isPassable() && cell.cellType != CellType.UNDIGGABLE_WALL) {
                     for (i in 1..gridSize - 1)
@@ -183,10 +184,11 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
             if (cell != start && region.findPath(start, cell) != null)
                 return cell
         }
+
         return null
     }
 
-    private fun isOk(x: Int, y: Int) =
+    private fun isCandidateForPath(x: Int, y: Int) =
         x > 1 && x < region.width - 1 && y > 1 && y < region.height - 1
 
     class object : RegionGenerator {

@@ -16,7 +16,7 @@
 
 package net.wanhack.utils
 
-fun cellsAtDistance(distance: Int): Int {
+fun countOfCellsAtDistance(distance: Int): Int {
     if (distance == 0)
         return 1
 

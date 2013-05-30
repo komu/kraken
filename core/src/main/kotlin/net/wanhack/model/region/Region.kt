@@ -54,8 +54,8 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
         player.cell = startCells[location] ?: throw IllegalStateException("Region '$name' has no start point named '$location'.")
     }
 
-    fun getCreatures(): List<Creature> =
-        cells.flatMap { it.creature.toOption() }
+    val creatures: Iterator<Creature>
+        get() = cells.iterator().flatMap { it.creature.toOption().iterator() }
 
     fun findPath(start: Cell, goal: Cell): List<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)
