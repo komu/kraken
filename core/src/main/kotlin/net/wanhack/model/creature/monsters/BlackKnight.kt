@@ -119,7 +119,7 @@ class BlackKnight: Monster("The Black Knight") {
             attacker.message("The Black Knight is crippled!")
             val weapon = wieldedWeapon
             if (weapon != null) {
-                wieldedWeapon != null
+                wieldedWeapon = null
                 dropToAdjacentCell(weapon)
             }
         } else {
