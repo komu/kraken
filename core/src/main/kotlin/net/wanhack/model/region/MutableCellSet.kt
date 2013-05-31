@@ -41,7 +41,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         this[RandomUtils.randomInt(size)]
 
     private fun point(index: Int): Cell =
-        region.getCell(index % region.width, index / region.width)
+        region[index % region.width, index / region.width]
 
     fun get(index: Int): Cell {
         var i = index

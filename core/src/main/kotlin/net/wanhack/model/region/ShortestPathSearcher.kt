@@ -82,7 +82,7 @@ open class ShortestPathSearcher(val region: Region) {
 
     protected open fun costToEnter(cell: Cell): Int = 1
 
-    protected open fun canEnter(cell: Cell): Boolean = cell.isPassable()
+    protected open fun canEnter(cell: Cell): Boolean = cell.isPassable
 
     private inner class Node(val cell: Cell, var parent: Node?, val cost: Int): Comparable<Node> {
         var heuristic = 0

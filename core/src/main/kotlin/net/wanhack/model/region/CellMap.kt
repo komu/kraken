@@ -65,7 +65,7 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
         cell.x + cell.y * region.width
 
     private fun cell(index: Int): Cell =
-        region.getCell(index % region.width, index / region.width)
+        region[index % region.width, index / region.width]
 
     private class EntrySet<V : Any>(val map: CellMap<V>): AbstractSet<MutableMap.MutableEntry<Cell, V>>() {
 

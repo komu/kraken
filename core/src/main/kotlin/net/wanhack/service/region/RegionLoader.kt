@@ -46,8 +46,8 @@ class RegionLoader(val world: World) {
         val region = Region(world, info.id, info.level, lines.maxLength() + 1, lines.size + 1)
 
         for ((y, line) in lines.withIndices()) {
-            for ((x,ch) in line.withIndices()) {
-                val cell = region.getCell(x, y)
+            for ((x, ch) in line.withIndices()) {
+                val cell = region[x, y]
                 when (ch) {
                     '#'  -> cell.setType(CellType.HALLWAY_FLOOR)
                     '<'  -> cell.setType(CellType.STAIRS_UP)
@@ -77,7 +77,7 @@ class RegionLoader(val world: World) {
         val objectFactory = world.game.objectFactory
         when (d) {
             is StartDirective    -> region.addStartPoint(d.name, d.x, d.y)
-            is LightDirective    -> region.getCell(d.x, d.y).lightPower = d.power
+            is LightDirective    -> region[d.x, d.y].lightPower = d.power
             is CreatureDirective -> region.addCreature(d.x, d.y, objectFactory.createCreature(d.name))
             is ItemDirective     -> region.addItem(d.x, d.y, objectFactory.createItem(d.name))
             is PortalDirective   -> region.addPortal(d.x, d.y, getRegion(d.target, regionAliases), d.location, d.up)

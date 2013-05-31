@@ -34,12 +34,12 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
 
     {
         for (x in 0..width - 1) {
-            getCell(x, 0).setType(CellType.UNDIGGABLE_WALL)
-            getCell(x, height - 1).setType(CellType.UNDIGGABLE_WALL)
+            this[x, 0].setType(CellType.UNDIGGABLE_WALL)
+            this[x, height - 1].setType(CellType.UNDIGGABLE_WALL)
         }
         for (y in 0..height - 1) {
-            getCell(0, y).setType(CellType.UNDIGGABLE_WALL)
-            getCell(width - 1, y).setType(CellType.UNDIGGABLE_WALL)
+            this[0, y].setType(CellType.UNDIGGABLE_WALL)
+            this[width - 1, y].setType(CellType.UNDIGGABLE_WALL)
         }
     }
 
@@ -60,7 +60,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     fun findPath(start: Cell, goal: Cell): List<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)
 
-    fun getCell(x: Int, y: Int): Cell =
+    fun get(x: Int, y: Int): Cell =
         cells[x + y * width]
 
     fun containsPoint(x: Int, y: Int) = x >= 0 && x < width && y >= 0 && y < height
@@ -71,21 +71,21 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     }
 
     fun addPortal(x: Int, y: Int, target: String, location: String, up: Boolean) {
-        getCell(x, y).portal = Portal(target, location, up)
+        this[x, y].portal = Portal(target, location, up)
     }
 
     fun addStartPoint(pointName: String, x: Int, y: Int) {
-        val old = startCells.put(pointName, getCell(x, y))
+        val old = startCells.put(pointName, this[x, y])
         if (old != null)
             throw IllegalStateException("Tried to define start point '$pointName' multiple tiles for region '$name'.")
     }
 
     fun addCreature(x: Int, y: Int, creature: Creature) {
-        creature.cell = getCell(x, y)
+        creature.cell = this[x, y]
     }
 
     fun addItem(x: Int, y: Int, item: Item) {
-        getCell(x, y).items.add(item)
+        this[x, y].items.add(item)
     }
 
     fun getCells(): MutableCellSet {
@@ -96,10 +96,10 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     }
 
     fun getCellsForItemsAndCreatures() =
-        getMatchingCells { it.isFloor() }
+        getMatchingCells { it.isFloor }
 
     fun getRoomFloorCells(): CellSet =
-        getMatchingCells { it.isInRoom() }
+        getMatchingCells { it.isInRoom }
 
     fun getMatchingCells(predicate: (Cell) -> Boolean): MutableCellSet {
         val result = MutableCellSet(this)

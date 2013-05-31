@@ -107,7 +107,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     private fun putPetNextToPlayer(pet: Creature) {
         val target = player.cell.adjacentCells.find { cell ->
-            cell.isFloor() && cell.creature == null
+            cell.isFloor && cell.creature == null
         }
 
         if (target != null) {
@@ -335,7 +335,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
                 val range = player.getThrowRange(projectile.weight)
 
                 var distance = 0
-                while (distance < range && nextCell.isPassable()) {
+                while (distance < range && nextCell.isPassable) {
                     currentCell = nextCell
                     nextCell = currentCell.getCellTowards(dir)
                     val creature = currentCell.creature
@@ -446,7 +446,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     private fun Cell.isInteresting(corridor: Boolean) =
-        isInteresting() || player.seesNonFriendlyCreatures() || (corridor && countPassableMainNeighbours() > 2)
+        isInteresting || player.seesNonFriendlyCreatures() || (corridor && countPassableMainNeighbours() > 2)
 
     fun movePlayerVertically(up: Boolean) = gameAction {
         val target = player.cell.getJumpTarget(up)

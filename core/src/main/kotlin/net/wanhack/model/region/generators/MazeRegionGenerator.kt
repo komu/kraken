@@ -16,7 +16,6 @@
 
 package net.wanhack.service.region.generators
 
-import java.util.Random
 import net.wanhack.model.common.Direction
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.MutableCellSet
@@ -41,7 +40,6 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     private val roomMaxWidth = 10
     private val roomMinHeight = 3
     private val roomMaxHeight = 7
-    private val random = Random()
     private val log = javaClass.logger()
 
     fun generate(): Region {
@@ -81,7 +79,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     }
 
     private fun generateMaze() {
-        val first = region.getCell(RandomUtils.randomInt(1, region.width-2), RandomUtils.randomInt(1, region.height-2))
+        val first = region[RandomUtils.randomInt(1, region.width-2), RandomUtils.randomInt(1, region.height-2)]
         first.setType(CellType.HALLWAY_FLOOR)
 
         val candidates = MutableCellSet(region)
@@ -102,10 +100,10 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
             val yy = currentY + gridSize * dir.dy
 
             if (isCandidateForPath(xx, yy) && (visited == null || !visited.contains(xx, yy))) {
-                val cell = region.getCell(xx, yy)
-                if (!cell.isPassable() && cell.cellType != CellType.UNDIGGABLE_WALL) {
+                val cell = region[xx, yy]
+                if (!cell.isPassable && cell.cellType != CellType.UNDIGGABLE_WALL) {
                     for (i in 1..gridSize - 1)
-                        region.getCell(currentX + i * dir.dx, currentY + i * dir.dy).setType(CellType.HALLWAY_FLOOR)
+                        region[currentX + i * dir.dx, currentY + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
 
                     cell.setType(CellType.HALLWAY_FLOOR)
 
@@ -114,7 +112,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
                     return cell
                 } else if (stopOnEmpty) {
                     for (i in 1..gridSize - 1)
-                        region.getCell(currentX + i * dir.dx, currentY + i * dir.dy).setType(CellType.HALLWAY_FLOOR)
+                        region[currentX + i * dir.dx, currentY + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
 
                     return null
                 }
@@ -134,7 +132,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
 
     private fun sparsify() {
         sparseness.times {
-            val deadEnds = region.getMatchingCells { it.isDeadEnd() }
+            val deadEnds = region.getMatchingCells { it.isDeadEnd }
             for (cell in deadEnds)
                 cell.setType(CellType.WALL)
         }
@@ -142,7 +140,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
 
     private fun addLoops() {
         for (cell in region)
-            if (cell.isDeadEnd() && deadEndsRemoved.check())
+            if (cell.isDeadEnd && deadEndsRemoved.check())
                 removeDeadEnd(cell)
     }
 
@@ -169,12 +167,12 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     private fun addRoom() {
         val width = RandomUtils.randomInt(roomMinWidth, roomMaxWidth)
         val height = RandomUtils.randomInt(roomMinHeight, roomMaxHeight)
-        val x = 2 + random.nextInt(region.width - width - 4)
-        val y = 2 + random.nextInt(region.height - height - 4)
+        val x = 2 + RandomUtils.randomInt(region.width - width - 4)
+        val y = 2 + RandomUtils.randomInt(region.height - height - 4)
 
         for (yy in y..y+height)
             for (xx in x..x+width)
-                region.getCell(xx, yy).setType(CellType.ROOM_FLOOR)
+                region[xx, yy].setType(CellType.ROOM_FLOOR)
     }
 
     private fun CellSet.findCellConnectedTo(start: Cell): Cell? {
@@ -192,12 +190,6 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         x > 1 && x < region.width - 1 && y > 1 && y < region.height - 1
 
     class object : RegionGenerator {
-
-        private fun CellSet.randomElementOrNull(): Cell? =
-            if (this.empty) null else this.randomElement()
-
-        private fun Cell.isDeadEnd() =
-            this.isPassable() && this.countPassableMainNeighbours() == 1
 
         override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region =
             MazeRegionGenerator(world, name, level, up, down).generate()

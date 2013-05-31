@@ -24,10 +24,10 @@ class CreatureShortestPathSearcher(val creature: Creature): ShortestPathSearcher
     override fun costToEnter(cell: Cell): Int =
         when {
             cell.creature != null -> 5
-            cell.isClosedDoor()   -> if (creature.canUseDoors) 2 else 10
+            cell.isClosedDoor     -> if (creature.canUseDoors) 2 else 10
             else                  -> 1
         }
 
     override fun canEnter(cell: Cell) =
-        !creature.corporeal || cell.isPassable()
+        !creature.corporeal || cell.isPassable
 }

@@ -27,38 +27,24 @@ enum class CellType(val passable: Boolean) {
     OPEN_DOOR : CellType(true)
     CLOSED_DOOR : CellType(true)
 
-    fun isPassable(): Boolean {
-        return passable
-    }
+    val isFloor: Boolean
+        get() = this == HALLWAY_FLOOR || this == ROOM_FLOOR
 
-    fun isFloor(): Boolean {
-        return this == HALLWAY_FLOOR || this == ROOM_FLOOR
-    }
+    val isDoor: Boolean
+        get() = this == OPEN_DOOR || this == CLOSED_DOOR
 
-    fun isDoor(): Boolean {
-        return this == OPEN_DOOR || this == CLOSED_DOOR
-    }
+    val isStairs: Boolean
+        get() = this == STAIRS_DOWN || this == STAIRS_UP
 
-    fun isStairs(): Boolean {
-        return this == STAIRS_DOWN || this == STAIRS_UP
-    }
+    val isRoomFloor: Boolean
+        get() = this == ROOM_FLOOR || this == STAIRS_UP || this == STAIRS_DOWN
 
-    fun isRoomFloor(): Boolean {
-        return this == ROOM_FLOOR || this == STAIRS_UP || this == STAIRS_DOWN
-    }
+    val canDropItem: Boolean
+        get() = isFloor || isStairs || this == OPEN_DOOR
 
-    fun canDropItem(): Boolean {
-        return isFloor() || isStairs() || this == OPEN_DOOR
-    }
+    val canSeeThrough: Boolean
+        get() = isFloor || isStairs || this == OPEN_DOOR
 
-    fun canSeeThrough(): Boolean {
-        return isFloor() || isStairs() || this == OPEN_DOOR
-    }
-
-    fun canMoveInto(corporeal: Boolean): Boolean {
-        if (!corporeal)
-            return true
-
-        return isFloor() || isStairs() || this == OPEN_DOOR
-    }
+    fun canMoveInto(corporeal: Boolean) =
+        !corporeal || isFloor || isStairs || this == OPEN_DOOR
 }

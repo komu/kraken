@@ -21,4 +21,7 @@ trait CellSet : Set<Cell> {
     fun copy(): MutableCellSet
     fun randomElement(): Cell
     fun contains(x: Int, y: Int): Boolean
+
+    fun randomElementOrNull(): Cell? =
+        if (empty) null else randomElement()
 }

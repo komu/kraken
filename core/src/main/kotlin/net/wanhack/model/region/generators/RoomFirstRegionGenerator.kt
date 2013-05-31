@@ -122,7 +122,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
 
             if (cell !in start)
                 for (adjacent in cell.adjacentCellsInMainDirections)
-                    if (adjacent != previous && adjacent.isPassable())
+                    if (adjacent != previous && adjacent.isPassable)
                         return
 
             previous = cell
@@ -182,34 +182,34 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         fun randomCell(): Cell {
             val xx = x + 1 + RandomUtils.randomInt(w - 2)
             val yy = y + 1 + RandomUtils.randomInt(h - 2)
-            return region.getCell(xx, yy)
+            return region[xx, yy]
         }
 
         fun isConnectedTo(other: Room) =
             middleCell.isReachable(other.middleCell)
 
         val middleCell: Cell
-            get() = region.getCell(x + w / 2, y + h / 2)
+            get() = region[x + w / 2, y + h / 2]
 
         fun addToRegion() {
             for (yy in 1..h - 1 - 1)
                 for (xx in 1..w - 1 - 1)
-                    region.getCell(x + xx, y + yy).setType(CellType.ROOM_FLOOR)
+                    region[x + xx, y + yy].setType(CellType.ROOM_FLOOR)
 
             for (xx in 0..w - 1) {
-                region.getCell(x + xx, y).setType(CellType.ROOM_WALL)
-                region.getCell(x + xx, y + h - 1).setType(CellType.ROOM_WALL)
+                region[x + xx, y].setType(CellType.ROOM_WALL)
+                region[x + xx, y + h - 1].setType(CellType.ROOM_WALL)
             }
             for (yy in 0..h - 1) {
-                region.getCell(x, y + yy).setType(CellType.ROOM_WALL)
-                region.getCell(x + w - 1, y + yy).setType(CellType.ROOM_WALL)
+                region[x, y + yy].setType(CellType.ROOM_WALL)
+                region[x + w - 1, y + yy].setType(CellType.ROOM_WALL)
             }
         }
 
         fun overlapsExisting(): Boolean {
             for (yy in y..y + h - 1)
                 for (xx in x..x + w - 1)
-                    if (region.getCell(xx, yy).cellType != CellType.WALL)
+                    if (region[xx, yy].cellType != CellType.WALL)
                         return true
 
             return false

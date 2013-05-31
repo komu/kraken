@@ -43,7 +43,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     fun enter(creature: Creature) {
         creature.cell = this
 
-        if (state.cellType.isStairs())
+        if (state.cellType.isStairs)
             creature.message("You see stairs here.")
 
         if (items.size == 1)
@@ -77,15 +77,9 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     fun isReachable(goal: Cell) = this == goal || region.findPath(this, goal) != null
 
     fun getCellTowards(direction: Direction) =
-        region.getCell(x + direction.dx, y + direction.dy)
+        region[x + direction.dx, y + direction.dy]
 
     fun getJumpTarget(up: Boolean) = portal?.getTarget(up)
-
-    fun isFloor() = state.cellType.isFloor()
-
-    fun isInRoom() = state.cellType.isRoomFloor()
-
-    fun isClosedDoor() = state.cellType == CellType.CLOSED_DOOR
 
     fun isAdjacent(cell: Cell) = cell != this && abs(x - cell.x) < 2 && abs(y - cell.y) < 2
 
@@ -96,7 +90,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         var previousPassable = 0
 
         for (cell in adjacentCells) {
-            if (cell.isPassable()) {
+            if (cell.isPassable) {
                 if (previousPassable == 2)
                     return true
                 else
@@ -119,25 +113,40 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         state = DefaultCellState(cellType)
     }
 
-    fun canDropItemToCell() =
-        state.cellType.canDropItem()
+    val isFloor: Boolean
+        get() = state.cellType.isFloor
 
-    fun canSeeThrough() = state.cellType.canSeeThrough()
+    val isInRoom: Boolean
+        get() = state.cellType.isRoomFloor
 
-    fun isPassable() = state.cellType.isPassable()
+    val isClosedDoor: Boolean
+        get() = state.cellType == CellType.CLOSED_DOOR
+
+    val canDropItemToCell: Boolean
+        get() = state.cellType.canDropItem
+
+    val canSeeThrough: Boolean
+        get() = state.cellType.canSeeThrough
+
+    val isPassable: Boolean
+        get() = state.cellType.passable
+
+    val isInteresting: Boolean
+        get() = !state.cellType.isFloor || !items.empty
+
+    val isDeadEnd: Boolean
+        get() = isPassable && countPassableMainNeighbours() == 1
 
     fun canMoveInto(corporeal: Boolean) = creature == null && state.cellType.canMoveInto(corporeal)
 
     fun distance(cell: Cell) = sqrt((square(x - cell.x) + square(y - cell.y)).toDouble()).toInt()
 
-    fun isInteresting() = !state.cellType.isFloor() || !items.empty
-
     fun matchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> =
         object : AbstractIterator<Cell>() {
-            private val maxDistance = max(max(x, region.width - x), max(y, region.height - y))
-            private var distance = 0
-            private var pos = 0
-            private var cellsAtCurrentDistance: List<Cell> = Collections.emptyList()
+            val maxDistance = max(max(x, region.width - x), max(y, region.height - y))
+            var distance = 0
+            var pos = 0
+            var cellsAtCurrentDistance: List<Cell> = Collections.emptyList()
 
             override fun computeNext() {
                 while (pos == cellsAtCurrentDistance.size) {
@@ -164,23 +173,23 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
         val y2 = min(region.height-1, y + distance)
 
         for (xx in x1..x2) {
-            val cell = region.getCell(xx, y1)
+            val cell = region[xx, y1]
             if (predicate(cell))
                 cells.add(cell)
         }
 
         for (yy in y1 + 1..y2 - 1) {
-            val left = region.getCell(x1, yy)
+            val left = region[x1, yy]
             if (predicate(left))
                 cells.add(left)
 
-            val right = region.getCell(x2, yy)
+            val right = region[x2, yy]
             if (predicate(right))
                 cells.add(right)
         }
 
         for (xx in x1..x2) {
-            val cell = region.getCell(xx, y2)
+            val cell = region[xx, y2]
             if (predicate(cell))
                 cells.add(cell)
         }
@@ -200,13 +209,13 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
             val xx = x + d.dx
             val yy = y + d.dy
             if (region.containsPoint(xx, yy))
-                adjacent.add(region.getCell(xx, yy))
+                adjacent.add(region[xx, yy])
         }
         return adjacent
     }
 
     fun countPassableMainNeighbours() =
-        Directions.mainDirections.count { getCellTowards(it).isPassable() }
+        Directions.mainDirections.count { getCellTowards(it).isPassable }
 
     fun getDirection(cell: Cell): Direction {
         val dx = signum(cell.x - x)
@@ -217,7 +226,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
     }
 
     fun hasLineOfSight(target: Cell) =
-        getCellsBetween(target).all { it.canSeeThrough() }
+        getCellsBetween(target).all { it.canSeeThrough }
 
     fun getCellsBetween(target: Cell): List<Cell> {
         val cells = ArrayList<Cell>(distance(target))
@@ -255,7 +264,7 @@ class Cell(val region: Region, val x: Int, val y: Int, var state: CellState) {
 
         for (x in x0..x1 - 1) {
             if ((x != x0 || y != y0) && (x != x1 || y != y1))
-                cells.add(if (steep) region.getCell(y, x) else region.getCell(x, y))
+                cells.add(if (steep) region[y, x] else region[x, y])
 
             error += deltaError
             if (2 * error >= deltaX) {

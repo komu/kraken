@@ -161,7 +161,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
             target.enter(this)
             return true
 
-        } else if (target.isClosedDoor() && canUseDoors) {
+        } else if (target.isClosedDoor && canUseDoors) {
             target.openDoor(this)
             return true
         } else {
