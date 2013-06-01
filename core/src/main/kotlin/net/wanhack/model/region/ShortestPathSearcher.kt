@@ -17,40 +17,28 @@
 package net.wanhack.model.region
 
 import java.util.*
+import kotlin.support.AbstractIterator
 
 open class ShortestPathSearcher(val region: Region) {
 
     open val allowSubDirections = true
 
-    fun findFirstCellOnShortestPath(start: Cell, goal: Cell): Cell? {
-        val path = findShortestPath(start, goal)
-        if (path != null && path.size > 1)
-            return path[1]
-        else
-            return null
-    }
+    fun findFirstCellOnShortestPath(start: Cell, goal: Cell): Cell? =
+        findShortestPath(start, goal)?.drop(1)?.firstOrNull()
 
-    fun findShortestPath(start: Cell, goal: Cell): List<Cell>? {
+    fun findShortestPath(start: Cell, goal: Cell): Iterable<Cell>? {
         val openHeap = PriorityQueue<Node>()
         val openMap = CellMap<Node>(region)
         val closedMap = CellMap<Node>(region)
-        val startNode = Node(start, null, 0)
+        val startNode = Node(goal, null, 0)
 
-        startNode.heuristic = estimateCost(start, goal)
+        startNode.heuristic = estimateCost(goal, start)
         openHeap.add(startNode)
 
         while (!openHeap.empty) {
             val current = openHeap.remove()
-            if (current.cell == goal) {
-                val result = ArrayList<Cell>()
-                var node: Node? = current
-                while (node != null) {
-                    result.add(node!!.cell)
-                    node = node!!.parent
-                }
-                Collections.reverse(result)
-                return result
-            }
+            if (current.cell == start)
+                return current
 
             for (successor in current.successors(allowSubDirections)) {
                 val closedNode = closedMap[successor.cell]
@@ -84,18 +72,28 @@ open class ShortestPathSearcher(val region: Region) {
 
     protected open fun canEnter(cell: Cell): Boolean = cell.isPassable
 
-    private inner class Node(val cell: Cell, var parent: Node?, val cost: Int): Comparable<Node> {
+    private inner class Node(val cell: Cell, var parent: Node?, val cost: Int): Comparable<Node>, Iterable<Cell> {
         var heuristic = 0
 
-        fun successors(allowSubDirections: Boolean): List<Node> {
-            val nodes = listBuilder<Node>()
+        override fun iterator() = object : AbstractIterator<Cell>() {
+            var next: Node? = this@Node
+
+            protected override fun computeNext() {
+                val node = next
+                if (node != null) {
+                    setNext(node.cell)
+                    next = node.parent
+                } else {
+                    done()
+                }
+            }
+        }
+
+        fun successors(allowSubDirections: Boolean): Iterator<Node> {
             val adjacentCells = if (allowSubDirections) cell.adjacentCells else cell.adjacentCellsInMainDirections
+            val enterable = adjacentCells.iterator().filter { it != parent?.cell && canEnter(it) }
 
-            for (adjacent in adjacentCells)
-                if (adjacent != parent?.cell && canEnter(adjacent))
-                    nodes.add(Node(adjacent, this, cost + costToEnter(adjacent)))
-
-            return nodes.build()
+            return enterable.map { Node(it, this, cost + costToEnter(it)) }
         }
 
         override fun compareTo(other: Node) = heuristic - other.heuristic
