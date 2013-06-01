@@ -81,8 +81,8 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         val matrix = Matrix()
         if (translate) {
-            val x = tileWidth * cell.x
-            val y = tileHeight * cell.y
+            val x = tileWidth * cell.coordinate.x
+            val y = tileHeight * cell.coordinate.y
             val dx = Math.max(0, Math.min(x - width / 2, requiredWidth - width))
             val dy = Math.max(0, Math.min(y - height / 2, requiredHeight - height))
 

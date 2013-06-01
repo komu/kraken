@@ -85,8 +85,8 @@ class RegionView: JComponent() {
             return null
 
         if (translate) {
-            val x = tileWidth * cell.x
-            val y = tileHeight * cell.y
+            val x = tileWidth * cell.coordinate.x
+            val y = tileHeight * cell.coordinate.y
             val dx = Math.max(0, Math.min(x - width / 2, requiredWidth - width))
             val dy = Math.max(0, Math.min(y - height / 2, requiredHeight - height))
             return AffineTransform.getTranslateInstance((-dx).toDouble(), (-dy).toDouble())

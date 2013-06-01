@@ -41,7 +41,7 @@ class TileProvider {
     fun drawCell(g: Graphics2D, cell: Cell, visible: Boolean) {
         when (cell.cellType) {
             HALLWAY_FLOOR, ROOM_FLOOR           -> drawFloor(g, cell, visible, false)
-            UNDIGGABLE_WALL, ROOM_WALL, WALL    -> drawWall(g, cell.x, cell.y, visible)
+            UNDIGGABLE_WALL, ROOM_WALL, WALL    -> drawWall(g, cell.coordinate.x, cell.coordinate.y, visible)
             STAIRS_UP                           -> drawStairs(g, cell, true, visible)
             STAIRS_DOWN                         -> drawStairs(g, cell, false, visible)
             OPEN_DOOR                           -> drawDoor(g, cell, true, visible)
@@ -52,17 +52,17 @@ class TileProvider {
 
     fun drawCreature(g: Graphics2D, cell: Cell, creature: Creature) {
         drawFloor(g, cell, true, true)
-        drawLetter(g, cell.x, cell.y, creature.letter, creature.color.toPaint())
+        drawLetter(g, cell.coordinate.x, cell.coordinate.y, creature.letter, creature.color.toPaint())
     }
     
     fun drawSelection(g: Graphics2D, cell: Cell) {
         g.setPaint(Color(0.8.toFloat(), 0.3.toFloat(), 0.3.toFloat(), 0.5.toFloat()))
-        g.fillRect(cell.x * tileWidth, cell.y * tileHeight, tileWidth, tileHeight)
+        g.fillRect(cell.coordinate.x * tileWidth, cell.coordinate.y * tileHeight, tileWidth, tileHeight)
     }
 
     fun drawItem(g: Graphics2D, cell: Cell, item: Item) {
         drawFloor(g, cell, true, true)
-        drawLetter(g, cell.x, cell.y, item.letter, item.color.toPaint())
+        drawLetter(g, cell.coordinate.x, cell.coordinate.y, item.letter, item.color.toPaint())
     }
 
     private fun drawLetter(g: Graphics2D, x: Int, y: Int, letter: Char, paint: Paint) {
@@ -76,7 +76,7 @@ class TileProvider {
         drawFloor(g, cell, visible, false)
 
         val stairs = if (up) '<' else '>'
-        drawLetter(g, cell.x, cell.y, stairs, Color.BLACK)
+        drawLetter(g, cell.coordinate.x, cell.coordinate.y, stairs, Color.BLACK)
     }
 
     private fun drawDoor(g: Graphics2D, cell: Cell, open: Boolean, visible: Boolean) {
@@ -84,14 +84,14 @@ class TileProvider {
 
         val letter = if (open) '\'' else '+'
         val paint = if (visible) DOOR_VISIBLE else DOOR_INVISIBLE
-        drawLetter(g, cell.x, cell.y, letter, paint)
+        drawLetter(g, cell.coordinate.x, cell.coordinate.y, letter, paint)
     }
 
     private fun drawFloor(g: Graphics2D, cell: Cell, visible: Boolean, shadow: Boolean) {
         val paint = if (visible) getFloorColor(cell.lighting, shadow) else ROOM_FLOOR_INVISIBLE
 
         g.setPaint(paint)
-        g.fillRect(cell.x * tileWidth, cell.y * tileHeight, tileWidth, tileHeight)
+        g.fillRect(cell.coordinate.x * tileWidth, cell.coordinate.y * tileHeight, tileWidth, tileHeight)
     }
 
     private fun getFloorColor(lighting: Int, shadow: Boolean): Paint {

@@ -26,6 +26,7 @@ import net.wanhack.service.region.generators.RoomFirstRegionGenerator.RegionPara
 import net.wanhack.utils.collections.randomElement
 import net.wanhack.utils.logger
 import net.wanhack.utils.RandomUtils
+import net.wanhack.model.region.Coordinate
 
 class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
     private val region = Region(world, name, level, rp.width, rp.height)
@@ -120,7 +121,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
             if (cell.cellType != CellType.ROOM_FLOOR)
                 cell.setType(CellType.HALLWAY_FLOOR)
 
-            if (cell !in start)
+            if (cell.coordinate !in start)
                 for (adjacent in cell.adjacentCellsInMainDirections)
                     if (adjacent != previous && adjacent.isPassable)
                         return
@@ -140,7 +141,6 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         return result
     }
 
-
     fun addStairsUpAndDown(rooms: List<Room>) {
         val stairsUpRoom = rooms.randomElement()
         val empty = region.getRoomFloorCells()
@@ -150,9 +150,9 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         val stairsUp = stairsUpRoom.randomCell()
         stairsUp.setType(CellType.STAIRS_UP)
         if (up != null)
-            region.addPortal(stairsUp.x, stairsUp.y, up, "from down", true)
+            region.addPortal(stairsUp.coordinate, up, "from down", true)
 
-        region.addStartPoint("from up", stairsUp.x, stairsUp.y)
+        region.addStartPoint(stairsUp.coordinate, "from up")
 
         if (down != null) {
             while (true) {
@@ -160,8 +160,8 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
                 val stairsDown = stairsDownRoom.randomCell()
                 if (stairsDown != stairsUp && region.findPath(stairsUp, stairsDown) != null) {
                     stairsDown.setType(CellType.STAIRS_DOWN)
-                    region.addPortal(stairsDown.x, stairsDown.y, down, "from up", false)
-                    region.addStartPoint("from down", stairsDown.x, stairsDown.y)
+                    region.addPortal(stairsDown.coordinate, down, "from up", false)
+                    region.addStartPoint(stairsDown.coordinate, "from down")
                     return
                 }
             }
@@ -177,7 +177,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     }
 
     private class Room(val region: Region, val x: Int, val y: Int, val w: Int, val h: Int) {
-        fun contains(cell: Cell) = cell.x >= x && cell.x < x + w && cell.y >= y && cell.y < y + h
+        fun contains(c: Coordinate) = c.x >= x && c.x < x + w && c.y >= y && c.y < y + h
 
         fun randomCell(): Cell {
             val xx = x + 1 + RandomUtils.randomInt(w - 2)

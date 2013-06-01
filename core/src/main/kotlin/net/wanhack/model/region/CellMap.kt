@@ -26,10 +26,10 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
     private val mappings = Array<V?>(region.width * region.height) { null }
 
     override fun get(key: Any?): V? =
-        mappings[index(key as Cell)]
+        mappings[index((key as Cell).coordinate)]
 
     override fun put(key: Cell, value: V): V? {
-        val index = index(key)
+        val index = index(key.coordinate)
         val old = mappings[index]
         mappings[index] = value
         return old
@@ -37,7 +37,7 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
 
     override fun remove(key: Any?): V? =
         if (key is Cell) {
-            val index = index(key)
+            val index = index(key.coordinate)
             val old = mappings[index]
             mappings[index] = null
             old
@@ -61,8 +61,8 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
 
     override fun entrySet() = EntrySet<V>(this)
 
-    private fun index(cell: Cell): Int =
-        cell.x + cell.y * region.width
+    private fun index(c: Coordinate): Int =
+        c.x + c.y * region.width
 
     private fun cell(index: Int): Cell =
         region[index % region.width, index / region.width]

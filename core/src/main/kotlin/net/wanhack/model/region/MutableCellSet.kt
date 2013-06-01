@@ -59,7 +59,9 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         throw IllegalArgumentException("no such index: $index")
     }
 
-    override fun add(e: Cell) = add(e.x, e.y)
+    override fun add(e: Cell) = add(e.coordinate)
+
+    fun add(c: Coordinate) = add(c.x, c.y)
 
     fun add(x: Int, y: Int): Boolean {
         val index = index(x, y)
@@ -68,7 +70,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         return !old
     }
 
-    override fun remove(o: Any?) = o is Cell && remove(o.x, o.y)
+    override fun remove(o: Any?) = o is Cell && remove(o.coordinate.x, o.coordinate.y)
 
     fun remove(x: Int, y: Int): Boolean {
         val index = index(x, y)
@@ -81,7 +83,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         cells.clear()
     }
 
-    override fun contains(o: Any?) = o is Cell && contains(o.x, o.y)
+    override fun contains(o: Any?) = o is Cell && contains(o.coordinate.x, o.coordinate.y)
 
     override fun contains(x: Int, y: Int) =
         x >= 0 && x < region.width && y >= 0 && y < region.height && cells.get(index(x, y))

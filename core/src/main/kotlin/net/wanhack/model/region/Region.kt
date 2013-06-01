@@ -27,7 +27,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     private val cells = Array<Cell>(width * height) { index ->
         val x = index % width
         val y = index / width
-        Cell(this, x, y, DefaultCellState(CellType.WALL))
+        Cell(this, Coordinate(x, y), DefaultCellState(CellType.WALL))
     }
 
     private val startCells = HashMap<String, Cell>();
@@ -60,6 +60,9 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     fun findPath(start: Cell, goal: Cell): List<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)
 
+    fun get(c: Coordinate) =
+        get(c.x, c.y)
+
     fun get(x: Int, y: Int): Cell =
         cells[x + y * width]
 
@@ -70,22 +73,22 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
             cell.hasBeenSeen = true
     }
 
-    fun addPortal(x: Int, y: Int, target: String, location: String, up: Boolean) {
-        this[x, y].portal = Portal(target, location, up)
+    fun addPortal(c: Coordinate, target: String, location: String, up: Boolean) {
+        this[c].portal = Portal(target, location, up)
     }
 
-    fun addStartPoint(pointName: String, x: Int, y: Int) {
-        val old = startCells.put(pointName, this[x, y])
+    fun addStartPoint(c: Coordinate, pointName: String) {
+        val old = startCells.put(pointName, this[c])
         if (old != null)
             throw IllegalStateException("Tried to define start point '$pointName' multiple tiles for region '$name'.")
     }
 
-    fun addCreature(x: Int, y: Int, creature: Creature) {
-        creature.cell = this[x, y]
+    fun addCreature(c: Coordinate, creature: Creature) {
+        creature.cell = this[c]
     }
 
-    fun addItem(x: Int, y: Int, item: Item) {
-        this[x, y].items.add(item)
+    fun addItem(c: Coordinate, item: Item) {
+        this[c].items.add(item)
     }
 
     fun getCells(): MutableCellSet {

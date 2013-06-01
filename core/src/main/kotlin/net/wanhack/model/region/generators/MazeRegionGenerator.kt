@@ -60,17 +60,17 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         stairsUp.setType(CellType.STAIRS_UP)
 
         if (up != null) {
-            region.addPortal(stairsUp.x, stairsUp.y, up, "from down", true)
+            region.addPortal(stairsUp.coordinate, up, "from down", true)
         }
 
-        region.addStartPoint("from up", stairsUp.x, stairsUp.y)
+        region.addStartPoint(stairsUp.coordinate, "from up")
 
         if (down != null) {
             val stairsDown = empty.findCellConnectedTo(stairsUp)
             if (stairsDown != null) {
                 stairsDown.setType(CellType.STAIRS_DOWN)
-                region.addPortal(stairsDown.x, stairsDown.y, down, "from up", false)
-                region.addStartPoint("from down", stairsDown.x, stairsDown.y)
+                region.addPortal(stairsDown.coordinate, down, "from up", false)
+                region.addStartPoint(stairsDown.coordinate, "from down")
                 return
             } else {
                 log.warning("failed to find cell for down-stairs")
@@ -92,18 +92,17 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     }
 
     private fun generatePathFrom(current: Cell, candidates: MutableCellSet?, visited: MutableCellSet?, gridSize: Int, stopOnEmpty: Boolean): Cell? {
-        val currentX = current.x
-        val currentY = current.y
+        val currentCoordinate = current.coordinate
 
         for (dir in pathDirections()) {
-            val xx = currentX + gridSize * dir.dx
-            val yy = currentY + gridSize * dir.dy
+            val xx = currentCoordinate.x + gridSize * dir.dx
+            val yy = currentCoordinate.y + gridSize * dir.dy
 
             if (isCandidateForPath(xx, yy) && (visited == null || !visited.contains(xx, yy))) {
                 val cell = region[xx, yy]
                 if (!cell.isPassable && cell.cellType != CellType.UNDIGGABLE_WALL) {
                     for (i in 1..gridSize - 1)
-                        region[currentX + i * dir.dx, currentY + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
+                        region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
 
                     cell.setType(CellType.HALLWAY_FLOOR)
 
@@ -112,7 +111,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
                     return cell
                 } else if (stopOnEmpty) {
                     for (i in 1..gridSize - 1)
-                        region[currentX + i * dir.dx, currentY + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
+                        region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
 
                     return null
                 }

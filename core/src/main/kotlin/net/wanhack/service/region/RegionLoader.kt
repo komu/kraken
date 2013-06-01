@@ -26,6 +26,7 @@ import net.wanhack.utils.logger
 import net.wanhack.utils.withIndices
 import net.wanhack.service.resources.ResourceLoader
 import net.wanhack.utils.maxLength
+import net.wanhack.model.region.Coordinate
 
 class RegionLoader(val world: World) {
 
@@ -76,11 +77,11 @@ class RegionLoader(val world: World) {
     private fun processDirective(d: Directive, region: Region, regionAliases: Map<String, String>) {
         val objectFactory = world.game.objectFactory
         when (d) {
-            is StartDirective    -> region.addStartPoint(d.name, d.x, d.y)
-            is LightDirective    -> region[d.x, d.y].lightPower = d.power
-            is CreatureDirective -> region.addCreature(d.x, d.y, objectFactory.createCreature(d.name))
-            is ItemDirective     -> region.addItem(d.x, d.y, objectFactory.createItem(d.name))
-            is PortalDirective   -> region.addPortal(d.x, d.y, getRegion(d.target, regionAliases), d.location, d.up)
+            is StartDirective    -> region.addStartPoint(d.c, d.name)
+            is LightDirective    -> region[d.c].lightPower = d.power
+            is CreatureDirective -> region.addCreature(d.c, objectFactory.createCreature(d.name))
+            is ItemDirective     -> region.addItem(d.c, objectFactory.createItem(d.name))
+            is PortalDirective   -> region.addPortal(d.c, getRegion(d.target, regionAliases), d.location, d.up)
             else                 -> log.severe("unknown directive: $d")
         }
     }
@@ -88,37 +89,37 @@ class RegionLoader(val world: World) {
     private fun parseDirective(line: String): Directive {
         val tokens1 = CREATURE_PATTERN.getTokens(line)
         if (tokens1 != null)
-            return CreatureDirective(tokens1[0].toInt(), tokens1[1].toInt(), tokens1[2])
+            return CreatureDirective(Coordinate(tokens1[0].toInt(), tokens1[1].toInt()), tokens1[2])
 
         val tokens2 = ITEM_PATTERN.getTokens(line)
         if (tokens2 != null)
-            return ItemDirective(tokens2[0].toInt(), tokens2[1].toInt(), tokens2[2])
+            return ItemDirective(Coordinate(tokens2[0].toInt(), tokens2[1].toInt()), tokens2[2])
 
         val tokens3 = DOWN_PATTERN.getTokens(line)
         if (tokens3 != null)
-            return PortalDirective(tokens3[0].toInt(), tokens3[1].toInt(), tokens3[2], tokens3[3], false)
+            return PortalDirective(Coordinate(tokens3[0].toInt(), tokens3[1].toInt()), tokens3[2], tokens3[3], false)
 
         val tokens4 = UP_PATTERN.getTokens(line)
         if (tokens4 != null)
-            return PortalDirective(tokens4[0].toInt(), tokens4[1].toInt(), tokens4[2], tokens4[3], true)
+            return PortalDirective(Coordinate(tokens4[0].toInt(), tokens4[1].toInt()), tokens4[2], tokens4[3], true)
 
         val tokens6 = START_PATTERN.getTokens(line)
         if (tokens6 != null)
-            return StartDirective(tokens6[0], tokens6[1].toInt(), tokens6[2].toInt())
+            return StartDirective(Coordinate(tokens6[1].toInt(), tokens6[2].toInt()), tokens6[0])
 
         val tokens7 = LIGHT_PATTERN.getTokens(line)
         if (tokens7 != null)
-            return LightDirective(tokens7[0].toInt(), tokens7[1].toInt(), tokens7[2].toInt())
+            return LightDirective(Coordinate(tokens7[0].toInt(), tokens7[1].toInt()), tokens7[2].toInt())
 
         throw Exception("invalid directive: $line")
     }
 
     abstract class Directive
-    data class StartDirective(val name: String, val x: Int, val y: Int) : Directive()
-    data class LightDirective(val x: Int, val y: Int, val power: Int): Directive()
-    data class CreatureDirective(val x: Int, val y: Int, val name: String): Directive()
-    data class ItemDirective(val x: Int, val y: Int, val name: String): Directive()
-    data class PortalDirective(val x: Int, val y: Int, val target: String, val location: String, val up: Boolean): Directive()
+    data class StartDirective(val c: Coordinate, val name: String) : Directive()
+    data class LightDirective(val c: Coordinate, val power: Int): Directive()
+    data class CreatureDirective(val c: Coordinate, val name: String): Directive()
+    data class ItemDirective(val c: Coordinate, val name: String): Directive()
+    data class PortalDirective(val c: Coordinate, val target: String, val location: String, val up: Boolean): Directive()
 
     class object {
         private val START_PATTERN    = DirectivePattern(":start [str] [int],[int]")
