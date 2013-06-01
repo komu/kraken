@@ -224,55 +224,42 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     fun getDirection(cell: Cell) = coordinate.directionOf(cell.coordinate)
 
     fun hasLineOfSight(target: Cell) =
-        getCellsBetween(target).all { it.canSeeThrough }
+        cellsBetween(target).all { it == target || it == this || it.canSeeThrough }
 
-    fun getCellsBetween(target: Cell): List<Cell> {
+    fun cellsBetween(target: Cell): List<Cell> {
+        // see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
         val cells = ArrayList<Cell>(distance(target))
-        var x0 = coordinate.x
-        var y0 = coordinate.y
-        var x1 = target.coordinate.x
-        var y1 = target.coordinate.y
 
-        val steep = abs(y1 - y0) > abs(x1 - x0)
-        if (steep) {
-            var t0 = x0
-            x0 = y0
-            y0 = t0
-            var t1 = x1
-            x1 = y1
-            y1 = t1
-        }
+        var (x0, y0) = coordinate
+        val (x1, y1) = target.coordinate
 
-        val reverse = x0 > x1
-        if (reverse) {
-            var t0 = x0
-            x0 = x1
-            x1 = t0
-            var t1 = y0
-            y0 = y1
-            y1 = t1
-        }
+        val dx = abs(x1 - x0)
+        val dy = abs(y1 - y0)
 
-        val deltaX = x1 - x0
-        val deltaY = abs(y1 - y0)
-        var error = 0
-        val deltaError = deltaY
-        var y = y0
-        val yStep = if ((y0 < y1)) 1 else -1
+        val sx = if (x0 < x1) 1 else -1
+        val sy = if (y0 < y1) 1 else -1
+        var err = dx - dy
 
-        for (x in x0..x1 - 1) {
-            if ((x != x0 || y != y0) && (x != x1 || y != y1))
-                cells.add(if (steep) region[y, x] else region[x, y])
+        while (true) {
+            cells.add(region[x0, y0])
 
-            error += deltaError
-            if (2 * error >= deltaX) {
-                y += yStep
-                error -= deltaX
+            if (x0 == x1 && y0 == y1)
+                break
+
+            val e2 = 2*err
+            if (e2 > -dy) {
+                err -= dy
+                x0 += sx
+            }
+            if (x0 == x1 && y0 == y1) {
+                cells.add(region[x0, y0])
+                break
+            }
+            if (e2 < dx) {
+                err += dx
+                y0 += sy
             }
         }
-
-        if (reverse)
-            Collections.reverse(cells)
 
         return cells
     }
