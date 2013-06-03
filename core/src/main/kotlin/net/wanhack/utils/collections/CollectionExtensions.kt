@@ -18,7 +18,11 @@ package net.wanhack.utils.collections
 
 import java.util.ArrayList
 import net.wanhack.utils.RandomUtils
-import java.util.Collections
+
+fun <T> MutableCollection<T>.addAll(it: Iterator<T>) {
+    for (x in it)
+        add(x)
+}
 
 fun <T> Collection<T>.shuffled(): MutableList<T> {
     val result = ArrayList(this)
@@ -30,7 +34,7 @@ fun <T> List<T>.randomElement(): T =
     this[RandomUtils.randomInt(this.size)]
 
 fun <T> Array<T>.randomElement(): T =
-        this[RandomUtils.randomInt(this.size)]
+    this[RandomUtils.randomInt(this.size)]
 
 fun <T> Collection<*>.filterByType(cl: Class<T>): List<T> {
     val result = listBuilder<T>()
@@ -60,4 +64,4 @@ fun <T : Any, C: Comparable<C>> Collection<T>.maximumBy(comparison: (T) -> C): T
     return largest
 }
 
-fun <T: Any> T?.toOption(): Set<T> = if (this == null) Collections.emptySet() else Collections.singleton(this)
+fun <T: Any> T?.toOption(): Set<T> = if (this == null) setOf<T>() else setOf<T>(this)

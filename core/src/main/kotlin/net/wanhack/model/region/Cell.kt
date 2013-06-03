@@ -85,7 +85,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
     fun isClosedDoor() = state.cellType == CellType.CLOSED_DOOR
 
-    fun isAdjacent(cell: Cell) = cell != this && abs(coordinate.x - cell.coordinate.x) < 2 && abs(coordinate.y - cell.coordinate.y) < 2
+    fun isAdjacent(cell: Cell) = coordinate.isAdjacent(cell.coordinate)
 
     fun isRoomCorner(): Boolean {
         if (countPassableMainNeighbours() != 2)
@@ -145,12 +145,14 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
     fun distance(cell: Cell) = coordinate.distance(cell.coordinate)
 
-    fun matchingCellsNearestFirst(predicate: (Cell) -> Boolean): Iterator<Cell> =
+    fun cellsNearestFirst(): Iterator<Cell> =
+        cellsNearestFirst(max(max(coordinate.x, region.width - coordinate.x), max(coordinate.y, region.height - coordinate.y)))
+
+    fun cellsNearestFirst(maxDistance: Int): Iterator<Cell> =
         object : AbstractIterator<Cell>() {
-            private val maxDistance = max(max(coordinate.x, region.width - coordinate.x), max(coordinate.y, region.height - coordinate.y))
-            private var distance = 0
-            private var pos = 0
-            private var cellsAtCurrentDistance: List<Cell> = Collections.emptyList()
+            var distance = 0
+            var pos = 0
+            var cellsAtCurrentDistance = Collections.emptyList<Cell>()
 
             override fun computeNext() {
                 while (pos == cellsAtCurrentDistance.size) {
@@ -159,16 +161,16 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
                         return
                     }
 
-                    cellsAtCurrentDistance = getMatchingCellsAtDistance(++distance, predicate)
+                    cellsAtCurrentDistance = cellsAtDistance(++distance)
                     pos = 0
                 }
                 setNext(cellsAtCurrentDistance[pos++])
             }
         }
 
-    fun getMatchingCellsAtDistance(distance: Int, predicate: (Cell) -> Boolean): List<Cell> {
+    private fun cellsAtDistance(distance: Int): List<Cell> {
         if (distance == 0)
-            return if (predicate(this)) listOf(this) else emptyList()
+            return listOf(this)
 
         val cells = ArrayList<Cell>(countOfCellsAtDistance(distance))
         val x1 = max(0, coordinate.x - distance)
@@ -176,27 +178,16 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         val x2 = min(region.width-1, coordinate.x + distance)
         val y2 = min(region.height-1, coordinate.y + distance)
 
-        for (xx in x1..x2) {
-            val cell = region[xx, y1]
-            if (predicate(cell))
-                cells.add(cell)
+        for (xx in x1..x2)
+            cells.add(region[xx, y1])
+
+        for (yy in y1+1 .. y2-1) {
+            cells.add(region[x1, yy])
+            cells.add(region[x2, yy])
         }
 
-        for (yy in y1 + 1..y2 - 1) {
-            val left = region[x1, yy]
-            if (predicate(left))
-                cells.add(left)
-
-            val right = region[x2, yy]
-            if (predicate(right))
-                cells.add(right)
-        }
-
-        for (xx in x1..x2) {
-            val cell = region[xx, y2]
-            if (predicate(cell))
-                cells.add(cell)
-        }
+        for (xx in x1..x2)
+            cells.add(region[xx, y2])
 
         return cells
     }

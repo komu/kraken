@@ -95,7 +95,7 @@ class World(val game: Game) {
                 return
 
             val cell = emptyCells.randomElement()
-            val cells = cell.matchingCellsNearestFirst { it.canMoveInto(true) }
+            val cells = cell.cellsNearestFirst().filter { it.canMoveInto(true) }
             for (creature in creatures)
                 if (cells.hasNext()) {
                     val target = cells.next()

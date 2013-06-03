@@ -16,7 +16,7 @@
 
 package net.wanhack.model.region
 
-import java.lang.Math.sqrt
+import java.lang.Math.*
 import net.wanhack.model.common.Direction
 import net.wanhack.utils.square
 import net.wanhack.utils.signum
@@ -24,6 +24,7 @@ import net.wanhack.utils.signum
 data class Coordinate(val x: Int, val y: Int) {
     fun plus(d: Direction) = Coordinate(x+d.dx, y+d.dy)
     fun distance(other: Coordinate) = sqrt((square(x - other.x) + square(y - other.y)).toDouble()).toInt()
+    fun isAdjacent(other: Coordinate) = abs(x - other.x) < 2 && abs(y - other.y) < 2 && other != this
 
     fun directionOf(other: Coordinate): Direction {
         val dx = signum(other.x - x)
