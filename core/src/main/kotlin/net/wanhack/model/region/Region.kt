@@ -123,6 +123,24 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
             cell.updateLighting()
     }
 
+    // This should always be true, but is here for assertions
+    fun isSurroundedByUndiggableWalls(): Boolean {
+        for (x in 0..width - 1) {
+            if (this[x, 0].cellType != CellType.UNDIGGABLE_WALL)
+                return false
+            if (this[x, height - 1].cellType != CellType.UNDIGGABLE_WALL)
+                return false
+        }
+        for (y in 0..height - 1) {
+            if (this[0, y].cellType != CellType.UNDIGGABLE_WALL)
+                return false
+            if (this[width - 1, y].cellType != CellType.UNDIGGABLE_WALL)
+                return false
+        }
+
+        return true
+    }
+
     class object {
         val DEFAULT_REGION_WIDTH = 80
         val DEFAULT_REGION_HEIGHT = 25
