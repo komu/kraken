@@ -64,7 +64,10 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
         get(c.x, c.y)
 
     fun get(x: Int, y: Int): Cell =
-        cells[x + y * width]
+        if (containsPoint(x, y))
+            cells[x + y * width]
+        else
+            throw IllegalArgumentException("out of bounds: $x/$width, $y/$height")
 
     fun containsPoint(x: Int, y: Int) = x >= 0 && x < width && y >= 0 && y < height
 
