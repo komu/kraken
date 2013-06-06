@@ -1043,7 +1043,7 @@ object Creatures : Definitions() {
         tickRate = 90
         weight = 85000
 
-        inventoryItems.add(Items.oldRags.create())
+        inventory.add(Items.oldRags.create())
     }
 
     // (P) Giants

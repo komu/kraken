@@ -45,6 +45,9 @@ class Player(name: String): Creature(name) {
     var sex = RandomUtils.randomEnum(javaClass<Sex>())
     var sight = 20;
 
+    private val game: Game
+        get() = region.world.game
+
     override var tickRate: Int = 90
         get() = Math.max(1, super.tickRate + weightPenalty);
 

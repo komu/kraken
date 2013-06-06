@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
-package net.wanhack.service.region
+package net.wanhack.desktop.extensions
 
-class RegionLoadingException(e: Throwable): RuntimeException(e)
+import javax.swing.InputMap
+import javax.swing.JComponent
+import javax.swing.ActionMap
+import javax.swing.JRootPane
+
+val JComponent.inputMap: InputMap
+    get() = getInputMap()!!
+
+val JComponent.actionMap: ActionMap
+    get() = getActionMap()!!

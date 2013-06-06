@@ -30,7 +30,7 @@ import net.wanhack.desktop.game.InventoryView
 import net.wanhack.desktop.game.RegionView
 import net.wanhack.desktop.game.StatisticsView
 import net.wanhack.desktop.game.StartGameDialog
-import net.wanhack.desktop.extensions.set
+import net.wanhack.desktop.extensions.*
 import net.wanhack.utils.SystemAccess
 import net.wanhack.utils.logger
 import java.util.logging.Level
@@ -138,7 +138,7 @@ class Main(val wizardMode: Boolean) {
     fun initializeInputMap() {
         log.fine("Initializing input map")
 
-        val inputMap = regionView.getInputMap()!!
+        val inputMap = regionView.inputMap
 
         // Movement with numlock off
 
@@ -187,7 +187,7 @@ class Main(val wizardMode: Boolean) {
     fun initializeActionMap() {
         log.fine("Initializing action map");
 
-        val actionMap = regionView.getActionMap()!!
+        val actionMap = regionView.actionMap
 
         for (direction in Direction.values()) {
             actionMap[direction]        = action("") { gameFacade?.movePlayer(direction) }

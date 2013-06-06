@@ -74,8 +74,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     fun start() {
         player.wieldedWeapon = Weapons.dagger.create()
-        player.inventoryItems.add(Items.foodRation.create())
-        player.inventoryItems.add(Items.cyanideCapsule.create())
+        player.inventory.add(Items.foodRation.create())
+        player.inventory.add(Items.cyanideCapsule.create())
         enterRegion("start", "from up")
 
         if (config.pet == PetType.DORIS)
@@ -93,7 +93,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             player.message("Happy Festivus!")
             player.strength += 10
             player.luck = 2
-            player.inventoryItems.add(Weapons.aluminiumPole.create())
+            player.inventory.add(Weapons.aluminiumPole.create())
         }
 
         if (today.isFriday()) {
@@ -246,13 +246,13 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             player.message("There's nothing to pick up.")
         } else if (items.size == 1) {
             val item = items.iterator().next()
-            player.inventoryItems.add(item)
+            player.inventory.add(item)
             cell.items.remove(item)
             player.message("Picked up %s.", item.title)
             tick()
         } else {
             for (item in console.selectItems("Select items to pick up", items)) {
-                player.inventoryItems.add(item)
+                player.inventory.add(item)
                 cell.items.remove(item)
                 player.message("Picked up %s.", item.title)
             }
@@ -262,13 +262,13 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     fun wield() = gameAction {
         val oldWeapon = player.wieldedWeapon
-        val weapon = console.selectItem("Select weapon to wield", player.getInventoryItems(javaClass<Weapon>()))
+        val weapon = console.selectItem("Select weapon to wield", player.inventory.byType(javaClass<Weapon>()))
         if (weapon != null && weapon != oldWeapon) {
             player.wieldedWeapon = weapon
-            player.inventoryItems.remove(weapon)
+            player.inventory.remove(weapon)
             if (oldWeapon != null) {
                 player.message("You were wielding %s.", oldWeapon.title)
-                player.inventoryItems.add(oldWeapon)
+                player.inventory.add(oldWeapon)
             }
 
             player.message("You wield %s.", weapon.title)
@@ -277,13 +277,13 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun wear() = gameAction {
-        val armor = console.selectItem("Select armor to wear", player.getInventoryItems(javaClass<Armor>()))
+        val armor = console.selectItem("Select armor to wear", player.inventory.byType(javaClass<Armor>()))
         if (armor != null ) {
             val oldArmor = player.replaceArmor(armor)
-            player.inventoryItems.remove(armor)
+            player.inventory.remove(armor)
             if (oldArmor != null) {
                 player.message("You were wearing %s.", oldArmor.title)
-                player.inventoryItems.add(oldArmor)
+                player.inventory.add(oldArmor)
             }
 
             player.message("You are now wearing %s.", armor.title)
@@ -292,7 +292,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun drop() = gameAction {
-        for (item in console.selectItems("Select items to drop", player.inventoryItems))
+        for (item in console.selectItems("Select items to drop", player.inventory.items))
             doDrop(item)
     }
 
@@ -302,15 +302,15 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     private fun doDrop(item: Item) {
-        player.inventoryItems.remove(item)
+        player.inventory.remove(item)
         player.cell.items.add(item)
         message("Dropped %s.", item.title)
     }
 
     fun eat() = gameAction {
-        val food = console.selectItem("Select food to eat", player.getInventoryItems(javaClass<Food>()))
+        val food = console.selectItem("Select food to eat", player.inventory.byType(javaClass<Food>()))
         if (food != null) {
-            player.inventoryItems.remove(food)
+            player.inventory.remove(food)
             food.onEatenBy(player)
             tick()
         }
@@ -325,11 +325,11 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun fling() = gameAction {
-        val projectile = console.selectItem("Select item to throw", player.getInventoryItems(javaClass<Item>()))
+        val projectile = console.selectItem("Select item to throw", player.inventory.byType(javaClass<Item>()))
         if (projectile != null) {
             val dir = console.selectDirection()
             if (dir != null) {
-                player.inventoryItems.remove(projectile)
+                player.inventory.remove(projectile)
                 var currentCell = player.cell
                 var nextCell = currentCell.getCellTowards(dir)
                 val range = player.getThrowRange(projectile.weight)

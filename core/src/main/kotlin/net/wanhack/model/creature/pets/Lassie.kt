@@ -37,12 +37,11 @@ class Lassie(name: String): Pet(name) {
             if (escape == cell) {
                 hitPoints = 0
                 removeFromGame()
-                game.message("%s went home.", name)
+                game.message("$name went home.")
             } else {
                 val ok = moveTowards(escape)
-                if (!ok) {
+                if (!ok)
                     super.onTick(game)
-                }
             }
         } else {
             super.onTick(game)

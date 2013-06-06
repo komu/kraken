@@ -25,7 +25,7 @@ import javax.swing.JDialog
 import javax.swing.JPanel
 import kotlin.swing.action
 import net.wanhack.model.common.Direction
-import net.wanhack.desktop.extensions.set
+import net.wanhack.desktop.extensions.*
 
 private class SelectDirectionDialog(owner: Frame): JDialog() {
 
@@ -47,7 +47,7 @@ private class SelectDirectionDialog(owner: Frame): JDialog() {
         add(selectDirectionButton(Direction.SOUTH))
         add(selectDirectionButton(Direction.SE))
 
-        val inputMap = rootPane.getInputMap()!!
+        val inputMap = rootPane.inputMap
         inputMap["UP"]      = Direction.NORTH
         inputMap["DOWN"]    = Direction.SOUTH
         inputMap["LEFT"]    = Direction.WEST
@@ -62,7 +62,7 @@ private class SelectDirectionDialog(owner: Frame): JDialog() {
         inputMap["NUMPAD9"] = Direction.NE
         inputMap["ESCAPE"] = "escape"
 
-        val actionMap = rootPane.getActionMap()!!
+        val actionMap = rootPane.actionMap
         for (dir in Direction.values())
             actionMap[dir] = SelectDirectionAction(dir)
 

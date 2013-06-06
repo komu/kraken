@@ -26,7 +26,7 @@ class CyanideCapsule: Food("a cyanide capsule") {
             eater.die(title)
         } else {
             eater.message("You change your mind.")
-            eater.inventoryItems.add(this)
+            eater.inventory.add(this)
         }
     }
 }

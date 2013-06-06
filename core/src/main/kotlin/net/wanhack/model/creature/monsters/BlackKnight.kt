@@ -57,13 +57,12 @@ class BlackKnight: Monster("The Black Knight") {
     }
 
     override fun talk(target: Creature)  {
-        val percentage = hitPointPercentage
-        val yells = when {
-            percentage >= 80 -> HEALTHY_YELLS
-            percentage >= 60 -> ONE_ARMED_YELLS
-            percentage >= 40 -> ARMLESS_YELLS
-            percentage >= 20 -> ONE_LEGGED_YELLS
-            else             -> TORSO_YELLS
+        val yells = when (hitPointPercentage) {
+            in 0..20  -> TORSO_YELLS
+            in 21..40 -> ONE_LEGGED_YELLS
+            in 41..60 -> ARMLESS_YELLS
+            in 61..80 -> ONE_ARMED_YELLS
+            else      -> HEALTHY_YELLS
         }
 
         target.say(this, yells.randomElement())

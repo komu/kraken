@@ -55,7 +55,7 @@ class InventoryView : JPanel(BorderLayout()) {
         if (game == null) return
 
         val player = game.player
-        val inventory = player.inventoryItems
+        val inventory = player.inventory.items
         val infos = ArrayList<ItemInfo>(inventory.size + 10)
 
         for (item in inventory)

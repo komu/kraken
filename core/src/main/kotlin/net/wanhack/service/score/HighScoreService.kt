@@ -76,25 +76,17 @@ class HighScoreService {
     private class ParameterSet {
         private val sb = StringBuffer()
 
-        fun add(name: String, value: Long) {
-            add(name, value.toString())
-        }
-
-        fun add(name: String, value: Int) {
-            add(name, value.toString())
-        }
-
-        fun add(name: String, value: String) {
+        fun add(name: String, value: Any) {
             if (sb.length > 0)
                 sb.append('&')
 
-            sb.append(encode(name)).append('=').append(encode(value))
+            sb.append(urlEncode(name)).append('=').append(urlEncode(value.toString()))
         }
 
         fun toString() = sb.toString()
 
         class object {
-            fun encode(s: String) = URLEncoder.encode(s, "UTF-8")
+            fun urlEncode(s: String) = URLEncoder.encode(s, "UTF-8")
         }
     }
 }

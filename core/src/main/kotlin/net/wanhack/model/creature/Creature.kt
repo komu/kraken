@@ -38,6 +38,7 @@ import net.wanhack.utils.collections.filterByType
 import net.wanhack.model.common.Directions
 import net.wanhack.utils.collections.toOption
 import net.wanhack.model.common.Color
+import net.wanhack.model.Inventory
 
 abstract class Creature(var name: String): Actor, MessageTarget {
 
@@ -85,7 +86,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     var charisma = RandomUtils.rollDie(10, 10)
     var taste = Taste.CHICKEN
     val armoring = Armoring()
-    val inventoryItems = HashSet<Item>()
+    val inventory = Inventory()
 
     /** Numbers of ticks that this creature is paralyzed for */
     var paralyzedTicks = 0
@@ -93,24 +94,8 @@ abstract class Creature(var name: String): Actor, MessageTarget {
             $paralyzedTicks = max(0, ticks)
         }
 
-    val game: Game
-        get() = region.world.game
-
     val weightOfCarriedItems: Int
-        get() {
-            var weight = wieldedWeapon?.weight ?: 0
-
-            for (armor in armoring)
-                weight += armor.weight
-
-            for (item in inventoryItems)
-                weight += item.weight
-
-            return weight
-        }
-
-    fun getInventoryItems<T: Item>(cl: Class<T>) =
-        inventoryItems.filterByType(cl)
+        get() = (wieldedWeapon?.weight ?: 0) + armoring.weight + inventory.weight
 
     open fun getProficiency(weaponClass: WeaponClass): Int = 0
 
@@ -206,7 +191,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     }
 
     open fun takeDamage(points: Int, attacker: Creature) {
-        hitPoints = Math.max(0, hitPoints - points)
+        hitPoints = max(0, hitPoints - points)
     }
 
     open fun talk(target: Creature) {
@@ -234,15 +219,15 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         corpse.color = color
         corpse.level = level
         corpse.poisonDamage = corpsePoisonousness
-        corpse.effectiveness = Math.max((0.05 * weight).toInt(), 800)
+        corpse.effectiveness = max((0.05 * weight).toInt(), 800)
         corpse.taste = taste
         return corpse
     }
 
     open fun die(killer: String) {
         hitPoints = 0
-        cell.items.addAll(inventoryItems)
-        inventoryItems.clear()
+        cell.items.addAll(inventory.items)
+        inventory.items.clear()
 
         val weapon = wieldedWeapon
         if (weapon != null) {
@@ -264,12 +249,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     }
 
     val lighting: Int
-        get() {
-            var total = 0
-            for (item in inventoryItems)
-                total += item.lighting
-            return total
-        }
+        get() = inventory.lighting
 
     override fun message(pattern: String, vararg args: Any?) {
     }

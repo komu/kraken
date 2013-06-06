@@ -31,6 +31,16 @@ class Armoring : Iterable<Armor> {
         return result
     }
 
+    val weight: Int
+        get() {
+            var w = 0
+
+            for (armor in armors.values())
+                w += armor.weight
+
+            return w
+        }
+
     val totalArmorBonus: Int
         get() {
             var bonus = 0

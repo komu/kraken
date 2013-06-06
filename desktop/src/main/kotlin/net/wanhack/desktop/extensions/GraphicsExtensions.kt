@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-package net.wanhack.model.creature.monsters
+package net.wanhack.desktop.extensions
 
-import net.wanhack.model.Game
-import net.wanhack.model.creature.Monster
-import net.wanhack.utils.RandomUtils
+import java.awt.FontMetrics
+import java.awt.Graphics
 
-class KnightOfNi(name: String): Monster(name) {
-
-    override fun onTick(game: Game) {
-        val player = game.player
-        if (seesCreature(player))
-            when (RandomUtils.rollDie(20)) {
-                0, 1, 2 -> player.say(this, "Ni!")
-                3       -> player.say(this, "Noo!")
-                else    -> {  }
-            }
-
-        super.onTick(game)
-    }
-}
+val Graphics.fontMetrics: FontMetrics
+    get() = getFontMetrics()!!

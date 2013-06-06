@@ -28,6 +28,7 @@ import net.wanhack.model.creature.HungerLevel
 import net.wanhack.model.creature.Player
 import net.wanhack.model.Game
 import net.wanhack.model.ReadOnlyGame
+import net.wanhack.desktop.extensions.fontMetrics
 
 class StatisticsView: JComponent() {
 
@@ -41,25 +42,23 @@ class StatisticsView: JComponent() {
     }
 
     public override fun getPreferredSize() =
-        Dimension(300, 2 * (getFontMetrics(getFont())?.getHeight())!!)
+        Dimension(300, 2 * getFontMetrics(getFont())?.getHeight()!!)
 
     public override fun paint(g: Graphics) {
         val g2 = g as Graphics2D
         g2.setPaint(getBackground())
         g2.fillRect(0, 0, getWidth(), getHeight())
         g2.setFont(getFont())
-        val fm = g2.getFontMetrics()!!
-        val y1 = fm.getAscent()
-        val y2 = fm.getAscent() * 2
-        drawLine(g2, line1, y1)
-        drawLine(g2, line2, y2)
+        val fm = g2.fontMetrics
+        drawLine(g2, line1, fm.getAscent())
+        drawLine(g2, line2, fm.getAscent() * 2)
     }
 
     private fun drawLine(g: Graphics2D, line: Line?, y: Int) {
         if (line == null)
             return
 
-        val fm = g.getFontMetrics()!!
+        val fm = g.fontMetrics
         var x = 0
         for (fragment in line.fragments) {
             g.setColor(fragment.color)

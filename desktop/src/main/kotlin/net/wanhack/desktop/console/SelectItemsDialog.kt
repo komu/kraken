@@ -25,7 +25,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
 import net.wanhack.model.item.Item
-import net.wanhack.desktop.extensions.set
+import net.wanhack.desktop.extensions.*
 import kotlin.swing.*
 
 private class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: Collection<T>): JDialog() {
@@ -40,10 +40,8 @@ private class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: C
         itemList.setCellRenderer(ItemCellRenderer())
         initContent()
 
-        val inputMap = itemList.getInputMap()!!
-        val actionMap = itemList.getActionMap()!!
-        inputMap["ESCAPE"] = "cancel"
-        actionMap["cancel"] = cancelAction()
+        itemList.inputMap["ESCAPE"] = "cancel"
+        itemList.actionMap["cancel"] = cancelAction()
         pack()
         setLocationRelativeTo(owner)
     }

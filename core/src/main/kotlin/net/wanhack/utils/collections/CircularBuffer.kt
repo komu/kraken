@@ -89,7 +89,7 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
         size = 0
         start = 0
         modCount++
-        for (i in 0..buffer.size- 1)
+        for (i in buffer.indices)
             buffer[i] = null
     }
 
@@ -108,7 +108,7 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
 
         if (other is CircularBuffer<*>) {
             if (size == other.size && buffer.size == other.buffer.size) {
-                for (i in 0..size - 1)
+                for (i in indices)
                     if (this[i] != other[i])
                         return false
                 return true
