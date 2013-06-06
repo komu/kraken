@@ -22,7 +22,6 @@ import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
 import net.wanhack.utils.countOfCellsAtDistance
 import java.util.*
-import java.util.Collections.emptyList
 import java.lang.Math.*
 import net.wanhack.model.common.Directions
 import kotlin.support.AbstractIterator
@@ -152,7 +151,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         object : AbstractIterator<Cell>() {
             var distance = 0
             var pos = 0
-            var cellsAtCurrentDistance = Collections.emptyList<Cell>()
+            var cellsAtCurrentDistance = listOf(this@Cell)
 
             override fun computeNext() {
                 while (pos == cellsAtCurrentDistance.size) {
