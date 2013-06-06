@@ -30,6 +30,7 @@ import net.wanhack.model.skill.SkillSet
 import net.wanhack.utils.RandomUtils
 import net.wanhack.model.region.CellSet
 import net.wanhack.model.common.Color
+import kotlin.properties.Delegates
 
 class Player(name: String): Creature(name) {
 
@@ -37,7 +38,7 @@ class Player(name: String): Creature(name) {
     var experience = 0
     val hit: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
     val skills = SkillSet()
-    var visibleCells: CellSet? = null
+    var visibleCells: CellSet by Delegates.notNull()
     var hunger = 2000
     var fainted = false
     var regenerated = false
@@ -172,13 +173,13 @@ class Player(name: String): Creature(name) {
         }
 
     fun seesCreatures() =
-        visibleCells!!.any { cell ->
+        visibleCells.any { cell ->
             val creature = cell.creature
             creature != null && creature != this
         }
 
     fun seesNonFriendlyCreatures() =
-        visibleCells!!.any { cell ->
+        visibleCells.any { cell ->
             val creature = cell.creature
             creature != null && creature != this && !creature.friendly
         }
@@ -192,7 +193,7 @@ class Player(name: String): Creature(name) {
     }
 
     override fun canSee(target: Cell) =
-        target in visibleCells!!
+        target in visibleCells
 
     private fun updateVisiblePoints() {
         visibleCells = VisibilityChecker.getVisibleCells(cell, sight)
@@ -200,7 +201,7 @@ class Player(name: String): Creature(name) {
 
     fun getInvisibleCells(): CellSet {
         val cells = region.getCells()
-        cells.removeAll(visibleCells!!)
+        cells.removeAll(visibleCells)
         return cells
     }
 

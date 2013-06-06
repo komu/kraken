@@ -66,9 +66,9 @@ class InventoryView : JPanel(BorderLayout()) {
 
         Collections.sort(infos)
 
-        SwingUtilities.invokeLater(Runnable {
+        SwingUtilities.invokeLater {
             list.setListData(Vector<ItemInfo>(infos))
-        })
+        }
     }
 
     private inner class ListMouseListener(): MouseAdapter() {

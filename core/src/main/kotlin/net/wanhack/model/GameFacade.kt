@@ -114,14 +114,14 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
     }
 
     private fun gameAction(body: () -> Unit) {
-        gameExecutor.execute(Runnable {
+        gameExecutor.execute {
             lock.writeLock().withLock {
                 if (!game.over)
                     body()
             }
 
             listener(false)
-        })
+        }
     }
 
     class LockRelinquishingConsole(val console: Console, val lock: Lock) : Console {

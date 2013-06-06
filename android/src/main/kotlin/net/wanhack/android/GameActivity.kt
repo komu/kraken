@@ -32,17 +32,16 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import net.wanhack.model.common.Directions
-import android.content.DialogInterface
 import java.util.concurrent.CountDownLatch
 import android.app.AlertDialog
 import java.util.HashSet
 import android.widget.Toast
+import kotlin.properties.Delegates
 
 class GameActivity : Activity() {
 
-    var game: GameFacade? = null
-    val gameView: GameView
-        get() = findViewById(R.id.gameView) as GameView
+    var game: GameFacade by Delegates.notNull()
+    val gameView: GameView by ViewProperty(R.id.gameView)
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super<Activity>.onCreate(savedInstanceState)
@@ -51,23 +50,23 @@ class GameActivity : Activity() {
         registerForContextMenu(gameView)
 
         val gestureDetector = GestureDetector(this, MyGestureListener())
-        gameView.setOnTouchListener(View.OnTouchListener { (v, event) ->
+        gameView.setOnTouchListener { (v, event) ->
             gestureDetector.onTouchEvent(event)
-        })
-
-        game = GameFacade(GameConfiguration(), MyConsole()) { b ->
-            runOnUiThread(Runnable {
-                gameView.invalidate()
-            })
         }
 
-        gameView.game = game!!
+        game = GameFacade(GameConfiguration(), MyConsole()) { b ->
+            runOnUiThread {
+                gameView.invalidate()
+            }
+        }
 
-        game!!.start()
+        gameView.game = game
+
+        game.start()
     }
 
     fun moveTowards(dir: Direction) {
-        gameAction { it.movePlayer(dir) }
+        game.movePlayer(dir)
     }
 
     public override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
@@ -76,27 +75,23 @@ class GameActivity : Activity() {
 
     public override fun onContextItemSelected(item: MenuItem?): Boolean {
         when (item!!.getItemId()) {
-            R.id.skipTurn   -> gameAction { it.skipTurn() }
-            R.id.moveUp     -> gameAction { it.movePlayerVertically(true) }
-            R.id.moveDown   -> gameAction { it.movePlayerVertically(false) }
-            R.id.wield      -> gameAction { it.wield() }
-            R.id.wear       -> gameAction { it.wear() }
-            R.id.rest       -> gameAction { it.rest(-1) }
-            R.id.talk       -> gameAction { it.talk() }
-            R.id.open_door  -> gameAction { it.openDoor() }
-            R.id.close_door -> gameAction { it.closeDoor() }
-            R.id.pickup     -> gameAction { it.pickup() }
-            R.id.drop       -> gameAction { it.drop() }
-            R.id.eat        -> gameAction { it.eat() }
-            R.id.fling      -> gameAction { it.fling() }
-            R.id.search     -> gameAction { it.search() }
+            R.id.skipTurn   -> game.skipTurn()
+            R.id.moveUp     -> game.movePlayerVertically(true)
+            R.id.moveDown   -> game.movePlayerVertically(false)
+            R.id.wield      -> game.wield()
+            R.id.wear       -> game.wear()
+            R.id.rest       -> game.rest(-1)
+            R.id.talk       -> game.talk()
+            R.id.open_door  -> game.openDoor()
+            R.id.close_door -> game.closeDoor()
+            R.id.pickup     -> game.pickup()
+            R.id.drop       -> game.drop()
+            R.id.eat        -> game.eat()
+            R.id.fling      -> game.fling()
+            R.id.search     -> game.search()
             else            -> return super<Activity>.onContextItemSelected(item)
         }
         return true
-    }
-    
-    fun gameAction(action: (GameFacade) -> Unit) {
-        action(game!!)
     }
 
     inner class MyGestureListener : SimpleOnGestureListener() {
@@ -129,9 +124,9 @@ class GameActivity : Activity() {
 
         override fun message(message: String) {
             Log.d(tag, "message: $message")
-            runOnUiThread(Runnable {
+            runOnUiThread {
                 Toast.makeText(this@GameActivity, message, Toast.LENGTH_LONG)!!.show()
-            })
+            }
         }
 
         override fun ask(question: String): Boolean {
@@ -140,27 +135,27 @@ class GameActivity : Activity() {
             var result = false
             val latch = CountDownLatch(1)
 
-            runOnUiThread(Runnable {
+            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle(question)
 
-                builder.setPositiveButton("Yes", DialogInterface.OnClickListener { (dialog, id) ->
+                builder.setPositiveButton("Yes") { (dialog, id) ->
                     result = true
                     latch.countDown()
-                })
+                }
 
-                builder.setNegativeButton("No", DialogInterface.OnClickListener { (dialog, id) ->
+                builder.setNegativeButton("No") { (dialog, id) ->
                     result = false
                     latch.countDown()
-                })
+                }
 
-                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                builder.setOnCancelListener {
                     result = false
                     latch.countDown()
-                })
+                }
 
                 builder.create()!!.show()
-            })
+            }
 
             latch.await()
 
@@ -174,19 +169,19 @@ class GameActivity : Activity() {
 
             val titles = Array<String>(itemList.size) { i -> itemList[i].title }
 
-            runOnUiThread(Runnable {
+            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle(message)
-                builder.setItems(titles, DialogInterface.OnClickListener { (dialog, which) ->
+                builder.setItems(titles) { (dialog, which) ->
                     selected = itemList[which]
                     latch.countDown()
-                })
-                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                }
+                builder.setOnCancelListener {
                     selected = null
                     latch.countDown()
-                })
+                }
                 builder.create()!!.show()
-            })
+            }
 
             latch.await()
 
@@ -200,35 +195,35 @@ class GameActivity : Activity() {
 
             val titles = Array<String>(itemList.size) { i -> itemList[i].title }
 
-            runOnUiThread(Runnable {
+            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
 
                 builder.setTitle(message)
-                builder.setMultiChoiceItems(titles, null, DialogInterface.OnMultiChoiceClickListener { (dialog, which, isChecked) ->
+                builder.setMultiChoiceItems(titles, null) { (dialog, which, isChecked) ->
                     val item = itemList[which]
                     if (isChecked) {
                         selections.add(item)
                     } else {
                         selections.remove(item)
                     }
-                })
+                }
 
-                builder.setPositiveButton("Ok", DialogInterface.OnClickListener { (dialog, id) ->
+                builder.setPositiveButton("Ok") { (dialog, id) ->
                     latch.countDown()
-                })
+                }
 
-                builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { (dialog, id) ->
+                builder.setNegativeButton("Cancel") { (dialog, id) ->
                     selections.clear()
                     latch.countDown()
-                })
+                }
 
-                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                builder.setOnCancelListener {
                     selections.clear()
                     latch.countDown()
-                })
+                }
 
                 builder.create()!!.show()
-            })
+            }
 
             latch.await()
 
@@ -242,19 +237,19 @@ class GameActivity : Activity() {
             val directions = Direction.values()
             val titles = Array<String>(directions.size) { i -> directions[i].shortName }
 
-            runOnUiThread(Runnable {
+            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle("Select direction")
-                builder.setItems(titles, DialogInterface.OnClickListener { (dialog, which) ->
+                builder.setItems(titles) { (dialog, which) ->
                     selected = directions[which]
                     latch.countDown()
-                })
-                builder.setOnCancelListener(DialogInterface.OnCancelListener {
+                }
+                builder.setOnCancelListener {
                     selected = null
                     latch.countDown()
-                })
+                }
                 builder.create()!!.show()
-            })
+            }
 
             latch.await()
 

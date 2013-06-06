@@ -43,9 +43,9 @@ class HighScoreService {
         params.add("max_dungeon_level", game.maxDungeonLevel)
         params.add("client_version", Version.fullVersion)
 
-        highScoreExecutor.execute(Runnable() {
+        highScoreExecutor.execute {
             saveGameScoreImpl(params)
-        })
+        }
     }
 
     private fun saveGameScoreImpl(parameters: ParameterSet) {

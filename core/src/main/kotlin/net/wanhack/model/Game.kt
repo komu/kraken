@@ -85,7 +85,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
         currentRegion.updateLighting()
         player.act(this)
-        currentRegion.updateSeenCells(player.visibleCells!!)
+        currentRegion.updateSeenCells(player.visibleCells)
         player.message("Hello %s, welcome to Wanhack!", player.name)
 
         val today = Calendar.getInstance()
@@ -558,7 +558,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             } while (player.alive && player.fainted)
 
             currentRegion.updateLighting()
-            currentRegion.updateSeenCells(player.visibleCells!!)
+            currentRegion.updateSeenCells(player.visibleCells)
 
             listener()
         }

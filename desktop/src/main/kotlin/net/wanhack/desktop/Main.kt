@@ -249,9 +249,9 @@ class Main(val wizardMode: Boolean) {
     }
 
     fun setAWTUncaughtExceptionHandler(eh: Thread.UncaughtExceptionHandler) {
-        SwingUtilities.invokeLater(Runnable {
+        SwingUtilities.invokeLater {
             Thread.currentThread().setUncaughtExceptionHandler(eh)
-        });
+        }
     }
 
     fun showAbout() {
