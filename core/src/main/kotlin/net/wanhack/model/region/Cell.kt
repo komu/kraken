@@ -221,8 +221,10 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         // see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
         val cells = ArrayList<Cell>(distance(target))
 
-        var (x0, y0) = coordinate
-        val (x1, y1) = target.coordinate
+        var x0 = coordinate.x
+        var y0 = coordinate.y
+        val x1 = target.coordinate.x
+        val y1 = target.coordinate.y
 
         val dx = abs(x1 - x0)
         val dy = abs(y1 - y0)
