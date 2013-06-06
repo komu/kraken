@@ -24,6 +24,8 @@ import net.wanhack.utils.collections.toOption
 
 class Region(val world: World, val name: String, val level: Int, val width: Int, val height: Int): Iterable<Cell> {
 
+    val size = Size(width, height)
+
     private val cells = Array<Cell>(width * height) { index ->
         val x = index % width
         val y = index / width

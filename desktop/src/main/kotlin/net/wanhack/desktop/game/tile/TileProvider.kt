@@ -27,6 +27,7 @@ import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.Item
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.CellType.*
+import net.wanhack.model.region.Coordinate
 
 class TileProvider {
 
@@ -55,9 +56,9 @@ class TileProvider {
         drawLetter(g, cell.coordinate.x, cell.coordinate.y, creature.letter, creature.color.toPaint())
     }
     
-    fun drawSelection(g: Graphics2D, cell: Cell) {
+    fun drawSelection(g: Graphics2D, coordinate: Coordinate) {
         g.setPaint(Color(0.8.toFloat(), 0.3.toFloat(), 0.3.toFloat(), 0.5.toFloat()))
-        g.fillRect(cell.coordinate.x * tileWidth, cell.coordinate.y * tileHeight, tileWidth, tileHeight)
+        g.fillRect(coordinate.x * tileWidth, coordinate.y * tileHeight, tileWidth, tileHeight)
     }
 
     fun drawItem(g: Graphics2D, cell: Cell, item: Item) {

@@ -27,6 +27,8 @@ import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
 import net.wanhack.desktop.game.tile.TileProvider
 import net.wanhack.model.GameFacade
+import net.wanhack.model.region.Size
+import net.wanhack.model.region.Coordinate
 
 class RegionView: JComponent() {
 
@@ -53,7 +55,7 @@ class RegionView: JComponent() {
 
         gameFacade?.query { game ->
             if (game.player.cellOrNull != null) {
-                transformFocusToCell(g2, game.cellInFocus)
+                transformFocusToCell(g2, game.cellInFocus, game.currentRegion.size)
                 val player = game.player
                 for (cell in game.currentRegion)
                     paintCell(g2, cell, player)
@@ -65,17 +67,17 @@ class RegionView: JComponent() {
         }
     }
 
-    private fun transformFocusToCell(g2: Graphics2D, cell: Cell) {
-        val transform = getTransform(cell)
+    private fun transformFocusToCell(g2: Graphics2D, coordinate: Coordinate, regionSize: Size) {
+        val transform = getTransform(coordinate, regionSize)
         if (transform != null)
             g2.transform(transform)
     }
 
-    private fun getTransform(cell: Cell): AffineTransform? {
+    private fun getTransform(coordinate: Coordinate, regionSize: Size): AffineTransform? {
         val width = getWidth()
         val height = getHeight()
-        val regionWidth = cell.region.width
-        val regionHeight = cell.region.width
+        val regionWidth = regionSize.width
+        val regionHeight = regionSize.width
         val tileWidth = tileProvider.tileWidth
         val tileHeight = tileProvider.tileHeight
         val requiredWidth = tileWidth * regionWidth
@@ -85,8 +87,8 @@ class RegionView: JComponent() {
             return null
 
         if (translate) {
-            val x = tileWidth * cell.coordinate.x
-            val y = tileHeight * cell.coordinate.y
+            val x = tileWidth * coordinate.x
+            val y = tileHeight * coordinate.y
             val dx = Math.max(0, Math.min(x - width / 2, requiredWidth - width))
             val dy = Math.max(0, Math.min(y - height / 2, requiredHeight - height))
             return AffineTransform.getTranslateInstance((-dx).toDouble(), (-dy).toDouble())

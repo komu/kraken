@@ -24,6 +24,9 @@ import net.wanhack.model.GameFacade
 import net.wanhack.model.region.Cell
 import net.wanhack.model.creature.Player
 import android.graphics.Matrix
+import net.wanhack.model.region.Region
+import net.wanhack.model.region.Coordinate
+import net.wanhack.model.region.Size
 
 class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -37,7 +40,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         game?.query { game ->
             val player = game.player
             if (player.cellOrNull != null) {
-                transformFocusToCell(canvas, game.cellInFocus)
+                transformFocusToCell(canvas, game.cellInFocus, game.currentRegion.size)
                 for (cell in game.currentRegion)
                     paintCell(canvas, cell, player)
             }
@@ -60,29 +63,27 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             tileProvider.drawCell(canvas, cell, false)
     }
 
-    fun transformFocusToCell(canvas: Canvas, cell: Cell) {
-        val matrix = getTransform(cell)
+    fun transformFocusToCell(canvas: Canvas, coordinate: Coordinate, regionSize: Size) {
+        val matrix = getTransform(coordinate, regionSize)
         if (matrix != null)
             canvas.setMatrix(matrix)
     }
 
-    private fun getTransform(cell: Cell): Matrix? {
+    private fun getTransform(coordinate: Coordinate, regionSize: Size): Matrix? {
         val width = getWidth()
         val height = getHeight()
-        val regionWidth = cell.region.width
-        val regionHeight = cell.region.width
         val tileWidth = tileProvider.tileWidth
         val tileHeight = tileProvider.tileHeight
-        val requiredWidth = tileWidth * regionWidth
-        val requiredHeight = tileHeight * regionHeight
+        val requiredWidth = tileWidth * regionSize.width
+        val requiredHeight = tileHeight * regionSize.height
 
         if (width >= requiredWidth && height >= requiredHeight)
             return null
 
         val matrix = Matrix()
         if (translate) {
-            val x = tileWidth * cell.coordinate.x
-            val y = tileHeight * cell.coordinate.y
+            val x = tileWidth * coordinate.x
+            val y = tileHeight * coordinate.y
             val dx = Math.max(0, Math.min(x - width / 2, requiredWidth - width))
             val dy = Math.max(0, Math.min(y - height / 2, requiredHeight - height))
 

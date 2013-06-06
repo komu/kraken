@@ -26,6 +26,7 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 import javax.swing.UIManager
 import javax.swing.border.EmptyBorder
+import net.wanhack.model.item.ItemInfo
 
 class InventoryCellRenderer: JComponent(), ListCellRenderer<ItemInfo> {
 

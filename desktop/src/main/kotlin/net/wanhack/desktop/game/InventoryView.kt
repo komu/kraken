@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities
 import kotlin.swing.*
 import net.wanhack.model.ReadOnlyGame
 import net.wanhack.model.GameFacade
+import net.wanhack.model.item.ItemInfo
 
 class InventoryView : JPanel(BorderLayout()) {
     private val list = JList<ItemInfo>()
@@ -43,7 +44,6 @@ class InventoryView : JPanel(BorderLayout()) {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
         list.setCellRenderer(InventoryCellRenderer())
         list.setFocusable(false)
-        list.addMouseListener(ListMouseListener())
         list.setBackground(Color.BLACK)
         setPreferredSize(Dimension(200, 200))
         val scrollPane = JScrollPane(list)
@@ -54,49 +54,12 @@ class InventoryView : JPanel(BorderLayout()) {
     fun update(game: ReadOnlyGame?) {
         if (game == null) return
 
-        val player = game.player
-        val inventory = player.inventory.items
-        val infos = ArrayList<ItemInfo>(inventory.size + 10)
-
-        for (item in inventory)
-            infos.add(ItemInfo(item, false))
-
-        for (item in player.activatedItems)
-            infos.add(ItemInfo(item, true))
+        val infos = Vector<ItemInfo>(game.inventoryItems)
 
         Collections.sort(infos)
 
         SwingUtilities.invokeLater {
-            list.setListData(Vector<ItemInfo>(infos))
-        }
-    }
-
-    private inner class ListMouseListener(): MouseAdapter() {
-        public override fun mousePressed(e: MouseEvent) {
-            if (e.isPopupTrigger())
-                showPopupMenu(e)
-        }
-
-        public override fun mouseReleased(e: MouseEvent) {
-            if (e.isPopupTrigger())
-                showPopupMenu(e)
-        }
-
-        private fun showPopupMenu(e: MouseEvent) {
-            if (list.isSelectionEmpty()) {
-                val index = list.locationToIndex(e.getPoint())
-                if (index != -1)
-                    list.setSelectedIndex(index)
-            }
-
-            val item = list.getSelectedValue()
-            if (item != null) {
-                val popup = popupMenu {
-                    if (!item.inUse)
-                        add(DropItemAction(gameFacade, item.item))
-                }
-                popup.show(list, e.getX(), e.getY())
-            }
+            list.setListData(infos)
         }
     }
 }

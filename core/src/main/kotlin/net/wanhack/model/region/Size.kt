@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-package net.wanhack.model
+package net.wanhack.model.region
 
-import net.wanhack.model.creature.Player
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.Region
-import net.wanhack.model.item.ItemInfo
-import net.wanhack.model.region.Coordinate
-
-trait ReadOnlyGame {
-    val inventoryItems: List<ItemInfo>
-
-    val player: Player
-    val time: Int
-    val score: Int
-    val dungeonLevel: Int
-    val maxDungeonLevel: Int
-    val cellInFocus: Coordinate
-    val currentRegion: Region
-    val selectedCell: Coordinate?
-}
+data class Size(val width: Int, val height: Int)

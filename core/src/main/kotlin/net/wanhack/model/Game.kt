@@ -30,6 +30,7 @@ import net.wanhack.model.events.global.HungerEvent
 import net.wanhack.model.events.global.RegainHitPointsEvent
 import net.wanhack.model.events.region.CreateMonstersEvent
 import net.wanhack.model.item.Item
+import net.wanhack.model.item.ItemInfo
 import net.wanhack.model.item.armor.Armor
 import net.wanhack.model.item.food.Food
 import net.wanhack.model.item.weapon.Weapon
@@ -48,6 +49,7 @@ import net.wanhack.model.common.Console
 import net.wanhack.utils.MaximumCounter
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.score.HighScoreService
+import net.wanhack.model.region.Coordinate
 
 class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
@@ -67,6 +69,19 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         objectFactory.addDefinitions(Items)
         objectFactory.addDefinitions(Creatures)
     }
+
+    override val inventoryItems: List<ItemInfo>
+        get() {
+            val infos = listBuilder<ItemInfo>()
+
+            for (item in player.activatedItems)
+                infos.add(ItemInfo(item.title, item.description, item.letter, true))
+
+            for (item in player.inventory.items)
+                infos.add(ItemInfo(item.title, item.description, item.letter, false))
+
+            return infos.build()
+        }
 
     fun revealCurrentRegion() {
         currentRegion.reveal()
@@ -130,10 +145,10 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     override val dungeonLevel: Int
         get() = currentRegion.level
 
-    override val cellInFocus: Cell
-        get() = selectedCell ?: player.cell
+    override val cellInFocus: Coordinate
+        get() = selectedCell ?: player.cell.coordinate
 
-    override val selectedCell: Cell?
+    override val selectedCell: Coordinate?
         get() = null
 
     fun enterRegion(name: String, location: String) {

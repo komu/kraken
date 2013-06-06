@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package net.wanhack.desktop.game
+package net.wanhack.model.item
 
-import net.wanhack.model.item.Item
-
-class ItemInfo(val item: Item, val inUse: Boolean): Comparable<ItemInfo> {
-
-    val title: String
-        get() = item.title
-
-    val description: String
-        get() = item.description
-
-    val letter: Char
-        get() = item.letter
-
+class ItemInfo(val title: String, val description: String, val letter: Char, val inUse: Boolean): Comparable<ItemInfo> {
     override fun compareTo(other: ItemInfo) =
         if (inUse != other.inUse)
             if (inUse) -1 else 1
