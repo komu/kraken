@@ -35,6 +35,7 @@ import net.wanhack.model.common.Directions
 import java.util.concurrent.CountDownLatch
 import android.app.AlertDialog
 import java.util.HashSet
+import java.util.Collections.emptySet
 import android.widget.Toast
 import kotlin.properties.Delegates
 
@@ -129,73 +130,49 @@ class GameActivity : Activity() {
             }
         }
 
-        override fun ask(question: String): Boolean {
-            Log.d(tag, "ask: $question")
-
-            var result = false
-            val latch = CountDownLatch(1)
-
-            runOnUiThread {
+        override fun ask(question: String): Boolean =
+            waitForUI<Boolean> { setResult ->
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle(question)
 
                 builder.setPositiveButton("Yes") { (dialog, id) ->
-                    result = true
-                    latch.countDown()
+                    setResult(true)
                 }
 
                 builder.setNegativeButton("No") { (dialog, id) ->
-                    result = false
-                    latch.countDown()
+                    setResult(false)
                 }
 
                 builder.setOnCancelListener {
-                    result = false
-                    latch.countDown()
+                    setResult(false)
                 }
 
                 builder.create()!!.show()
             }
 
-            latch.await()
+        override fun <T: Item> selectItem(message: String, items: Collection<T>): T? =
+            waitForUI<T?> { setResult ->
+                val itemList = items.toList()
+                val titles = Array<String>(itemList.size) { i -> itemList[i].title }
 
-            return result
-        }
-
-        override fun <T: Item> selectItem(message: String, items: Collection<T>): T? {
-            val itemList = items.toList()
-            var selected: T? = null
-            val latch = CountDownLatch(1)
-
-            val titles = Array<String>(itemList.size) { i -> itemList[i].title }
-
-            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle(message)
                 builder.setItems(titles) { (dialog, which) ->
-                    selected = itemList[which]
-                    latch.countDown()
+                    setResult(itemList[which])
                 }
                 builder.setOnCancelListener {
-                    selected = null
-                    latch.countDown()
+                    setResult(null)
                 }
                 builder.create()!!.show()
             }
 
-            latch.await()
+        override fun selectItems<T: Item>(message: String, items: Collection<T>): Set<T> =
+            waitForUI<Set<T>> { setResult ->
+                val itemList = items.toList()
+                val titles = Array<String>(itemList.size) { i -> itemList[i].title }
 
-            return selected
-        }
+                val selections = HashSet<T>()
 
-        override fun selectItems<T: Item>(message: String, items: Collection<T>): Set<T> {
-            val itemList = items.toList()
-            val selections = HashSet<T>()
-            val latch = CountDownLatch(1)
-
-            val titles = Array<String>(itemList.size) { i -> itemList[i].title }
-
-            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
 
                 builder.setTitle(message)
@@ -209,51 +186,49 @@ class GameActivity : Activity() {
                 }
 
                 builder.setPositiveButton("Ok") { (dialog, id) ->
-                    latch.countDown()
+                    setResult(selections)
                 }
 
                 builder.setNegativeButton("Cancel") { (dialog, id) ->
-                    selections.clear()
-                    latch.countDown()
+                    setResult(emptySet())
                 }
 
                 builder.setOnCancelListener {
-                    selections.clear()
-                    latch.countDown()
+                    setResult(emptySet())
                 }
 
                 builder.create()!!.show()
             }
 
-            latch.await()
+        override fun selectDirection(): Direction? =
+            waitForUI<Direction?> { setResult ->
+                val directions = Direction.values()
+                val titles = Array<String>(directions.size) { i -> directions[i].shortName }
 
-            return selections
-        }
-
-        override fun selectDirection(): Direction? {
-            var selected: Direction? = null
-            val latch = CountDownLatch(1)
-
-            val directions = Direction.values()
-            val titles = Array<String>(directions.size) { i -> directions[i].shortName }
-
-            runOnUiThread {
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle("Select direction")
                 builder.setItems(titles) { (dialog, which) ->
-                    selected = directions[which]
-                    latch.countDown()
+                    setResult(directions[which])
                 }
                 builder.setOnCancelListener {
-                    selected = null
-                    latch.countDown()
+                    setResult(null)
                 }
                 builder.create()!!.show()
             }
 
-            latch.await()
+        fun waitForUI<T>(callback: (setResult: (T) -> Unit) -> Unit): T {
+            var result: T? = null
+            val latch = CountDownLatch(1)
 
-            return selected
+            runOnUiThread {
+                callback { r ->
+                    result = r
+                    latch.countDown()
+                }
+            }
+
+            latch.await()
+            return result as T
         }
     }
 
