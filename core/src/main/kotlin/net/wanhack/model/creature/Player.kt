@@ -152,8 +152,9 @@ class Player(name: String): Creature(name) {
         }
 
     }
-    fun getHungerLevel(): HungerLevel =
-        getHungerLevel(hunger)
+
+    val hungerLevel: HungerLevel
+        get() = getHungerLevel(hunger)
 
     private fun addExperience(exp: Int) {
         experience += exp
@@ -161,7 +162,7 @@ class Player(name: String): Creature(name) {
             gainLevel()
     }
 
-    private fun gainLevel(): Unit {
+    private fun gainLevel() {
         val newHp = 3 + RandomUtils.rollDie(3)
         maximumHitPoints += newHp
         hitPoints = Math.min(hitPoints + newHp, maximumHitPoints)

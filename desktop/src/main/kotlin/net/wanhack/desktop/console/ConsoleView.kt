@@ -57,7 +57,7 @@ class ConsoleView : JComponent(), Console {
         repaint()
     }
 
-    fun paint(g: Graphics?): Unit {
+    fun paint(g: Graphics?) {
         g!!
         g.setColor(getBackground())
         g.fillRect(0, 0, getWidth(), getHeight())

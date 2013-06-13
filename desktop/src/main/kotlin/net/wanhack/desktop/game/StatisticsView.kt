@@ -29,6 +29,7 @@ import net.wanhack.model.creature.Player
 import net.wanhack.model.Game
 import net.wanhack.model.ReadOnlyGame
 import net.wanhack.desktop.extensions.fontMetrics
+import net.wanhack.model.GameStatistics
 
 class StatisticsView: JComponent() {
 
@@ -67,37 +68,29 @@ class StatisticsView: JComponent() {
         }
     }
 
-    fun updateStatistics(game: ReadOnlyGame?) {
-        line1 = getStatsLine1(game)
-        line2 = getStatsLine2(game)
+    fun updateStatistics(stats: GameStatistics) {
+        line1 = statsLine1(stats)
+        line2 = statsLine2(stats)
         repaint()
     }
 
-    private fun getStatsLine1(game: ReadOnlyGame?): Line? {
-        if (game == null)
-            return null
-
-        val player = game.player
+    private fun statsLine1(stats: GameStatistics): Line {
         val line = Line()
-        line.add("%-20s  St:%d Ch:%d", player.name, player.strength, player.charisma)
+        line.add("%-20s  St:%d Ch:%d", stats.playerName, stats.strength, stats.charisma)
         return line
     }
 
-    private fun getStatsLine2(game: ReadOnlyGame?): Line? {
-        if (game == null)
-            return null
-
-        val player = game.player
+    private fun statsLine2(stats: GameStatistics): Line {
         val line = Line()
-        line.add("%-20s  ", player.region.name)
-        line.add(getHitPointsColor(player), "HP:%d(%d)", player.hitPoints, player.maximumHitPoints)
-        line.add("  AC:%d  Exp:%s(%s)  T:%d    ", player.armorClass, player.level, player.experience, game.time)
-        line.add(getHungerColor(player.getHungerLevel()), "%-10s", player.getHungerLevel())
+        line.add("%-20s  ", stats.regionName)
+        line.add(getHitPointsColor(stats), "HP:%d(%d)", stats.hitPoints, stats.maximumHitPoints)
+        line.add("  AC:%d  Exp:%s(%s)  T:%d    ", stats.armorClass, stats.level, stats.experience, stats.time)
+        line.add(getHungerColor(stats.hungerLevel), "%-10s", stats.hungerLevel)
         return line
     }
 
     class object {
-        private fun getHitPointsColor(player: Player) =
+        private fun getHitPointsColor(player: GameStatistics) =
             if (player.hitPoints <= player.maximumHitPoints / 4)
                 Color.RED
             else

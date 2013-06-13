@@ -26,7 +26,7 @@ class WaferThinMint: Food("wafer-thin mint") {
     }
 
     override fun onEatenBy(eater: Player) {
-        if (eater.getHungerLevel() == HungerLevel.SATIATED) {
+        if (eater.hungerLevel == HungerLevel.SATIATED) {
             eater.hitPoints = 0
             eater.message("This %s is too much. %s %s!", title, eater.You(), eater.verb("explode"))
             eater.die(title)

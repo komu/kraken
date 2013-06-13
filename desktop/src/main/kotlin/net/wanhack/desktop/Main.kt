@@ -215,7 +215,6 @@ class Main(val wizardMode: Boolean) {
             consoleView.clear();
             gameActions.gameFacade = game
             regionView.gameFacade = game
-            inventoryView.gameFacade = game
 
             gameFacade = game
             game.start()
@@ -229,17 +228,17 @@ class Main(val wizardMode: Boolean) {
             else
                 consoleView.repaint()
             regionView.repaint()
-            statisticsView.updateStatistics(game)
-            inventoryView.update(game)
+            statisticsView.updateStatistics(game.statistics)
+            inventoryView.update(game.inventoryItems)
         }
     }
 
     fun initUncaughtExceptionHandler() {
         setAWTUncaughtExceptionHandler(object : Thread.UncaughtExceptionHandler {
-            override fun uncaughtException(thread: Thread, ex: Throwable) {
-                log.log(Level.SEVERE, "Uncaught exception", ex)
+            override fun uncaughtException(t: Thread, e: Throwable) {
+                log.log(Level.SEVERE, "Uncaught exception", e)
 
-                ErrorDialog.show(frame, "Unexpected Error", ex)
+                ErrorDialog.show(frame, "Unexpected Error", e)
 
                 // The thread is about to die, set this same handler
                 // for the newly created AWT event handler thread.

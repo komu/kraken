@@ -17,20 +17,17 @@
 package net.wanhack.model
 
 import net.wanhack.model.creature.Player
-import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
 import net.wanhack.model.item.ItemInfo
 import net.wanhack.model.region.Coordinate
+import net.wanhack.model.region.CellSet
 
 trait ReadOnlyGame {
     val inventoryItems: List<ItemInfo>
+    val statistics: GameStatistics
 
-    val player: Player
-    val time: Int
-    val score: Int
-    val dungeonLevel: Int
-    val maxDungeonLevel: Int
+    val visibleCells: CellSet
     val cellInFocus: Coordinate
-    val currentRegion: Region
+    val currentRegionOrNull: Region?
     val selectedCell: Coordinate?
 }

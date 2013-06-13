@@ -25,17 +25,17 @@ import java.security.AccessControlException
 import java.util.concurrent.Executors
 import net.wanhack.utils.logger
 import java.util.logging.Level
-import net.wanhack.model.ReadOnlyGame
+import net.wanhack.model.Game
 
 class HighScoreService {
     private val log = javaClass.logger()
     private val highScoreExecutor = Executors.newSingleThreadExecutor()
 
-    fun saveGameScore(game: ReadOnlyGame, killer: String) {
+    fun saveGameScore(game: Game, killer: String) {
         val params = ParameterSet()
         val player = game.player
         params.add("name", player.name)
-        params.add("score", game.score)
+        params.add("score", player.experience)
         params.add("killed_by", killer)
         params.add("level", player.level)
         params.add("max_hitpoints", player.maximumHitPoints)
