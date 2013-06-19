@@ -28,6 +28,9 @@ import net.wanhack.desktop.game.tile.TileProvider
 import net.wanhack.model.GameFacade
 import net.wanhack.model.region.Size
 import net.wanhack.model.region.Coordinate
+import java.awt.event.MouseEvent
+import java.awt.event.MouseAdapter
+import java.awt.Point
 import net.wanhack.model.region.CellSet
 
 class RegionView: JComponent() {
@@ -41,10 +44,23 @@ class RegionView: JComponent() {
 
     var translate = true
     private val tileProvider = TileProvider();
+    private var transform: AffineTransform? = null;
 
     {
         setBackground(Color.BLACK)
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+                gameFacade?.focus(toCoordinate(e.getPoint()));
+            }
+        });
     }
+
+    private fun toCoordinate(p: Point):Coordinate {
+        val p2 = Point();
+        transform?.inverseTransform(p, p2);
+        return Coordinate(p2.x / tileProvider.tileWidth, p2.y / tileProvider.tileHeight);
+    }
+
 
     override fun paint(g: Graphics) {
         val g2 = g as Graphics2D
@@ -56,7 +72,10 @@ class RegionView: JComponent() {
         gameFacade?.query { game ->
             val region = game.currentRegionOrNull
             if (region != null) {
-                transformFocusToCell(g2, game.cellInFocus, region.size)
+                transform = getTransform(game.cellInFocus, region.size)
+                if (transform != null)
+                    g2.transform(transform)
+
                 for (cell in region)
                     paintCell(g2, cell, game.visibleCells)
 
@@ -65,12 +84,6 @@ class RegionView: JComponent() {
                     tileProvider.drawSelection(g2, selectedCell)
             }
         }
-    }
-
-    private fun transformFocusToCell(g2: Graphics2D, coordinate: Coordinate, regionSize: Size) {
-        val transform = getTransform(coordinate, regionSize)
-        if (transform != null)
-            g2.transform(transform)
     }
 
     private fun getTransform(coordinate: Coordinate, regionSize: Size): AffineTransform? {
