@@ -22,11 +22,10 @@ import android.util.AttributeSet
 import android.graphics.Canvas
 import net.wanhack.model.GameFacade
 import net.wanhack.model.region.Cell
-import net.wanhack.model.creature.Player
 import android.graphics.Matrix
-import net.wanhack.model.region.Region
 import net.wanhack.model.region.Coordinate
 import net.wanhack.model.region.Size
+import net.wanhack.model.region.CellSet
 
 class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -38,17 +37,17 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         canvas!!
 
         game?.query { game ->
-            val player = game.player
-            if (player.cellOrNull != null) {
-                transformFocusToCell(canvas, game.cellInFocus, game.currentRegion.size)
-                for (cell in game.currentRegion)
-                    paintCell(canvas, cell, player)
+            val region = game.currentRegionOrNull
+            if (region != null) {
+                transformFocusToCell(canvas, game.cellInFocus, region.size)
+                for (cell in region)
+                    paintCell(canvas, cell, game.visibleCells)
             }
         }
     }
 
-    fun paintCell(canvas: Canvas, cell: Cell, player: Player) {
-        if (player.canSee(cell)) {
+    fun paintCell(canvas: Canvas, cell: Cell, visibleCells: CellSet) {
+        if (cell in visibleCells) {
             val creature = cell.creature
             if (creature != null) {
                 tileProvider.drawCreature(canvas, cell, creature)

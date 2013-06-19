@@ -50,11 +50,12 @@ import net.wanhack.utils.MaximumCounter
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.score.HighScoreService
 import net.wanhack.model.region.Coordinate
+import net.wanhack.model.region.CellSet
 
 class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
-    override val player = Player(config.name)
+    val player = Player(config.name)
     private val world = World(this)
 
     val objectFactory = ObjectFactory()
@@ -84,6 +85,12 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
             return infos.build()
         }
+
+    override val statistics: GameStatistics
+        get() = GameStatistics(player, globalClock.time)
+
+    override val visibleCells: CellSet
+        get() = player.visibleCells
 
     fun revealCurrentRegion() {
         currentRegion.reveal()
@@ -141,10 +148,10 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         regionClock.schedule(event.rate, event)
     }
 
-    override val maxDungeonLevel: Int
+    val maxDungeonLevel: Int
         get() = maximumDungeonLevel.value
 
-    override val dungeonLevel: Int
+    val dungeonLevel: Int
         get() = currentRegion.level
 
     override val cellInFocus: Coordinate
@@ -384,11 +391,11 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         }
     }
 
-    override val currentRegion: Region
-        get() = player.region
+    override val currentRegionOrNull: Region?
+        get() = player.cellOrNull?.region
 
-    override val score: Int
-        get() = player.experience
+    val currentRegion: Region
+        get() = player.region
 
     fun movePlayer(direction: Direction) = gameAction {
         val cell = player.cell.getCellTowards(direction)
@@ -499,7 +506,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
                         player.message("You feel rested!")
                         break
                     }
-                    player.getHungerLevel().hungry -> {
+                    player.hungerLevel.hungry -> {
                         player.message("You wake up feeling hungry.")
                         break
                     }
@@ -593,9 +600,6 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             HighScoreService().saveGameScore(this, reason)
         }
     }
-
-    override val time: Int
-        get() = globalClock.time
 
     private fun gameAction(callback: () -> Unit) {
         if (!over) {

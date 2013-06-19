@@ -85,11 +85,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         val candidates = MutableCellSet(region)
         var current = first
         while (true) {
-            val next = generatePathFrom(current, candidates, null, 3, false) ?: candidates.randomElementOrNull()
-            if (next != null)
-                current = next
-            else
-                break
+            current = generatePathFrom(current, candidates, null, 3, false) ?: candidates.randomElementOrNull() ?: break
         }
     }
 
@@ -151,11 +147,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
         var current = start
         while (true) {
             visited.add(current)
-            val next = generatePathFrom(current, null, visited, 3, true)
-            if (next != null)
-                current = next
-            else
-                break
+            current = generatePathFrom(current, null, visited, 3, true) ?: break
         }
     }
 

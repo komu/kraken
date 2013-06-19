@@ -22,7 +22,6 @@ import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import javax.swing.JComponent
-import net.wanhack.model.creature.Player
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
 import net.wanhack.desktop.game.tile.TileProvider
@@ -32,6 +31,7 @@ import net.wanhack.model.region.Coordinate
 import java.awt.event.MouseEvent
 import java.awt.event.MouseAdapter
 import java.awt.Point
+import net.wanhack.model.region.CellSet
 
 class RegionView: JComponent() {
 
@@ -70,11 +70,11 @@ class RegionView: JComponent() {
         paintBackground(g2)
 
         gameFacade?.query { game ->
-            if (game.player.cellOrNull != null) {
-                transformFocusToCell(g2, game.cellInFocus, game.currentRegion.size)
-                val player = game.player
-                for (cell in game.currentRegion)
-                    paintCell(g2, cell, player)
+            val region = game.currentRegionOrNull
+            if (region != null) {
+                transformFocusToCell(g2, game.cellInFocus, region.size)
+                for (cell in region)
+                    paintCell(g2, cell, game.visibleCells)
 
                 val selectedCell = game.selectedCell
                 if (selectedCell != null)
@@ -121,8 +121,8 @@ class RegionView: JComponent() {
         g2.fillRect(0, 0, getWidth(), getHeight())
     }
 
-    private fun paintCell(g2: Graphics2D, cell: Cell, player: Player) {
-        if (player.canSee(cell)) {
+    private fun paintCell(g2: Graphics2D, cell: Cell, visibleCells: CellSet) {
+        if (cell in visibleCells) {
             val creature = cell.creature
             if (creature != null) {
                 tileProvider.drawCreature(g2, cell, creature)

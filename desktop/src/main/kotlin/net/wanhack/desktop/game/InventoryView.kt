@@ -37,8 +37,7 @@ import net.wanhack.model.GameFacade
 import net.wanhack.model.item.ItemInfo
 
 class InventoryView : JPanel(BorderLayout()) {
-    private val list = JList<ItemInfo>()
-    var gameFacade: GameFacade? = null;
+    private val list = JList<ItemInfo>();
 
     {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -51,10 +50,8 @@ class InventoryView : JPanel(BorderLayout()) {
         add(scrollPane, BorderLayout.CENTER)
     }
 
-    fun update(game: ReadOnlyGame?) {
-        if (game == null) return
-
-        val infos = Vector<ItemInfo>(game.inventoryItems)
+    fun update(items: List<ItemInfo>) {
+        val infos = Vector<ItemInfo>(items)
 
         Collections.sort(infos)
 
