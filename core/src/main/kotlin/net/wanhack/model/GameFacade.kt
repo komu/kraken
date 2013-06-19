@@ -25,6 +25,7 @@ import kotlin.concurrent.withLock
 import net.wanhack.utils.relinquish
 import net.wanhack.utils.yield
 import java.util.concurrent.Executors
+import net.wanhack.model.region.Coordinate
 
 /**
  * All commands from UI to game go through this facade.
@@ -111,6 +112,10 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
 
     fun search() = gameAction {
         game.search()
+    }
+
+    fun focus(coordinate: Coordinate) = gameAction {
+        game.selectedCell = coordinate;
     }
 
     private fun gameAction(body: () -> Unit) {

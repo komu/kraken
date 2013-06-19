@@ -62,6 +62,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     val maximumDungeonLevel = MaximumCounter(0)
     var over = false;
 
+    override var selectedCell: Coordinate? = null;
+
     {
         player.sex = config.sex
 
@@ -146,10 +148,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         get() = currentRegion.level
 
     override val cellInFocus: Coordinate
-        get() = selectedCell ?: player.cell.coordinate
-
-    override val selectedCell: Coordinate?
-        get() = null
+        get() = player.cell.coordinate
 
     fun enterRegion(name: String, location: String) {
         val region = world.getRegion(name)
@@ -168,6 +167,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             addRegionEvent(CreateMonstersEvent(region))
             for (creature in region.creatures)
                 regionClock.schedule(creature.tickRate, creature)
+
+            selectedCell = null;
         }
     }
 

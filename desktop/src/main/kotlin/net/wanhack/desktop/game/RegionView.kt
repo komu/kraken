@@ -29,6 +29,9 @@ import net.wanhack.desktop.game.tile.TileProvider
 import net.wanhack.model.GameFacade
 import net.wanhack.model.region.Size
 import net.wanhack.model.region.Coordinate
+import java.awt.event.MouseEvent
+import java.awt.event.MouseAdapter
+import java.awt.Point
 
 class RegionView: JComponent() {
 
@@ -41,10 +44,23 @@ class RegionView: JComponent() {
 
     var translate = true
     private val tileProvider = TileProvider();
+    private var transform: AffineTransform? = null;
 
     {
         setBackground(Color.BLACK)
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+                gameFacade?.focus(toCoordinate(e.getPoint()));
+            }
+        });
     }
+
+    private fun toCoordinate(p: Point):Coordinate {
+        val p2 = Point();
+        transform?.inverseTransform(p, p2);
+        return Coordinate(p2.x / tileProvider.tileWidth, p2.y / tileProvider.tileHeight);
+    }
+
 
     override fun paint(g: Graphics) {
         val g2 = g as Graphics2D
@@ -68,7 +84,7 @@ class RegionView: JComponent() {
     }
 
     private fun transformFocusToCell(g2: Graphics2D, coordinate: Coordinate, regionSize: Size) {
-        val transform = getTransform(coordinate, regionSize)
+        transform = getTransform(coordinate, regionSize)
         if (transform != null)
             g2.transform(transform)
     }
