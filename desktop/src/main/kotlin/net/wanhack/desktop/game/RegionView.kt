@@ -72,7 +72,10 @@ class RegionView: JComponent() {
         gameFacade?.query { game ->
             val region = game.currentRegionOrNull
             if (region != null) {
-                transformFocusToCell(g2, game.cellInFocus, region.size)
+                transform = getTransform(game.cellInFocus, region.size)
+                if (transform != null)
+                    g2.transform(transform)
+
                 for (cell in region)
                     paintCell(g2, cell, game.visibleCells)
 
@@ -81,12 +84,6 @@ class RegionView: JComponent() {
                     tileProvider.drawSelection(g2, selectedCell)
             }
         }
-    }
-
-    private fun transformFocusToCell(g2: Graphics2D, coordinate: Coordinate, regionSize: Size) {
-        transform = getTransform(coordinate, regionSize)
-        if (transform != null)
-            g2.transform(transform)
     }
 
     private fun getTransform(coordinate: Coordinate, regionSize: Size): AffineTransform? {
