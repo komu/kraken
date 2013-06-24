@@ -50,7 +50,7 @@ class RegionView: JComponent() {
         setBackground(Color.BLACK)
         addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                gameFacade?.focus(toCoordinate(e.getPoint()));
+                gameFacade?.runTowards(toCoordinate(e.getPoint()));
             }
         });
     }

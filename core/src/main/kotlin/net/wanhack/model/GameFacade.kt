@@ -54,6 +54,10 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
         game.runTowards(direction)
     }
 
+    fun runTowards(c: Coordinate) = gameAction {
+        game.runTowards(c)
+    }
+
     fun movePlayerVertically(up: Boolean) = gameAction {
         game.movePlayerVertically(up)
     }

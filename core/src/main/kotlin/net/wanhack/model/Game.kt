@@ -419,6 +419,27 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             runInRoom(direction)
     }
 
+    fun runTowards(end: Coordinate) = gameAction {
+        val endCell = currentRegion.get(end)
+        val path = currentRegion.findPath(player.cell, endCell)
+
+        if (path != null) {
+            val cells = path.drop(1)
+
+            for(cell in cells) {
+                //selectedCell = cell.coordinate
+                if (!cell.canMoveInto(player.corporeal))
+                    break;
+
+                cell.enter(player)
+                tick()
+
+                if (cell.isInteresting)
+                    break;
+            }
+        }
+    }
+
     private fun isInCorridor(cell: Cell) =
         cell.countPassableMainNeighbours() == 2 && !cell.isRoomCorner()
 
