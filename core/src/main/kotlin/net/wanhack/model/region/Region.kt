@@ -59,7 +59,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     val creatures: Iterator<Creature>
         get() = cells.iterator().flatMap { it.creature.toOption().iterator() }
 
-    public fun findPath(start: Cell, goal: Cell): Iterable<Cell>? =
+    fun findPath(start: Cell, goal: Cell): Iterable<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)
 
     fun get(c: Coordinate) =
