@@ -46,5 +46,5 @@ enum class CellType(val passable: Boolean) {
         get() = isFloor || isStairs || this == OPEN_DOOR
 
     fun canMoveInto(corporeal: Boolean) =
-        !corporeal || isFloor || isStairs || this == OPEN_DOOR
+        this != UNDIGGABLE_WALL && (!corporeal || isFloor || isStairs || this == OPEN_DOOR)
 }
