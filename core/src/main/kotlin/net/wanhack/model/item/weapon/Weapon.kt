@@ -18,8 +18,21 @@ package net.wanhack.model.item.weapon
 
 import net.wanhack.model.common.Attack
 import net.wanhack.model.item.Item
+import net.wanhack.model.item.Equipable
+import net.wanhack.model.creature.Player
 
-public abstract class Weapon(name: String): Item(name), Attack {
+public abstract class Weapon(name: String): Item(name), Attack, Equipable {
 
+    override fun equip(player: Player): Boolean {
+        val oldWeapon = player.wieldedWeapon
+        player.wieldedWeapon = this
+        player.inventory.remove(this)
+        if (oldWeapon != null) {
+            player.message("You were wielding %s.", oldWeapon.title)
+            player.inventory.add(oldWeapon)
+        }
 
+        player.message("You wield %s.", title)
+        return true
+    }
 }

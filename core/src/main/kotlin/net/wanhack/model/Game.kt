@@ -51,6 +51,7 @@ import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.score.HighScoreService
 import net.wanhack.model.region.Coordinate
 import net.wanhack.model.region.CellSet
+import net.wanhack.model.item.Equipable
 
 class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
@@ -284,33 +285,18 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun wield() = gameAction {
-        val oldWeapon = player.wieldedWeapon
         val weapon = console.selectItem("Select weapon to wield", player.inventory.byType(javaClass<Weapon>()))
-        if (weapon != null && weapon != oldWeapon) {
-            player.wieldedWeapon = weapon
-            player.inventory.remove(weapon)
-            if (oldWeapon != null) {
-                player.message("You were wielding %s.", oldWeapon.title)
-                player.inventory.add(oldWeapon)
-            }
-
-            player.message("You wield %s.", weapon.title)
-            tick()
+        if (weapon != null) {
+            if (weapon.equip(player))
+                tick()
         }
     }
 
     fun wear() = gameAction {
         val armor = console.selectItem("Select armor to wear", player.inventory.byType(javaClass<Armor>()))
         if (armor != null ) {
-            val oldArmor = player.replaceArmor(armor)
-            player.inventory.remove(armor)
-            if (oldArmor != null) {
-                player.message("You were wearing %s.", oldArmor.title)
-                player.inventory.add(oldArmor)
-            }
-
-            player.message("You are now wearing %s.", armor.title)
-            tick()
+            if (armor.equip(player))
+                tick()
         }
     }
 
