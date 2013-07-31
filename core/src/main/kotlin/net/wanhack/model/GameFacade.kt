@@ -74,12 +74,8 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
         game.drop(item)
     }
 
-    fun wield() = gameAction {
-        game.wield()
-    }
-
-    fun wear() = gameAction {
-        game.wear()
+    fun equip() = gameAction {
+        game.equip()
     }
 
     fun rest(maxTurns: Int) = gameAction {

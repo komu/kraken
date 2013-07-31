@@ -8,10 +8,8 @@
           android:title="Move Down" />
     <item android:id="@+id/skipTurn"
           android:title="Skip Turn" />
-    <item android:id="@+id/wield"
-          android:title="Wield Weapon" />
-    <item android:id="@+id/wear"
-          android:title="Wear Armor" />
+    <item android:id="@+id/equip"
+          android:title="Equip" />
     <item android:id="@+id/rest"
           android:title="Rest" />
     <item android:id="@+id/talk"

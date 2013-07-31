@@ -284,18 +284,10 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         }
     }
 
-    fun wield() = gameAction {
-        val weapon = console.selectItem("Select weapon to wield", player.inventory.byType(javaClass<Weapon>()))
-        if (weapon != null) {
-            if (weapon.equip(player))
-                tick()
-        }
-    }
-
-    fun wear() = gameAction {
-        val armor = console.selectItem("Select armor to wear", player.inventory.byType(javaClass<Armor>()))
-        if (armor != null ) {
-            if (armor.equip(player))
+    fun equip() = gameAction {
+        val item = console.selectItem("Select item to equip", player.inventory.byType(javaClass<Equipable>()))
+        if (item != null) {
+            if (item.equip(player))
                 tick()
         }
     }

@@ -36,8 +36,7 @@ class GameActionSet {
         }
 
     {
-        add("Wield Weapon", VK_W, "W")      { it.wield() }
-        add("Wear Armor", VK_A, "shift W")  { it.wear() }
+        add("Equip", VK_W, "shift E")       { it.equip() }
         add("Rest", VK_R, "R")              { it.rest(-1) }
         add("Talk", VK_T, "T")              { it.talk() }
         add("Open Door", VK_O, "O")         { it.openDoor() }
