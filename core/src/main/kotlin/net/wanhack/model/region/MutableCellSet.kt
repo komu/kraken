@@ -16,10 +16,8 @@
 
 package net.wanhack.model.region
 
-import java.util.AbstractSet
-import java.util.BitSet
-import java.util.NoSuchElementException
 import net.wanhack.utils.RandomUtils
+import java.util.*
 
 class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
 
@@ -43,7 +41,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
     private fun point(index: Int): Cell =
         region[index % region.width, index / region.width]
 
-    fun get(index: Int): Cell {
+    operator fun get(index: Int): Cell {
         var i = index
 
         require(i >= 0)
@@ -70,7 +68,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         return !old
     }
 
-    override fun remove(o: Any?) = o is Cell && remove(o.coordinate.x, o.coordinate.y)
+    override fun remove(element: Cell) = remove(element.coordinate.x, element.coordinate.y)
 
     fun remove(x: Int, y: Int): Boolean {
         val index = index(x, y)
@@ -83,12 +81,13 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         cells.clear()
     }
 
-    override fun contains(o: Any?) = o is Cell && contains(o.coordinate.x, o.coordinate.y)
+    override fun contains(element: Cell) = contains(element.coordinate.x, element.coordinate.y)
 
     override fun contains(x: Int, y: Int) =
         x >= 0 && x < region.width && y >= 0 && y < region.height && cells.get(index(x, y))
 
-    override fun size() = cells.cardinality()
+    override val size: Int
+        get() = cells.cardinality()
 
     override fun iterator(): MutableIterator<Cell> = MyIterator()
 

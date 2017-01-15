@@ -16,8 +16,8 @@
 
 package net.wanhack.definitions
 
-import net.wanhack.utils.exp.Expression
 import net.wanhack.model.creature.Creature
+import net.wanhack.utils.exp.Expression
 
 class CreatureDefinition<T : Creature>(val name: String, override val level: Int, val createCreature: () -> T) : ObjectDefinition<T>() {
 
@@ -27,18 +27,18 @@ class CreatureDefinition<T : Creature>(val name: String, override val level: Int
         get() = true
 
     fun createSwarm(): Collection<T> {
-        val swarm = listBuilder<T>()
+        val swarm = mutableListOf<T>()
 
-        swarmSize.evaluate().times {
+        repeat(swarmSize.evaluate()) {
             swarm.add(create())
         }
 
-        return swarm.build()
+        return swarm
     }
 
     override fun create(): T {
         return createCreature()
     }
 
-    fun toString() = "CreatureDefinition [name=$name]"
+    override fun toString() = "CreatureDefinition [name=$name]"
 }

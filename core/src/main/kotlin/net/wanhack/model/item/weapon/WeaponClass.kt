@@ -21,22 +21,22 @@ import net.wanhack.model.skill.Proficiency.BASIC
 import net.wanhack.model.skill.Proficiency.UNSKILLED
 
 enum class WeaponClass(val defaultProficiency: Proficiency) {
-    NOT_WEAPON : WeaponClass(UNSKILLED)
-    NATURAL : WeaponClass(BASIC)
-    KNIFE : WeaponClass(UNSKILLED)
-    SWORD : WeaponClass(UNSKILLED)
-    AXE : WeaponClass(UNSKILLED)
-    BLUNT : WeaponClass(UNSKILLED)
-    JAVELIN : WeaponClass(UNSKILLED)
-    SPEAR : WeaponClass(UNSKILLED)
-    LAUNCHER : WeaponClass(UNSKILLED)
-    PROJECTILE : WeaponClass(UNSKILLED)
+    NOT_WEAPON(UNSKILLED),
+    NATURAL(BASIC),
+    KNIFE(UNSKILLED),
+    SWORD(UNSKILLED),
+    AXE(UNSKILLED),
+    BLUNT(UNSKILLED),
+    JAVELIN(UNSKILLED),
+    SPEAR(UNSKILLED),
+    LAUNCHER(UNSKILLED),
+    PROJECTILE(UNSKILLED);
 
-    fun toString() =
+    override fun toString() =
         when(this) {
             BLUNT       -> "blunt weapon"
             LAUNCHER    -> "missile launcher"
-            else        -> name().toLowerCase()
+            else        -> name.toLowerCase()
         }
 
     val skillLevelIncreaseMessage: String

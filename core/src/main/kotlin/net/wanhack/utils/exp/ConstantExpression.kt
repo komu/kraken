@@ -20,5 +20,5 @@ class ConstantExpression(val value: Int): Expression() {
 
     override fun evaluate(env: Map<String, Int>) = value
 
-    fun toString() = value.toString()
+    override fun toString() = value.toString()
 }

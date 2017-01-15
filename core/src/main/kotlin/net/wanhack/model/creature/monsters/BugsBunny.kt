@@ -16,17 +16,17 @@
 
 package net.wanhack.model.creature.monsters
 
+import net.wanhack.common.Direction
 import net.wanhack.model.Game
-import net.wanhack.model.common.Direction
+import net.wanhack.model.common.Color
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Monster
-import net.wanhack.utils.RandomUtils
 import net.wanhack.model.item.weapon.NaturalWeapon
-import net.wanhack.model.common.Color
+import net.wanhack.utils.RandomUtils
 
 class BugsBunny: Monster("Bugs Bunny") {
 
-    {
+    init {
         level = 20
         hitPoints = RandomUtils.randomInt(100, 200)
         letter = 'r'
@@ -47,7 +47,7 @@ class BugsBunny: Monster("Bugs Bunny") {
         moveRandomly()
 
         if (seesCreature(game.player)) {
-            val direction = RandomUtils.randomEnum(javaClass<Direction>())
+            val direction = RandomUtils.randomEnum(Direction::class.java)
             game.movePlayer(direction)
         }
     }

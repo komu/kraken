@@ -72,7 +72,7 @@ class ExpressionLexer(val str: String) {
             pos++
     }
 
-    class object {
+    companion object {
         private fun String.allDigits() =
             this.all { Character.isDigit(it) }
 

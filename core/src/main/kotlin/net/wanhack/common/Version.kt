@@ -21,7 +21,7 @@ import net.wanhack.service.resources.ResourceLoader
 
 class Version(val version: String, val revision: String) {
 
-    class object {
+    companion object {
         val instance = ResourceLoader.openStream("/version.properties").use { inputStream ->
             val properties = Properties()
             properties.load(inputStream)

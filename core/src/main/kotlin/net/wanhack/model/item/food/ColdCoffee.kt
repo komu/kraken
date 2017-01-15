@@ -20,7 +20,7 @@ import net.wanhack.model.common.Color
 
 class ColdCoffee: Food("potion of cold coffee") {
 
-    {
+    init {
         letter = '!'
         color = Color.BLACK
     }

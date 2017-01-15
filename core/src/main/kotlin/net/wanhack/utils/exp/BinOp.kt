@@ -17,23 +17,23 @@
 package net.wanhack.utils.exp
 
 enum class BinOp(val op: String) {
-    ADD : BinOp("+") {
+    ADD("+") {
         override fun evaluate(lhs: Int, rhs: Int) = lhs + rhs
-    }
-    SUB : BinOp("-") {
+    },
+    SUB("-") {
         override fun evaluate(lhs: Int, rhs: Int) = lhs - rhs
-    }
-    MUL : BinOp("*") {
+    },
+    MUL("*") {
         override fun evaluate(lhs: Int, rhs: Int) = lhs * rhs
-    }
-    DIV : BinOp("/") {
+    },
+    DIV("/") {
         override fun evaluate(lhs: Int, rhs: Int) = lhs / rhs
-    }
-    MOD : BinOp("%") {
+    },
+    MOD("%") {
         override fun evaluate(lhs: Int, rhs: Int) = lhs % rhs
-    }
+    };
 
     abstract fun evaluate(lhs: Int, rhs: Int): Int
 
-    fun toString() = op
+    override fun toString() = op
 }

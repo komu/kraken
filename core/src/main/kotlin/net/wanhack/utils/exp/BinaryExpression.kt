@@ -21,5 +21,5 @@ class BinaryExpression(val op: BinOp, val lhs: Expression, val rhs: Expression):
     override fun evaluate(env: Map<String, Int>) =
         op.evaluate(lhs.evaluate(env), rhs.evaluate(env))
 
-    fun toString() = "($lhs $op $rhs)"
+    override fun toString() = "($lhs $op $rhs)"
 }

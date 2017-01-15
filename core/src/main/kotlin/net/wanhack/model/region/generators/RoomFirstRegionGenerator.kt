@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package net.wanhack.service.region.generators
+package net.wanhack.model.region.generators
 
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.CellType
-import net.wanhack.model.region.Door
-import net.wanhack.model.region.Region
-import net.wanhack.model.region.World
+import net.wanhack.model.region.*
+import net.wanhack.service.region.generators.CorridorPathSearcher
+import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.utils.Probability
-import net.wanhack.service.region.generators.RoomFirstRegionGenerator.RegionParameters
+import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.collections.randomElement
 import net.wanhack.utils.logger
-import net.wanhack.utils.RandomUtils
-import net.wanhack.model.region.Coordinate
 
 class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
     private val region = Region(world, name, level, rp.width, rp.height)
@@ -45,13 +41,13 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     }
 
     private fun createRooms(): List<Room> {
-        val rooms = listBuilder<Room>()
+        val rooms = mutableListOf<Room>()
 
-        RandomUtils.randomInt(rp.minRooms, rp.maxRooms).times {
+        repeat(RandomUtils.randomInt(rp.minRooms, rp.maxRooms)) {
             rooms.add(createRoom())
         }
 
-        return rooms.build()
+        return rooms
     }
 
     private fun createRoom(): Room {
@@ -130,7 +126,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         }
     }
 
-    private fun random<T>(items: List<T>, invalid: T): T {
+    private fun <T> random(items: List<T>, invalid: T): T {
         if (items.size == 1 && invalid in items)
             throw IllegalArgumentException("can't pick a random item without invalid from set consisting only invalid")
 
@@ -141,7 +137,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         return result
     }
 
-    fun addStairsUpAndDown(rooms: List<Room>) {
+    private fun addStairsUpAndDown(rooms: List<Room>) {
         val stairsUpRoom = rooms.randomElement()
         val empty = region.getRoomFloorCells()
         if (empty.size < 2)
@@ -177,7 +173,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     }
 
     private class Room(val region: Region, val x: Int, val y: Int, val w: Int, val h: Int) {
-        fun contains(c: Coordinate) = c.x >= x && c.x < x + w && c.y >= y && c.y < y + h
+        operator fun contains(c: Coordinate) = c.x >= x && c.x < x + w && c.y >= y && c.y < y + h
 
         fun randomCell(): Cell {
             val xx = x + 1 + RandomUtils.randomInt(w - 2)
@@ -216,7 +212,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         }
     }
 
-    class object : RegionGenerator {
+    companion object : RegionGenerator {
         override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region =
             RoomFirstRegionGenerator(world, name, level, regionParameters(level), up, down).generate()
 

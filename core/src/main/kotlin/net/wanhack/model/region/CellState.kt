@@ -18,7 +18,7 @@ package net.wanhack.model.region
 
 import net.wanhack.model.creature.Player
 
-trait CellState {
+interface CellState {
     val cellType: CellType
     fun search(searcher: Player): Boolean
 }

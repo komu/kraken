@@ -16,24 +16,23 @@
 
 package net.wanhack.utils
 
-import java.util.Collections
-import java.util.Random
 import net.wanhack.utils.collections.randomElement
+import java.util.*
 
 object RandomUtils {
 
     private val random = Random()
 
-    fun randomEnum<T: Enum<T>>(cl: Class<T>): T =
+    fun <T: Enum<T>> randomEnum(cl: Class<T>): T =
         cl.getEnumConstants()!!.toList().randomElement()
 
-    fun randomItem<T>(vararg items: T): T =
+    fun <T> randomItem(vararg items: T): T =
         items.randomElement()
 
     fun rollDie(sides: Int, times: Int = 1): Int {
         var total = 0
 
-        times.times {
+        repeat(times) {
             total += 1 + random.nextInt(sides)
         }
 

@@ -16,10 +16,10 @@
 
 package net.wanhack.model
 
-import java.lang.Math.max
-import java.util.PriorityQueue
 import net.wanhack.model.common.Actor
 import net.wanhack.utils.logger
+import java.lang.Math.max
+import java.util.*
 
 class Clock {
     var time = 0
@@ -33,7 +33,7 @@ class Clock {
     }
 
     private fun tick(game: Game, maxTime: Int) {
-        while (!actors.empty && actors.element().nextTick <= maxTime) {
+        while (!actors.isEmpty() && actors.element().nextTick <= maxTime) {
             val actor = actors.remove()
             time = max(time, actor.nextTick)
             if (!actor.destroyed) {
@@ -54,11 +54,11 @@ class Clock {
         actors.add(ActorInfo(actor, time + ticks))
     }
 
-    fun toString() =
+    override fun toString() =
         "Clock [time=$time, objects=$actors]"
 
-    class object {
-        private val log = javaClass<Clock>().logger()
+    companion object {
+        private val log = Clock::class.java.logger()
 
         private class ActorInfo(private val actor: Actor, var nextTick: Int): Comparable<ActorInfo> {
 
@@ -74,7 +74,7 @@ class Clock {
             val destroyed: Boolean
                 get() = actor.destroyed
 
-            fun toString() =
+            override fun toString() =
                 "($nextTick: $actor)"
 
             override fun compareTo(other: ActorInfo) =

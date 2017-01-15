@@ -17,17 +17,17 @@
 package net.wanhack.utils.exp
 
 enum class TokenType(val s: String) {
-    NUMBER : TokenType("number")
-    IDENTIFIER : TokenType("identifier")
-    LPAR : TokenType("(")
-    RPAR : TokenType(")")
-    PLUS : TokenType("+")
-    MINUS : TokenType("-")
-    MUL : TokenType("*")
-    DIV : TokenType("/")
-    MOD : TokenType("%")
-    COMMA : TokenType(",")
-    EOF : TokenType("eof")
+    NUMBER("number"),
+    IDENTIFIER("identifier"),
+    LPAR("("),
+    RPAR(")"),
+    PLUS("+"),
+    MINUS("-"),
+    MUL("*"),
+    DIV("/"),
+    MOD("%"),
+    COMMA(","),
+    EOF("eof");
 
-    fun toString() = s
+    override fun toString() = s
 }

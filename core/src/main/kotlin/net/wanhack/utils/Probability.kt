@@ -18,13 +18,13 @@ package net.wanhack.utils
 
 class Probability(private val percentage: Int) {
 
-    {
+    init {
         require(percentage >= 0 && percentage <= 100)
     }
 
     fun check() = check(percentage)
 
-    class object {
+    companion object {
         fun check(percentage: Int): Boolean {
             require(percentage >= 0 && percentage <= 100)
             return percentage > RandomUtils.randomInt(100)

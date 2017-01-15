@@ -21,7 +21,7 @@ import net.wanhack.model.creature.Player
 
 class WaferThinMint: Food("wafer-thin mint") {
 
-    {
+    init {
         weight = 20
     }
 

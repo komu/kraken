@@ -29,7 +29,7 @@ open class NaturalWeapon(val verb: String, val toHit: Expression, val damage: Ex
 
     override fun getDamage(target: Creature) = damage.evaluate()
 
-    fun toString() = "NaturalWeapon [verb=$verb, toHit=$toHit, damage=$damage]"
+    override fun toString() = "NaturalWeapon [verb=$verb, toHit=$toHit, damage=$damage]"
 }
 
 fun NaturalWeapon(verb: String, toHit: String, damage: String) = NaturalWeapon(verb, Expression.parse(toHit), Expression.parse(damage))

@@ -23,6 +23,6 @@ class ApplyExpression(val function: String, val args: List<Expression>): Express
         return func(args.map { it.evaluate(env) })
     }
 
-    fun toString() =
-        function + args.makeString(", ", "(", ")")
+    override fun toString() =
+        function + args.joinToString(", ", "(", ")")
 }

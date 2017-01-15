@@ -16,15 +16,15 @@
 
 package net.wanhack.model
 
-import java.util.HashSet
 import net.wanhack.model.item.Item
 import net.wanhack.utils.collections.filterByType
+import java.util.*
 
 class Inventory {
 
     val items = HashSet<Item>()
 
-    fun byType<T>(cl: Class<T>) = items.filterByType(cl)
+    fun <T> byType(cl: Class<T>) = items.filterByType(cl)
 
     fun add(item: Item) {
         items.add(item)

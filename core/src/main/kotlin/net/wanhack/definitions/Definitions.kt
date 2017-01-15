@@ -27,11 +27,11 @@ abstract class Definitions {
     val itemDefinitions = ArrayList<ItemDefinition<*>>()
     val creatureDefinitions = ArrayList<CreatureDefinition<*>>()
 
-    fun item<T : Item>(name: String,
-                       level: Int? = null,
-                       probability: Int? = null,
-                       maximumInstances: Int? = null,
-                       create: () -> T): ItemDefinition<T> {
+    fun <T : Item> item(name: String,
+                        level: Int? = null,
+                        probability: Int? = null,
+                        maximumInstances: Int? = null,
+                        create: () -> T): ItemDefinition<T> {
         val def = ItemDefinition<T>(name, create)
 
         if (level != null)
@@ -47,11 +47,11 @@ abstract class Definitions {
         return def
     }
 
-    fun creature<T : Creature>(name: String,
-                               level: Int,
-                               probability: Int? = null,
-                               swarmSize: Expression? = null,
-                               create: () -> T): CreatureDefinition<T> {
+    fun <T : Creature> creature(name: String,
+                                level: Int,
+                                probability: Int? = null,
+                                swarmSize: Expression? = null,
+                                create: () -> T): CreatureDefinition<T> {
         val def = CreatureDefinition<T>(name, level, create)
 
         if (probability != null)

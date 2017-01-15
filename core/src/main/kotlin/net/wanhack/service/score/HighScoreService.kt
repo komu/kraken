@@ -17,15 +17,15 @@
 package net.wanhack.service.score
 
 import net.wanhack.common.Version
+import net.wanhack.model.Game
+import net.wanhack.utils.logger
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 import java.security.AccessControlException
 import java.util.concurrent.Executors
-import net.wanhack.utils.logger
 import java.util.logging.Level
-import net.wanhack.model.Game
 
 class HighScoreService {
     private val log = javaClass.logger()
@@ -53,17 +53,17 @@ class HighScoreService {
         try {
             val url = URL("http://wanhack.net/submit-score")
             val conn = url.openConnection() as HttpURLConnection
-            conn.setAllowUserInteraction(false)
-            conn.setRequestMethod("POST")
-            conn.setDoInput(true)
-            conn.setDoOutput(true)
-            conn.setUseCaches(false)
+            conn.allowUserInteraction = false
+            conn.requestMethod = "POST"
+            conn.doInput = true
+            conn.doOutput = true
+            conn.useCaches = false
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-            conn.getOutputStream()!!.use { out ->
-                out.writer("ISO-8859-1").write(parameters.toString())
+            conn.outputStream!!.use { out ->
+                out.writer(Charsets.ISO_8859_1).write(parameters.toString())
             }
 
-            log.fine("response: " + conn.getResponseMessage())
+            log.fine("response: " + conn.responseMessage)
             conn.disconnect()
 
         } catch (e: IOException) {
@@ -77,15 +77,15 @@ class HighScoreService {
         private val sb = StringBuffer()
 
         fun add(name: String, value: Any) {
-            if (sb.length > 0)
+            if (sb.isNotEmpty())
                 sb.append('&')
 
             sb.append(urlEncode(name)).append('=').append(urlEncode(value.toString()))
         }
 
-        fun toString() = sb.toString()
+        override fun toString() = sb.toString()
 
-        class object {
+        companion object {
             fun urlEncode(s: String) = URLEncoder.encode(s, "UTF-8")
         }
     }

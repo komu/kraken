@@ -26,5 +26,5 @@ class MaximumCounter<T : Comparable<T>>(private var current: T) {
             current = newValue
     }
 
-    fun toString() = value.toString()
+    override fun toString() = value.toString()
 }

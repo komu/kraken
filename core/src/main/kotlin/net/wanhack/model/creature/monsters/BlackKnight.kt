@@ -16,16 +16,16 @@
 
 package net.wanhack.model.creature.monsters
 
+import net.wanhack.definitions.Weapons
 import net.wanhack.model.Game
+import net.wanhack.model.common.Color
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Monster
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.region.Cell
-import net.wanhack.utils.collections.shuffled
 import net.wanhack.utils.collections.randomElement
-import net.wanhack.definitions.Weapons
-import net.wanhack.model.common.Color
+import net.wanhack.utils.collections.shuffled
 
 class BlackKnight: Monster("The Black Knight") {
 
@@ -40,7 +40,7 @@ class BlackKnight: Monster("The Black Knight") {
             maxHitPoints = Math.max(maxHitPoints, hitPoints)
         }
 
-    {
+    init {
         level = 30
         letter = 'p'
         color = Color.BLACK
@@ -131,7 +131,7 @@ class BlackKnight: Monster("The Black Knight") {
         target.items.add(item)
     }
 
-    class object {
+    companion object {
         private val HEALTHY_YELLS = listOf("None shall pass.", "I move for no man.", "Aaaagh!")
         private val ONE_ARMED_YELLS = listOf("Tis but a scratch.", "I've had worse.", "Come on, you pansy!")
         private val ARMLESS_YELLS = listOf("Come on, then.", "Have at you!")

@@ -16,12 +16,13 @@
 
 package net.wanhack.model.common
 
+import net.wanhack.common.Direction
 import net.wanhack.model.item.Item
 
-trait Console {
+interface Console {
     fun message(message: String)
     fun ask(question: String): Boolean
-    fun selectItem<T: Item>(message: String, items: Collection<T>): T?
-    fun selectItems<T : Item>(message: String, items: Collection<T>): Set<T>
+    fun <T: Item> selectItem(message: String, items: Collection<T>): T?
+    fun <T : Item> selectItems(message: String, items: Collection<T>): Set<T>
     fun selectDirection(): Direction?
 }

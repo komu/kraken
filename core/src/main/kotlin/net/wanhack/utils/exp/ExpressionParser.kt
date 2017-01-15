@@ -16,9 +16,9 @@
 
 package net.wanhack.utils.exp
 
-import java.util.Collections
-import java.util.regex.Pattern
 import net.wanhack.utils.exp.TokenType.*
+import java.util.*
+import java.util.regex.Pattern
 
 open class ExpressionParser(val expression: String) {
 
@@ -118,12 +118,12 @@ open class ExpressionParser(val expression: String) {
      *                 | exp, explist
      */
     private fun parseNonEmptyExpList(): List<Expression> {
-        val result = listBuilder<Expression>()
+        val result = mutableListOf<Expression>()
         while (true) {
             result.add(parseExpression())
             if (nextToken() != TokenType.COMMA) {
                 lexer.pushBack()
-                return result.build()
+                return result
             }
         }
     }
@@ -151,7 +151,7 @@ open class ExpressionParser(val expression: String) {
     private fun nextToken(): TokenType =
         lexer.next()
 
-    class object {
+    companion object {
         private val DIE_PATTERN = Pattern.compile("(\\d*)d(\\d+)")
 
         private fun parseVariableOrDie(token: String): Expression {

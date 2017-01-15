@@ -16,8 +16,8 @@
 
 package net.wanhack.utils.collections
 
-import java.util.ArrayList
 import net.wanhack.utils.RandomUtils
+import java.util.*
 
 fun <T> MutableCollection<T>.addAll(it: Iterator<T>) {
     for (x in it)
@@ -36,14 +36,8 @@ fun <T> List<T>.randomElement(): T =
 fun <T> Array<T>.randomElement(): T =
     this[RandomUtils.randomInt(this.size)]
 
-fun <T> Collection<*>.filterByType(cl: Class<T>): List<T> {
-    val result = listBuilder<T>()
-    for (x in this)
-        if (cl.isInstance(x))
-            result.add(cl.cast(x)!!)
-
-    return result.build()
-}
+fun <T> Collection<*>.filterByType(cl: Class<T>): List<T> =
+    this.filterIsInstance(cl)
 
 fun <T : Any> Collection<T>.unique(): T? =
     if (size == 1) first() else null

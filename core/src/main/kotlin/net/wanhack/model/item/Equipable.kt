@@ -2,7 +2,7 @@ package net.wanhack.model.item
 
 import net.wanhack.model.creature.Player
 
-trait Equipable : Item {
+abstract class Equipable(title: String) : Item(title) {
 
-    fun equip(player: Player): Boolean
+    abstract fun equip(player: Player): Boolean
 }

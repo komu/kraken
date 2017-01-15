@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':core')
+    compileOnly "com.google.android:android:4.0.1.2"
+}

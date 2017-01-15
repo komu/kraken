@@ -17,7 +17,6 @@
 package net.wanhack.model.region
 
 import java.util.*
-import kotlin.support.AbstractIterator
 
 open class ShortestPathSearcher(val region: Region) {
 
@@ -35,7 +34,7 @@ open class ShortestPathSearcher(val region: Region) {
         startNode.heuristic = estimateCost(goal, start)
         openHeap.add(startNode)
 
-        while (!openHeap.empty) {
+        while (!openHeap.isEmpty()) {
             val current = openHeap.remove()
             if (current.cell == start)
                 return current
@@ -89,15 +88,15 @@ open class ShortestPathSearcher(val region: Region) {
             }
         }
 
-        fun successors(allowSubDirections: Boolean): Iterator<Node> {
+        fun successors(allowSubDirections: Boolean): Sequence<Node> {
             val adjacentCells = if (allowSubDirections) cell.adjacentCells else cell.adjacentCellsInMainDirections
-            val enterable = adjacentCells.iterator().filter { it != parent?.cell && canEnter(it) }
+            val enterable = adjacentCells.asSequence().filter { it != parent?.cell && canEnter(it) }
 
             return enterable.map { Node(it, this, cost + costToEnter(it)) }
         }
 
         override fun compareTo(other: Node) = heuristic - other.heuristic
 
-        fun toString() = cell.toString()
+        override fun toString() = cell.toString()
     }
 }

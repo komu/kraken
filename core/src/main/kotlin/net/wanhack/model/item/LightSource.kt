@@ -20,7 +20,7 @@ import net.wanhack.model.common.Color
 
 open class LightSource(name: String): Item(name) {
 
-    {
+    init {
         letter = '~'
         color = Color.YELLOW
     }

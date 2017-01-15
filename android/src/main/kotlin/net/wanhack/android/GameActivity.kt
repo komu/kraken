@@ -16,6 +16,7 @@
 
 package net.wanhack.android
 
+import android.R
 import java.lang.Math.abs
 import android.app.Activity
 import android.os.Bundle
@@ -23,7 +24,7 @@ import net.wanhack.model.GameFacade
 import net.wanhack.model.GameConfiguration
 import net.wanhack.model.common.Console
 import net.wanhack.model.item.Item
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import android.util.Log
 import android.view.ContextMenu
 import android.view.View
@@ -31,7 +32,7 @@ import android.view.MenuItem
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import net.wanhack.model.common.Directions
+import net.wanhack.common.Directions
 import java.util.concurrent.CountDownLatch
 import android.app.AlertDialog
 import java.util.HashSet

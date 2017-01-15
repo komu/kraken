@@ -27,7 +27,7 @@ data class Color(val r: Int, val g: Int, val b: Int) {
               max((0.7*g).toInt(), 0),
               max((0.7*b).toInt(), 0))
 
-    class object {
+    companion object {
         val ALUMINIUM       = Color(220, 230, 250)
         val BLACK           = Color(0, 0, 0)
         val BLACKISH        = Color(10, 10, 10)

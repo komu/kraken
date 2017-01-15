@@ -22,7 +22,7 @@ import java.awt.event.KeyEvent.*
 import javax.swing.*
 import kotlin.swing.*
 import net.wanhack.common.Version
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import net.wanhack.desktop.common.ErrorDialog
 import net.wanhack.desktop.console.ConsoleView
 import net.wanhack.desktop.game.action.GameActionSet

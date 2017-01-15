@@ -17,22 +17,22 @@
 package net.wanhack.model.creature.pets
 
 import net.wanhack.model.Game
+import net.wanhack.model.common.Attack
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.region.Cell
 import net.wanhack.utils.Probability
-import net.wanhack.model.common.Attack
 
 abstract class Pet(name: String): Creature(name) {
 
     private var lastKnownPlayerPosition: Cell? = null
     private var naturalWeapon = NaturalWeapon("bite", "1", "randint(3, 7)");
 
-    {
+    init {
         friendly = true
     }
 
-    protected override fun onTick(game: Game) {
+    override fun onTick(game: Game) {
         val player = game.player
 
         val enemy = adjacentCreatures.find { !it.isPlayer }

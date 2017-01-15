@@ -16,10 +16,13 @@
 
 package net.wanhack.model
 
-import java.util.Calendar
+import net.wanhack.common.Direction
+import net.wanhack.definitions.Creatures
+import net.wanhack.definitions.Items
+import net.wanhack.definitions.Weapons
 import net.wanhack.model.GameConfiguration.PetType
 import net.wanhack.model.common.Attack
-import net.wanhack.model.common.Direction
+import net.wanhack.model.common.Console
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.creature.pets.Doris
@@ -29,29 +32,15 @@ import net.wanhack.model.events.GameEvent
 import net.wanhack.model.events.global.HungerEvent
 import net.wanhack.model.events.global.RegainHitPointsEvent
 import net.wanhack.model.events.region.CreateMonstersEvent
+import net.wanhack.model.item.Equipable
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.ItemInfo
-import net.wanhack.model.item.armor.Armor
 import net.wanhack.model.item.food.Food
-import net.wanhack.model.item.weapon.Weapon
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.CellType
-import net.wanhack.model.region.Region
-import net.wanhack.model.region.World
-import net.wanhack.utils.RandomUtils
-import net.wanhack.utils.isFriday
-import net.wanhack.utils.isFestivus
-import net.wanhack.utils.logger
-import net.wanhack.definitions.Creatures
-import net.wanhack.definitions.Items
-import net.wanhack.definitions.Weapons
-import net.wanhack.model.common.Console
-import net.wanhack.utils.MaximumCounter
+import net.wanhack.model.region.*
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.score.HighScoreService
-import net.wanhack.model.region.Coordinate
-import net.wanhack.model.region.CellSet
-import net.wanhack.model.item.Equipable
+import net.wanhack.utils.*
+import java.util.*
 
 class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
@@ -62,11 +51,11 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     val objectFactory = ObjectFactory()
 
     val maximumDungeonLevel = MaximumCounter(0)
-    var over = false;
+    var over = false
 
-    override var selectedCell: Coordinate? = null;
+    override var selectedCell: Coordinate? = null
 
-    {
+    init {
         player.sex = config.sex
 
         objectFactory.addDefinitions(Weapons)
@@ -76,7 +65,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     override val inventoryItems: List<ItemInfo>
         get() {
-            val infos = listBuilder<ItemInfo>()
+            val infos = mutableListOf<ItemInfo>()
 
             for (item in player.activatedItems)
                 infos.add(ItemInfo(item.title, item.description, item.letter, true))
@@ -84,7 +73,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             for (item in player.inventory.items)
                 infos.add(ItemInfo(item.title, item.description, item.letter, false))
 
-            return infos.build()
+            return infos
         }
 
     override val statistics: GameStatistics
@@ -176,7 +165,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             for (creature in region.creatures)
                 regionClock.schedule(creature.tickRate, creature)
 
-            selectedCell = null;
+            selectedCell = null
         }
     }
 
@@ -189,7 +178,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         return null
     }
 
-    public fun addCreature(creature: Creature, target: Cell) {
+    fun addCreature(creature: Creature, target: Cell) {
         creature.cell = target
         if (target.region == currentRegion) {
             regionClock.schedule(creature.tickRate, creature)
@@ -202,7 +191,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             val creature = adjacent.iterator().next()
             creature.talk(player)
             tick()
-        } else if (adjacent.empty) {
+        } else if (adjacent.isEmpty()) {
             player.message("There's no-one to talk to.")
         } else {
             val dir = console.selectDirection()
@@ -266,7 +255,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     fun pickup() = gameAction {
         val cell = player.cell
         val items = cell.items
-        if (items.empty) {
+        if (items.isEmpty()) {
             player.message("There's nothing to pick up.")
         } else if (items.size == 1) {
             val item = items.iterator().next()
@@ -285,7 +274,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun equip() = gameAction {
-        val item = console.selectItem("Select item to equip", player.inventory.byType(javaClass<Equipable>()))
+        val item = console.selectItem("Select item to equip", player.inventory.byType(Equipable::class.java))
         if (item != null) {
             if (item.equip(player))
                 tick()
@@ -309,7 +298,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun eat() = gameAction {
-        val food = console.selectItem("Select food to eat", player.inventory.byType(javaClass<Food>()))
+        val food = console.selectItem("Select food to eat", player.inventory.byType(Food::class.java))
         if (food != null) {
             player.inventory.remove(food)
             food.onEatenBy(player)
@@ -326,7 +315,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun fling() = gameAction {
-        val projectile = console.selectItem("Select item to throw", player.inventory.byType(javaClass<Item>()))
+        val projectile = console.selectItem("Select item to throw", player.inventory.byType(Item::class.java))
         if (projectile != null) {
             val dir = console.selectDirection()
             if (dir != null) {
@@ -398,7 +387,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun runTowards(end: Coordinate) = gameAction {
-        val endCell = currentRegion.get(end)
+        val endCell = currentRegion[end]
         val path = currentRegion.findPath(player.cell, endCell)
 
         if (path != null) {
@@ -407,13 +396,13 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             for(cell in cells) {
                 //selectedCell = cell.coordinate
                 if (!cell.canMoveInto(player.corporeal))
-                    break;
+                    break
 
                 cell.enter(player)
                 tick()
 
                 if (cell.isInteresting)
-                    break;
+                    break
             }
         }
     }
@@ -499,19 +488,19 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         } else {
 
             player.message("Resting...")
-            while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
+            loop@while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
                 when {
                     player.hitPoints == player.maximumHitPoints -> {
                         player.message("You feel rested!")
-                        break
+                        break@loop
                     }
                     player.hungerLevel.hungry -> {
                         player.message("You wake up feeling hungry.")
-                        break
+                        break@loop
                     }
                     player.seesNonFriendlyCreatures() -> {
                         player.message("Your rest is interrupted.")
-                        break
+                        break@loop
                     }
                     else ->
                         tick()
@@ -610,7 +599,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         }
     }
 
-    class object {
-        private val log = javaClass<Game>().logger()
+    companion object {
+        private val log = Game::class.java.logger()
     }
 }

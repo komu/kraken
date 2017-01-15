@@ -16,12 +16,12 @@
 
 package net.wanhack.model.skill
 
-import java.util.EnumMap
 import net.wanhack.common.MessageTarget
 import net.wanhack.model.item.weapon.WeaponClass
+import java.util.*
 
 class SkillSet {
-    private val weaponSkills = EnumMap<WeaponClass, SkillLevel>(javaClass<WeaponClass>())
+    private val weaponSkills = EnumMap<WeaponClass, SkillLevel>(WeaponClass::class.java)
 
     fun getWeaponProficiency(weaponClass: WeaponClass) =
         weaponSkills[weaponClass]?.proficiency ?: weaponClass.defaultProficiency
@@ -51,11 +51,11 @@ class SkillSet {
         level.training = proficiency.trainingToReachThisLevel
     }
 
-    fun toString() = "[weaponSkills=$weaponSkills]"
+    override fun toString() = "[weaponSkills=$weaponSkills]"
 
     class SkillLevel(var proficiency: Proficiency) {
         var training = 0
 
-        fun toString() = "($proficiency/$training)"
+        override fun toString() = "($proficiency/$training)"
     }
 }

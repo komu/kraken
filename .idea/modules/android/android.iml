@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":android" external.linked.project.path="$MODULE_DIR$/../../../android" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="wanhack" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../../../android/build/classes/main" />
+    <output-test url="file://$MODULE_DIR$/../../../android/build/classes/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../android">
+      <sourceFolder url="file://$MODULE_DIR$/../../../android/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../android/src/main/kotlin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../android/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../android/src/test/kotlin" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../android/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../android/src/test/resources" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../android/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../android/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpcore:4.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.json:json:20080701" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: xpp3:xpp3:1.1.4c" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: xerces:xmlParserAPIs:2.6.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.khronos:opengl-api:gl1.1-android-2.1_r1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpclient:4.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.android:android:4.0.1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-test:1.0.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.6" level="project" />
+  </component>
+</module>

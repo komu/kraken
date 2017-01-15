@@ -17,11 +17,10 @@
 package net.wanhack.model.item.weapon
 
 import net.wanhack.model.common.Attack
-import net.wanhack.model.item.Item
-import net.wanhack.model.item.Equipable
 import net.wanhack.model.creature.Player
+import net.wanhack.model.item.Equipable
 
-public abstract class Weapon(name: String): Item(name), Attack, Equipable {
+abstract class Weapon(name: String): Equipable(name), Attack {
 
     override fun equip(player: Player): Boolean {
         val oldWeapon = player.wieldedWeapon

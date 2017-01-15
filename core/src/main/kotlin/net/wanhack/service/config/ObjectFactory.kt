@@ -16,23 +16,19 @@
 
 package net.wanhack.service.config
 
-import java.util.HashMap
-import net.wanhack.definitions.Definitions
-import net.wanhack.definitions.ItemDefinition
-import net.wanhack.definitions.CreatureDefinition
+import net.wanhack.definitions.*
 import net.wanhack.model.creature.Creature
-import net.wanhack.definitions.betweenLevels
-import net.wanhack.definitions.weightedRandom
+import java.util.*
 
 class ObjectFactory {
     private val creatures = HashMap<String, CreatureDefinition<*>>()
     private val items = HashMap<String, ItemDefinition<*>>()
 
     val instantiableItems: Collection<ItemDefinition<*>>
-        get() = items.values().filter { it.instantiable }
+        get() = items.values.filter { it.instantiable }
 
     val instantiableCreatures: Collection<CreatureDefinition<*>>
-        get() = creatures.values().filter { it.instantiable }
+        get() = creatures.values.filter { it.instantiable }
 
     fun addDefinitions(definitions: Definitions) {
         for (definition in definitions.itemDefinitions)

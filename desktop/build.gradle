@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':core')
+    compile "org.jetbrains.kotlin:kotlin-swing:$kotlinVersion"
+    compile "com.jgoodies:forms:1.2.1"
+}

@@ -23,17 +23,17 @@ import net.wanhack.utils.RandomUtils
 
 class Doris(name: String): Pet(name) {
 
-    {
+    init {
         weight = 10
         letter = 'f'
     }
 
-    public override fun talk(target: Creature) {
+    override fun talk(target: Creature) {
         val verb = RandomUtils.randomItem("meows", "purrs")
         target.message("%s %s.", name, verb)
     }
 
-    protected override fun onTick(game: Game) {
+    override fun onTick(game: Game) {
         val player = game.player
         if (isAdjacentToCreature(player) && Probability.check(1))
             game.attack(this, player)

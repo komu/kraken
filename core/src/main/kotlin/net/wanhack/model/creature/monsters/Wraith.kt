@@ -24,7 +24,7 @@ import net.wanhack.model.common.Color
 
 class Wraith(name: String): Monster(name) {
 
-    {
+    init {
         letter = 'W'
         color = Color.BLACK
         canUseDoors = true

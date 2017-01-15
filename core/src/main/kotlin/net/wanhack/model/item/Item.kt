@@ -17,10 +17,10 @@
 package net.wanhack.model.item
 
 import net.wanhack.model.common.Attack
+import net.wanhack.model.common.Color
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.utils.RandomUtils
-import net.wanhack.model.common.Color
 
 open class Item(title: String): Attack {
 
@@ -40,7 +40,7 @@ open class Item(title: String): Attack {
 
     open val lighting = 0
 
-    fun toString() = title
+    override fun toString() = title
 
     override val attackVerb = "hit"
     override val weaponClass = WeaponClass.NOT_WEAPON

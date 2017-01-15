@@ -15,6 +15,6 @@
  */
 package net.wanhack.common
 
-trait MessageTarget {
+interface MessageTarget {
     fun message(pattern: String, vararg args: Any?)
 }

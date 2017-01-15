@@ -23,5 +23,5 @@ class DieExpression(val multiplier: Int, val sides: Int): Expression() {
     override fun evaluate(env: Map<String, Int>) =
         RandomUtils.rollDie(sides, multiplier)
 
-    fun toString() = "${multiplier}d${sides}"
+    override fun toString() = "${multiplier}d${sides}"
 }

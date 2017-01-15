@@ -19,8 +19,8 @@ package net.wanhack.model.region
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
-import java.util.HashMap
 import net.wanhack.utils.collections.toOption
+import java.util.*
 
 class Region(val world: World, val name: String, val level: Int, val width: Int, val height: Int): Iterable<Cell> {
 
@@ -34,7 +34,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
 
     private val startCells = HashMap<String, Cell>();
 
-    {
+    init {
         for (x in 0..width - 1) {
             this[x, 0].setType(CellType.UNDIGGABLE_WALL)
             this[x, height - 1].setType(CellType.UNDIGGABLE_WALL)
@@ -56,16 +56,16 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
         player.cell = startCells[location] ?: throw IllegalStateException("Region '$name' has no start point named '$location'.")
     }
 
-    val creatures: Iterator<Creature>
-        get() = cells.iterator().flatMap { it.creature.toOption().iterator() }
+    val creatures: Sequence<Creature>
+        get() = cells.asSequence().flatMap { it.creature.toOption().asSequence() }
 
     fun findPath(start: Cell, goal: Cell): Iterable<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)
 
-    fun get(c: Coordinate) =
+    operator fun get(c: Coordinate) =
         get(c.x, c.y)
 
-    fun get(x: Int, y: Int): Cell =
+    operator fun get(x: Int, y: Int): Cell =
         if (containsPoint(x, y))
             cells[x + y * width]
         else
@@ -143,7 +143,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
         return true
     }
 
-    class object {
+    companion object {
         val DEFAULT_REGION_WIDTH = 80
         val DEFAULT_REGION_HEIGHT = 25
     }

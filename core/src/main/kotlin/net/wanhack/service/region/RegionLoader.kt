@@ -16,17 +16,11 @@
 
 package net.wanhack.service.region
 
-import net.wanhack.model.region.CellType
-import net.wanhack.model.region.Region
-import net.wanhack.model.region.RegionInfo
-import net.wanhack.model.region.World
-import java.util.ArrayList
-import java.util.HashMap
-import net.wanhack.utils.logger
-import net.wanhack.utils.withIndices
+import net.wanhack.model.region.*
 import net.wanhack.service.resources.ResourceLoader
+import net.wanhack.utils.logger
 import net.wanhack.utils.maxLength
-import net.wanhack.model.region.Coordinate
+import java.util.*
 
 class RegionLoader(val world: World) {
 
@@ -35,7 +29,7 @@ class RegionLoader(val world: World) {
         val directives = ArrayList<Directive>()
 
         for (line in ResourceLoader.readLines("/regions/${info.id}.region")) {
-            if (!line.startsWith(";") && (line != "" || directives.empty)) {
+            if (!line.startsWith(";") && (line != "" || directives.isEmpty())) {
                 if (line.startsWith(":")) {
                     directives.add(parseDirective(line))
                 } else {
@@ -46,15 +40,15 @@ class RegionLoader(val world: World) {
 
         val region = Region(world, info.id, info.level, lines.maxLength() + 1, lines.size + 1)
 
-        for ((y, line) in lines.withIndices()) {
-            for ((x, ch) in line.withIndices()) {
+        lines.forEachIndexed { y, line ->
+            line.forEachIndexed { x, ch ->
                 val cell = region[x, y]
                 when (ch) {
                     '#'  -> cell.setType(CellType.HALLWAY_FLOOR)
                     '<'  -> cell.setType(CellType.STAIRS_UP)
                     '>'  -> cell.setType(CellType.STAIRS_DOWN)
                     ' '  -> { }
-                    else -> log.severe("unknown tile: ${ch}")
+                    else -> log.severe("unknown tile: $ch")
                 }
             }
         }
@@ -115,20 +109,20 @@ class RegionLoader(val world: World) {
     }
 
     abstract class Directive
-    data class StartDirective(val c: Coordinate, val name: String) : Directive()
-    data class LightDirective(val c: Coordinate, val power: Int): Directive()
-    data class CreatureDirective(val c: Coordinate, val name: String): Directive()
-    data class ItemDirective(val c: Coordinate, val name: String): Directive()
-    data class PortalDirective(val c: Coordinate, val target: String, val location: String, val up: Boolean): Directive()
+    class StartDirective(val c: Coordinate, val name: String) : Directive()
+    class LightDirective(val c: Coordinate, val power: Int) : Directive()
+    class CreatureDirective(val c: Coordinate, val name: String) : Directive()
+    class ItemDirective(val c: Coordinate, val name: String) : Directive()
+    class PortalDirective(val c: Coordinate, val target: String, val location: String, val up: Boolean) : Directive()
 
-    class object {
+    companion object {
         private val START_PATTERN    = DirectivePattern(":start [str] [int],[int]")
         private val CREATURE_PATTERN = DirectivePattern(":creature [int],[int] [str]")
         private val ITEM_PATTERN     = DirectivePattern(":item [int],[int] [str]")
         private val DOWN_PATTERN     = DirectivePattern(":portal down [int],[int] [str] [str]")
         private val UP_PATTERN       = DirectivePattern(":portal up [int],[int] [str] [str]")
         private val LIGHT_PATTERN    = DirectivePattern(":light [int],[int] [int]")
-        private val log = javaClass<RegionLoader>().logger()
+        private val log = RegionLoader::class.java.logger()
 
         private fun getRegion(name: String, aliases: Map<String, String>): String =
             aliases[name] ?: name

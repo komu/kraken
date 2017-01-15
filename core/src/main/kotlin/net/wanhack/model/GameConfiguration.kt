@@ -22,18 +22,16 @@ import net.wanhack.utils.RandomUtils
 class GameConfiguration {
 
     var name = ""
-        get() = if ($name.isEmpty()) "Anonymous Coward" else $name
+        get() = if (field.isEmpty()) "Anonymous Coward" else field
 
-    var sex = RandomUtils.randomEnum(javaClass<Sex>())
+    var sex = RandomUtils.randomEnum(Sex::class.java)
     var pet = PetType.DORIS
     var wizardMode = false
 
-    class object {
-        enum class PetType(val name: String) {
-            DORIS : PetType("Doris")
-            LASSIE : PetType("Lassie")
+    enum class PetType(val petName: String) {
+        DORIS("Doris"),
+        LASSIE("Lassie");
 
-            fun toString() = name
-        }
+        override fun toString() = petName
     }
 }

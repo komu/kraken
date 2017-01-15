@@ -17,15 +17,15 @@
 package net.wanhack.model.region
 
 enum class CellType(val passable: Boolean) {
-    HALLWAY_FLOOR : CellType(true)
-    ROOM_FLOOR : CellType(true)
-    STAIRS_UP : CellType(true)
-    STAIRS_DOWN : CellType(true)
-    WALL : CellType(false)
-    ROOM_WALL : CellType(false)
-    UNDIGGABLE_WALL : CellType(false)
-    OPEN_DOOR : CellType(true)
-    CLOSED_DOOR : CellType(true)
+    HALLWAY_FLOOR(true),
+    ROOM_FLOOR(true),
+    STAIRS_UP(true),
+    STAIRS_DOWN(true),
+    WALL(false),
+    ROOM_WALL(false),
+    UNDIGGABLE_WALL(false),
+    OPEN_DOOR (true),
+    CLOSED_DOOR(true);
 
     val isFloor: Boolean
         get() = this == HALLWAY_FLOOR || this == ROOM_FLOOR

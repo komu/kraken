@@ -7,7 +7,8 @@ import net.wanhack.model.Game
 import net.wanhack.model.GameConfiguration
 import net.wanhack.model.common.Console
 import net.wanhack.model.item.Item
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
+import net.wanhack.model.region.generators.MazeRegionGenerator
 
 class MazeRegionGeneratorTest {
 

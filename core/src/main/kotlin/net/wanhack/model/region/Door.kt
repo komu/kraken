@@ -63,8 +63,8 @@ class Door(hidden: Boolean): CellState {
     }
 
     enum class State(val cellType: CellType) {
-        HIDDEN : State(CellType.ROOM_WALL)
-        OPEN : State(CellType.OPEN_DOOR)
-        CLOSED : State(CellType.CLOSED_DOOR)
+        HIDDEN(CellType.ROOM_WALL),
+        OPEN (CellType.OPEN_DOOR),
+        CLOSED(CellType.CLOSED_DOOR)
     }
 }

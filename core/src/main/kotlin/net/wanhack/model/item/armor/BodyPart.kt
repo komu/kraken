@@ -17,9 +17,9 @@
 package net.wanhack.model.item.armor
 
 enum class BodyPart {
-    HEAD
-    TORSO
-    HANDS
-    FEET
+    HEAD,
+    TORSO,
+    HANDS,
+    FEET,
     SHIELD
 }

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package net.wanhack.service.region.generators
+package net.wanhack.model.region.generators
 
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.MutableCellSet
 import net.wanhack.model.region.CellType
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
 import net.wanhack.utils.Probability
-import net.wanhack.model.common.Directions
+import net.wanhack.common.Directions
 import net.wanhack.utils.collections.shuffled
 import net.wanhack.utils.RandomUtils
 import net.wanhack.model.region.CellSet
+import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.utils.logger
 
 class MazeRegionGenerator(val world: World, val name: String, val level: Int, val up: String?, val down: String?) {
@@ -128,8 +129,8 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
             Directions.mainDirections
 
     private fun sparsify() {
-        sparseness.times {
-            val deadEnds = region.getMatchingCells { it.isDeadEnd }
+        repeat(sparseness) {
+            val deadEnds = region.getMatchingCells(Cell::isDeadEnd)
             for (cell in deadEnds)
                 cell.setType(CellType.WALL)
         }
@@ -152,7 +153,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     }
 
     private fun addRooms() {
-        RandomUtils.randomInt(minRooms, maxRooms).times {
+        repeat(RandomUtils.randomInt(minRooms, maxRooms)) {
             addRoom()
         }
     }
@@ -182,7 +183,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     private fun isCandidateForPath(x: Int, y: Int) =
         x > 1 && x < region.width - 1 && y > 1 && y < region.height - 1
 
-    class object : RegionGenerator {
+    companion object : RegionGenerator {
 
         override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region =
             MazeRegionGenerator(world, name, level, up, down).generate()

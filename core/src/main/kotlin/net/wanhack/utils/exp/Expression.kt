@@ -29,7 +29,7 @@ abstract class Expression {
 
     abstract fun evaluate(env: Map<String, Int>): Int
 
-    class object {
+    companion object {
         fun evaluate(exp: String): Int =
             parse(exp).evaluate()
 

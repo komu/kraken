@@ -17,7 +17,7 @@
 package net.wanhack.model.region
 
 import java.lang.Math.*
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import net.wanhack.utils.square
 import net.wanhack.utils.signum
 

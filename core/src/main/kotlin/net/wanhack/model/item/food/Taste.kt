@@ -17,15 +17,15 @@
 package net.wanhack.model.item.food
 
 enum class Taste(private val s: String, private val like: Boolean) {
-    APPLE : Taste("apple", true)
-    CHICKEN : Taste("chicken", true)
-    STRAWBERRY : Taste("strawberries", true)
-    BLUEBERRY : Taste("blueberries", true)
-    ELDERBERRY : Taste("elderberries", true)
-    VANILLA : Taste("vanilla", true)
-    CHEESE : Taste("cheese", true)
-    STRANGE : Taste("strange", false)
-    DULL : Taste("dull", false)
+    APPLE("apple", true),
+    CHICKEN("chicken", true),
+    STRAWBERRY("strawberries", true),
+    BLUEBERRY("blueberries", true),
+    ELDERBERRY("elderberries", true),
+    VANILLA("vanilla", true),
+    CHEESE("cheese", true),
+    STRANGE("strange", false),
+    DULL("dull", false);
 
-    fun toString() = if (like) "like $s" else s
+    override fun toString() = if (like) "like $s" else s
 }

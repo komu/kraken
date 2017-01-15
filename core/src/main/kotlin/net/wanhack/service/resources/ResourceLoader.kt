@@ -16,7 +16,7 @@
 
 package net.wanhack.service.resources
 
-import java.io.*
+import java.io.FileNotFoundException
 
 object ResourceLoader {
 
@@ -24,7 +24,7 @@ object ResourceLoader {
         javaClass.getResourceAsStream(path) ?: throw FileNotFoundException("classpath:$path")
 
     fun openReader(path: String) =
-        openStream(path).reader("UTF-8")
+        openStream(path).reader(Charsets.UTF_8)
 
     fun readLines(path: String): List<String> =
         openReader(path).useLines { it.toList() }

@@ -16,30 +16,30 @@
 
 package net.wanhack.model
 
-import net.wanhack.model.common.Direction
-import net.wanhack.model.item.Item
+import net.wanhack.common.Direction
 import net.wanhack.model.common.Console
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import java.util.concurrent.locks.Lock
-import kotlin.concurrent.withLock
-import net.wanhack.utils.relinquish
-import net.wanhack.utils.yield
-import java.util.concurrent.Executors
+import net.wanhack.model.item.Item
 import net.wanhack.model.region.Coordinate
+import net.wanhack.utils.relinquish
+import net.wanhack.utils.yieldLock
+import java.util.concurrent.Executors
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.withLock
 
 /**
  * All commands from UI to game go through this facade.
  */
 class GameFacade(config: GameConfiguration, console: Console, val listener: (Boolean) -> Unit) {
 
-    private val gameExecutor = Executors.newSingleThreadExecutor(java.util.concurrent.ThreadFactory { Thread(it, "game") })
+    private val gameExecutor = Executors.newSingleThreadExecutor { Thread(it, "game") }
     private val lock = ReentrantReadWriteLock(true)
     private val game = Game(config, LockRelinquishingConsole(console, lock.writeLock())) {
         listener(true)
-        lock.writeLock().yield()
+        lock.writeLock().yieldLock()
     }
 
-    fun query<T>(callback: (ReadOnlyGame) -> T): T =
+    fun <T> query(callback: (ReadOnlyGame) -> T): T =
         lock.readLock().withLock { callback(game) }
 
     fun start() = gameAction {
@@ -115,7 +115,7 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
     }
 
     fun focus(coordinate: Coordinate) = gameAction {
-        game.selectedCell = coordinate;
+        game.selectedCell = coordinate
     }
 
     private fun gameAction(body: () -> Unit) {
@@ -142,7 +142,7 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
         override fun <T: Item> selectItem(message: String, items: Collection<T>) =
             lock.relinquish { console.selectItem(message, items) }
 
-        override fun selectItems<T: Item>(message: String, items: Collection<T>) =
+        override fun <T: Item> selectItems(message: String, items: Collection<T>) =
             lock.relinquish { console.selectItems(message, items) }
     }
 }

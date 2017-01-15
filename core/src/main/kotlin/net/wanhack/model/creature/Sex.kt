@@ -17,11 +17,11 @@
 package net.wanhack.model.creature
 
 enum class Sex {
-    MALE
-    FEMALE
+    MALE,
+    FEMALE;
 
     val letter: Char
-        get() = Character.toLowerCase(name()[0])
+        get() = Character.toLowerCase(name[0])
 
-    fun toString() = name().toLowerCase()
+    override fun toString() = name.toLowerCase()
 }

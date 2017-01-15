@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package net.wanhack.model.common
+package net.wanhack.common
 
 import net.wanhack.utils.collections.randomElement
 
 enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
-    NORTH : Direction("N", 0, -1)
-    NE : Direction("NE", 1, -1)
-    EAST : Direction("E", 1, 0)
-    SE : Direction("SE", 1, 1)
-    SOUTH : Direction("S", 0, 1)
-    SW : Direction("SW", -1, 1)
-    WEST : Direction("W", -1, 0)
-    NW : Direction("NW", -1, -1)
+    NORTH("N", 0, -1),
+    NE("NE", 1, -1),
+    EAST("E", 1, 0),
+    SE("SE", 1, 1),
+    SOUTH("S", 0, 1),
+    SW("SW", -1, 1),
+    WEST("W", -1, 0),
+    NW("NW", -1, -1);
 
     fun isOpposite(rhs: Direction) = dx == -rhs.dx && dy == -rhs.dy
 }

@@ -16,25 +16,22 @@
 
 package net.wanhack.model.region
 
-import java.util.ArrayList
-import java.util.HashMap
-import net.wanhack.model.Game
-import net.wanhack.service.region.generators.MazeRegionGenerator
-import net.wanhack.service.region.generators.RoomFirstRegionGenerator
-import net.wanhack.utils.Probability
-import net.wanhack.utils.logger
 import net.wanhack.definitions.betweenLevels
-import net.wanhack.service.region.RegionLoader
-import net.wanhack.utils.RandomUtils
 import net.wanhack.definitions.weightedRandom
+import net.wanhack.model.Game
+import net.wanhack.model.region.generators.MazeRegionGenerator
+import net.wanhack.model.region.generators.RoomFirstRegionGenerator
+import net.wanhack.service.region.RegionLoader
+import net.wanhack.utils.Probability
+import net.wanhack.utils.RandomUtils
+import java.util.*
 
 class World(val game: Game) {
     private val loadedRegions = HashMap<String, Region>()
     private val regions = ArrayList<RegionInfo>()
     private val mazeProbability = Probability(5)
-    private val log = javaClass.logger();
 
-    {
+    init {
         addNonRandomRegion(0, "start")
 
         for (n in 1..30)
@@ -91,11 +88,11 @@ class World(val game: Game) {
 
         for (i in 1..monsterCount) {
             val creatures = game.objectFactory.randomSwarm(region.level, game.player.level)
-            if (emptyCells.empty)
+            if (emptyCells.isEmpty())
                 return
 
             val cell = emptyCells.randomElement()
-            val cells = cell.cellsNearestFirst().filter { it.canMoveInto(true) }
+            val cells = cell.cellsNearestFirst().filter { it.canMoveInto(true) }.iterator()
             for (creature in creatures)
                 if (cells.hasNext()) {
                     val target = cells.next()
@@ -107,11 +104,11 @@ class World(val game: Game) {
 
     private fun addRandomItems(region: Region) {
         val emptyCells = region.getCellsForItemsAndCreatures()
-        if (emptyCells.empty)
+        if (emptyCells.isEmpty())
             return
 
         val items = game.objectFactory.instantiableItems.betweenLevels(0, region.level)
-        RandomUtils.randomInt(6).times {
+        repeat(RandomUtils.randomInt(6)) {
             val item = items.weightedRandom().create()
             emptyCells.randomElement().items.add(item)
         }

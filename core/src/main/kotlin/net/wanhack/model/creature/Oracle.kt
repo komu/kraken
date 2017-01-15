@@ -17,15 +17,15 @@
 package net.wanhack.model.creature
 
 import net.wanhack.model.Game
+import net.wanhack.model.common.Color
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.utils.collections.randomElement
-import net.wanhack.model.common.Color
 
 class Oracle(): Creature("The Oracle") {
 
     private val curse = NaturalWeapon("curse", "20", "0");
 
-    {
+    init {
         hitPoints = 10000
         letter = '@'
         color = Color.WHITE
@@ -42,7 +42,7 @@ class Oracle(): Creature("The Oracle") {
 
     override val naturalAttack = curse
 
-    class object {
+    companion object {
         private val wisdoms = listOf("Beauty is in the eye of beholder.", "They say that no ordinary shovel can dig into Exceptionally Hard Rock.", "Only the light of Graal can defeat the ultimate darkness.", "They say that Festivus is the day to start your adventure.", "They say that The Founders are there on Friday.", "The deaf are not afraid of the Ni.", "All names have a meaning.", "How small a rock needs to be in order to float on water?", "Beholders tend to feel uneasy around spoons.", "Chain smoking might be good for you.", "The Siamese bats are more dangerous.", "There is no fork.", "Enlarge your shield.", "They say a lot of things.", "Don't believe everything you are told.", "This sentence is a lie.", "This sentence is true, but can't be proved.", "What's the value of x in the following sequence? 1, 2, 720!, x, ...", "How many roads must a man walk down?", "Attributes are the first step on the road that leads to the Dark Side.")
     }
 }

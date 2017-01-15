@@ -16,23 +16,22 @@
 
 package net.wanhack.model.item.armor
 
-import net.wanhack.model.item.Equipable
-import net.wanhack.model.item.Item
 import net.wanhack.model.common.Color
 import net.wanhack.model.creature.Player
+import net.wanhack.model.item.Equipable
 
-open class Armor(name: String): Item(name), Equipable {
+open class Armor(name: String): Equipable(name) {
 
     var armorBonus = 1
     var bodyPart = BodyPart.TORSO
 
-    {
+    init {
         color = Color.BROWN
         letter = ']'
     }
 
     override val description: String
-        get() = "ac: $armorBonus; ${super<Item>.description}"
+        get() = "ac: $armorBonus; ${super.description}"
 
     override fun equip(player: Player): Boolean {
         val oldArmor = player.replaceArmor(this)

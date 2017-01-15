@@ -19,25 +19,25 @@ package net.wanhack.model.skill
 import net.wanhack.utils.square
 
 enum class Proficiency(val level: Int, val bonus: Int) {
-    UNSKILLED : Proficiency(1, -2)
-    BASIC : Proficiency(2, 0)
-    SKILLED : Proficiency(3, 1)
-    EXPERT : Proficiency(4, 2)
-    MASTER : Proficiency(5, 3)
-    GRAND_MASTER : Proficiency(6, 5)
+    UNSKILLED(1, -2),
+    BASIC(2, 0),
+    SKILLED(3, 1),
+    EXPERT(4, 2),
+    MASTER(5, 3) ,
+    GRAND_MASTER(6, 5);
 
     val next: Proficiency?
         get() =
-            if (ordinal() + 1 < values().size)
-                values()[ordinal() + 1]
+            if (ordinal + 1 < values().size)
+                values()[ordinal + 1]
             else
                 null
 
     val trainingToReachThisLevel = square(level - 1) * 20
 
-    fun toString() =
+    override fun toString() =
         if (this == GRAND_MASTER)
             "grand master"
         else
-            name().toLowerCase()
+            name.toLowerCase()
 }

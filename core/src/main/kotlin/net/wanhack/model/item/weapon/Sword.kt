@@ -16,11 +16,11 @@
 
 package net.wanhack.model.item.weapon
 
-import net.wanhack.utils.exp.Expression
 import net.wanhack.model.common.Color
+import net.wanhack.utils.exp.Expression
 
 open class Sword(name: String): BasicWeapon(name, WeaponClass.SWORD, "randint(1, 6)") {
-    {
+    init {
         damage = Expression.parse("1d3")
         letter = '†'
         color = Color.DARK_GRAY

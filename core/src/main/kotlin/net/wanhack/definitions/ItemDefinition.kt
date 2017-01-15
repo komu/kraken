@@ -17,7 +17,7 @@
 package net.wanhack.definitions
 
 import net.wanhack.model.item.Item
-import java.util.ArrayList
+import java.util.*
 
 class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) : ObjectDefinition<T>() {
 
@@ -45,5 +45,5 @@ class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) : Obje
         return this
     }
 
-    fun toString() = "ItemDefinition [name=$name]"
+    override fun toString() = "ItemDefinition [name=$name]"
 }

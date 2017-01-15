@@ -16,41 +16,28 @@
 
 package net.wanhack.model.item.armor
 
-import java.util.ArrayList
-import java.util.EnumMap
+import java.util.*
 
 class Armoring : Iterable<Armor> {
-    private val armors = EnumMap<BodyPart, Armor>(javaClass<BodyPart>())
+    private val armors = EnumMap<BodyPart, Armor>(BodyPart::class.java)
 
     override fun iterator(): Iterator<Armor> =
-        armors.values().iterator()
+        armors.values.iterator()
 
     fun removeAllArmors(): Collection<Armor> {
-        val result = ArrayList(armors.values())
+        val result = ArrayList(armors.values)
         armors.clear()
         return result
     }
 
     val weight: Int
-        get() {
-            var w = 0
-
-            for (armor in armors.values())
-                w += armor.weight
-
-            return w
-        }
+        get() = armors.values.sumBy { it.weight }
 
     val totalArmorBonus: Int
-        get() {
-            var bonus = 0
-            for (armor in armors.values())
-                bonus += armor.armorBonus
-            return bonus
-        }
+        get() = armors.values.sumBy { it.armorBonus }
 
     fun replaceArmor(armor: Armor): Armor? =
         armors.put(armor.bodyPart, armor)
 
-    fun toString() = armors.values().toString()
+    override fun toString() = armors.values.toString()
 }

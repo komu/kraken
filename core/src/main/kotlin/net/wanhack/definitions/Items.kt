@@ -22,6 +22,7 @@ import net.wanhack.model.item.food.*
 import net.wanhack.model.item.armor.Armor
 import net.wanhack.model.common.Color
 
+@Suppress("unused")
 object Items : Definitions() {
 
     // MISC ITEMS

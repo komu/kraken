@@ -17,20 +17,20 @@
 package net.wanhack.model.creature
 
 enum class HungerLevel(val min: Int) {
-    SATIATED : HungerLevel(2001)
-    NOT_HUNGRY : HungerLevel(301)
-    HUNGRY : HungerLevel(101)
-    WEAK : HungerLevel(1)
-    FAINTING : HungerLevel(0)
+    SATIATED(2001),
+    NOT_HUNGRY(301),
+    HUNGRY(101),
+    WEAK(1),
+    FAINTING(0);
 
     val hungry: Boolean
         get() = min <= HUNGRY.min
 
-    fun toString(): String =
+    override fun toString(): String =
         if (this == NOT_HUNGRY)
             ""
         else
-            name().toLowerCase()
+            name.toLowerCase()
 }
 
 fun getHungerLevel(level: Int): HungerLevel {

@@ -17,11 +17,14 @@
 package net.wanhack.definitions
 
 import net.wanhack.model.common.Color
-import net.wanhack.model.creature.*
+import net.wanhack.model.creature.Creature
+import net.wanhack.model.creature.Monster
+import net.wanhack.model.creature.Oracle
 import net.wanhack.model.creature.monsters.*
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.utils.exp.Expression
 
+@Suppress("unused")
 object Creatures : Definitions() {
 
     fun monster(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
@@ -508,17 +511,16 @@ object Creatures : Definitions() {
 
     // (E) Elementals
 
-    fun elemental<T: Creature>(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, create: (String) -> T, init: T.() -> Unit) =
+    fun <T: Creature> elemental(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, create: (String) -> T, init: T.() -> Unit) =
         monster(name, level = level, swarmSize = swarmSize, probability = probability) {
             val e = create(name)
             e.letter = 'E'
             e.canUseDoors = true
             e.corpsePoisonousness = exp("1")
             e.init()
-            e
         }
 
-    val emmentalElemental = elemental("emmental elemental", level = 8, create = { EmmentalElemental(it) }) {
+    val emmentalElemental = elemental("emmental elemental", level = 8, create = ::EmmentalElemental) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(1,8)"))
         hitPoints = randint(70, 140)
         color = Color.YELLOW
@@ -530,7 +532,7 @@ object Creatures : Definitions() {
         weight = 200000
     }
 
-    val fogElemental = elemental("fog elemental", level = 18, create = { Monster(it) } ) {
+    val fogElemental = elemental("fog elemental", level = 18, create = ::Monster) {
         naturalWeapon = NaturalWeapon("hit", exp("7"), exp("randint(3,5)"))
         hitPoints = randint(120, 180)
         color = Color.WHITE
@@ -542,7 +544,7 @@ object Creatures : Definitions() {
         weight = 200
     }
 
-    val brunostElemental = elemental("brunost elemental", level = 38, create = { EmmentalElemental(it) } ) {
+    val brunostElemental = elemental("brunost elemental", level = 38, create = ::EmmentalElemental) {
         naturalWeapon = NaturalWeapon("hit", exp("10"), exp("randint(1,11)"))
         hitPoints = randint(270, 340)
         color = Color.YELLOW
@@ -1010,7 +1012,7 @@ object Creatures : Definitions() {
 
     // (p) Persons (humans)
 
-    fun person<T: Creature>(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, create: (String) -> T, init: T.() -> Unit) =
+    fun <T: Creature> person(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, create: (String) -> T, init: T.() -> Unit) =
         creature(name, level = level, swarmSize = swarmSize, probability = probability) {
             val p = create(name)
             p.letter = 'p'

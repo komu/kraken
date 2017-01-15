@@ -19,7 +19,7 @@ package net.wanhack.model.common
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.weapon.WeaponClass
 
-trait Attack {
+interface Attack {
     fun getToHit(target: Creature): Int
     fun getDamage(target: Creature): Int
     val attackVerb: String

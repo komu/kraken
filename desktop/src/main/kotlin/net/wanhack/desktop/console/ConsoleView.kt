@@ -23,7 +23,7 @@ import java.awt.Graphics
 import javax.swing.JComponent
 import javax.swing.JOptionPane
 import net.wanhack.model.common.Console
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import net.wanhack.model.item.Item
 import net.wanhack.utils.collections.CircularBuffer
 import java.awt.Frame

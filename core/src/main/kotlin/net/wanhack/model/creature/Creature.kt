@@ -20,7 +20,7 @@ import net.wanhack.common.MessageTarget
 import net.wanhack.model.Game
 import net.wanhack.model.common.Actor
 import net.wanhack.model.common.Attack
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.armor.Armoring
 import net.wanhack.model.item.food.Corpse
@@ -35,7 +35,7 @@ import net.wanhack.utils.exp.Expression
 import java.lang.Math.max
 import java.util.*
 import net.wanhack.utils.collections.filterByType
-import net.wanhack.model.common.Directions
+import net.wanhack.common.Directions
 import net.wanhack.utils.collections.toOption
 import net.wanhack.model.common.Color
 import net.wanhack.model.Inventory
@@ -44,11 +44,11 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     var cellOrNull: Cell? = null
         set(cell: Cell?) {
-            val oldValue = $cellOrNull
+            val oldValue = field
             if (oldValue != null)
                 oldValue.creature = null
 
-            $cellOrNull = cell
+            field = cell
 
             if (cell != null)
                 cell.creature = this
@@ -56,10 +56,10 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     var cell: Cell
         get() = cellOrNull ?: throw NullPointerException("no current cell for $this")
-        set(cell: Cell) = cellOrNull = cell
+        set(cell) { cellOrNull = cell }
 
     var letter = '\u0000'
-        get() = if ($letter == '\u0000') name[0] else $letter
+        get() = if (field == '\u0000') name[0] else field
 
     var color = Color.GRAY
     open var hitPoints = 1
@@ -69,12 +69,12 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     var omniscient = false
     var level = 1
     var killExperience = -1
-        get() = if ($killExperience != -1) $killExperience else level * level
+        get() = if (field != -1) field else level * level
 
     var hitBonus = 0
 
     var armorClass = 10
-        get() = $armorClass - armoring.totalArmorBonus
+        get() = field - armoring.totalArmorBonus
 
     var luck: Int = 0
     open var tickRate = 100
@@ -91,7 +91,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     /** Numbers of ticks that this creature is paralyzed for */
     var paralyzedTicks = 0
         set(ticks) {
-            $paralyzedTicks = max(0, ticks)
+            field = max(0, ticks)
         }
 
     val weightOfCarriedItems: Int
@@ -177,7 +177,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     val adjacentCreatures: Collection<Creature>
         get() = cell.adjacentCells.flatMap { it.creature.toOption() }
 
-    fun toString() = "$name [hp=$hitPoints]"
+    override fun toString() = "$name [hp=$hitPoints]"
 
     open fun onAttackedBy(attacker: Creature) {
         if (attacker.isPlayer)

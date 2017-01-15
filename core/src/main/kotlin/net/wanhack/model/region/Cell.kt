@@ -16,16 +16,15 @@
 
 package net.wanhack.model.region
 
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
+import net.wanhack.common.Directions
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
-import net.wanhack.utils.countOfCellsAtDistance
-import java.util.*
-import java.lang.Math.*
-import net.wanhack.model.common.Directions
-import kotlin.support.AbstractIterator
 import net.wanhack.utils.collections.maximumBy
+import net.wanhack.utils.countOfCellsAtDistance
+import java.lang.Math.*
+import java.util.*
 
 class Cell(val region: Region, val coordinate: Coordinate, var state: CellState) {
 
@@ -56,7 +55,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     fun closeDoor(closer: Creature): Boolean {
         val door = state as? Door
         if (door != null && door.isOpen) {
-            if (creature != null || !items.empty) {
+            if (creature != null || !items.isEmpty()) {
                 closer.message("Something blocks the door.")
                 return false
             }
@@ -77,12 +76,6 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         region[coordinate.x + direction.dx, coordinate.y + direction.dy]
 
     fun getJumpTarget(up: Boolean) = portal?.getTarget(up)
-
-    fun isFloor() = state.cellType.isFloor
-
-    fun isInRoom() = state.cellType.isRoomFloor
-
-    fun isClosedDoor() = state.cellType == CellType.CLOSED_DOOR
 
     fun isAdjacent(cell: Cell) = coordinate.isAdjacent(cell.coordinate)
 
@@ -135,7 +128,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         get() = state.cellType.passable
 
     val isInteresting: Boolean
-        get() = !state.cellType.isFloor || !items.empty
+        get() = !state.cellType.isFloor || !items.isEmpty()
 
     val isDeadEnd: Boolean
         get() = isPassable && countPassableMainNeighbours() == 1
@@ -144,10 +137,10 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
     fun distance(cell: Cell) = coordinate.distance(cell.coordinate)
 
-    fun cellsNearestFirst(): Iterator<Cell> =
+    fun cellsNearestFirst(): Sequence<Cell> =
         cellsNearestFirst(max(max(coordinate.x, region.width - coordinate.x), max(coordinate.y, region.height - coordinate.y)))
 
-    fun cellsNearestFirst(maxDistance: Int): Iterator<Cell> =
+    fun cellsNearestFirst(maxDistance: Int): Sequence<Cell> =
         object : AbstractIterator<Cell>() {
             var distance = 0
             var pos = 0
@@ -165,7 +158,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
                 }
                 setNext(cellsAtCurrentDistance[pos++])
             }
-        }
+        }.asSequence()
 
     private fun cellsAtDistance(distance: Int): List<Cell> {
         if (distance == 0)
@@ -280,5 +273,5 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         return lightPower + effectiveness
     }
 
-    fun toString() = coordinate.toString()
+    override fun toString() = coordinate.toString()
 }

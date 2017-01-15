@@ -22,7 +22,7 @@ import net.wanhack.model.region.Cell
 
 class Lassie(name: String): Pet(name) {
 
-    {
+    init {
         weight = 25
         letter = 'C'
     }

@@ -21,45 +21,42 @@ import java.util.AbstractSet
 import java.util.NoSuchElementException
 import java.util.Objects
 
+@Suppress("UNCHECKED_CAST")
 class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
 
-    private val mappings = Array<V?>(region.width * region.height) { null }
+    private val mappings = Array<Any?>(region.width * region.height) { null }
 
-    override fun get(key: Any?): V? =
-        mappings[index((key as Cell).coordinate)]
+    override fun get(key: Cell?): V? =
+        mappings[index((key as Cell).coordinate)] as V?
 
     override fun put(key: Cell, value: V): V? {
         val index = index(key.coordinate)
         val old = mappings[index]
         mappings[index] = value
-        return old
+        return old as V?
     }
 
-    override fun remove(key: Any?): V? =
+    override fun remove(key: Cell?): V? =
         if (key is Cell) {
             val index = index(key.coordinate)
             val old = mappings[index]
             mappings[index] = null
-            old
+            old as V?
         } else
             null
 
-    override fun isEmpty() = size() != 0
+    override fun isEmpty() = size != 0
 
-    override fun size(): Int {
-        var size = 0
-        for (value in mappings)
-            if (value != null)
-                size++
-        return size
-    }
+    override val size: Int
+        get() = mappings.count { it != null }
 
     override fun clear() {
         for (i in mappings.indices)
             mappings[i] = null
     }
 
-    override fun entrySet() = EntrySet<V>(this)
+    override val entries: MutableSet<MutableMap.MutableEntry<Cell, V>>
+        get() = EntrySet(this)
 
     private fun index(c: Coordinate): Int =
         c.x + c.y * region.width
@@ -70,18 +67,18 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
     private class EntrySet<V : Any>(val map: CellMap<V>): AbstractSet<MutableMap.MutableEntry<Cell, V>>() {
 
         override fun iterator() =
-            EntryIterator<V>(map)
+            EntryIterator(map)
 
-        override fun add(e: MutableMap.MutableEntry<Cell, V>): Boolean {
-            map[e.key] = e.value
+        override fun add(element: MutableMap.MutableEntry<Cell, V>): Boolean {
+            map[element.key] = element.value
             return true
         }
 
-        public override fun remove(o: Any?): Boolean {
-            if (o is Map.Entry<Any?, Any?>) {
-                val key = o.key as Cell
-                val value = map.get(key)
-                if (value == o.value)
+        override fun remove(element: MutableMap.MutableEntry<Cell, V>?): Boolean {
+            if (element is Map.Entry<Any?, Any?>) {
+                val key = element.key
+                val value = map[key]
+                if (value == element.value)
                     return map.remove(key) != null
                 else
                     return false
@@ -90,37 +87,35 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
             return false
         }
 
-        override fun contains(o: Any?) =
-            (o is Map.Entry<Any?, Any?>) && (map.get(o.key as Cell) == o.value)
+        override fun contains(element: MutableMap.MutableEntry<Cell, V>?): Boolean =
+            element != null && map[element.key] == element.value
 
-        override fun size() = map.size
+        override val size: Int
+            get() = map.size
     }
 
     private class CellMapEntry<V : Any>(val map: CellMap<V>, val index: Int): MutableMap.MutableEntry<Cell, V> {
 
-        override fun getKey() = map.cell(index)
-        override fun getValue() = map.mappings[index]!!
+        override val key: Cell
+            get() = map.cell(index)
 
-        override fun setValue(value: V): V {
+        override val value: V
+            get() = map.mappings[index]!! as V
+
+        override fun setValue(newValue: V): V {
             val old = map.mappings[index]
-            map.mappings[index] = value
-            return old!!
+            map.mappings[index] = newValue
+            return old!! as V
         }
 
         override fun equals(other: Any?): Boolean {
             if (other == this)
                 return true
 
-            if (other is Map.Entry<Any?, Any?>) {
-                val rhs = other as Map.Entry<Any?, Any?>
-
-                return getKey() == rhs.key && getValue() == rhs.value
-            }
-
-            return false
+            return other is Map.Entry<Any?, Any?> && key == other.key && value == other.value
         }
 
-        override fun hashCode() = Objects.hash(getKey(), getValue())
+        override fun hashCode() = Objects.hash(key, value)
     }
 
     private class EntryIterator<V : Any>(val map: CellMap<V>): MutableIterator<MutableMap.MutableEntry<Cell, V>> {

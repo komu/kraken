@@ -19,7 +19,7 @@ package net.wanhack.utils
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock
 
-fun Lock.relinquish<T>(callback: () -> T): T =
+fun <T> Lock.relinquish(callback: () -> T): T =
     try {
         unlock()
         callback()
@@ -27,7 +27,7 @@ fun Lock.relinquish<T>(callback: () -> T): T =
         lock()
     }
 
-fun WriteLock.yield() {
+fun WriteLock.yieldLock() {
     if (isHeldByCurrentThread()) {
         unlock()
         lock()

@@ -18,7 +18,7 @@ package net.wanhack.model.common
 
 import net.wanhack.model.Game
 
-trait Actor {
+interface Actor {
     fun act(game: Game): Int
     val destroyed: Boolean
 }

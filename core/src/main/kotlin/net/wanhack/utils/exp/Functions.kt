@@ -23,7 +23,7 @@ object Functions {
 
     val functions = HashMap<Pair<String,Int>, (List<Int>) -> Int>();
 
-    {
+    init {
         functions["abs" to 1] = { args -> Math.abs(args[0]) }
         functions["max" to 2] = { args -> Math.max(args[0], args[1]) }
         functions["min" to 2] = { args -> Math.min(args[0], args[1]) }

@@ -19,6 +19,6 @@ package net.wanhack.service.region.generators
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World
 
-trait RegionGenerator {
+interface RegionGenerator {
     fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region
 }

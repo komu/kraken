@@ -16,8 +16,8 @@
 
 package net.wanhack.utils
 
-fun String.withIndices(): Iterator<Pair<Int,Char>> =
-    iterator().withIndices()
+fun String.withIndices(): Iterator<IndexedValue<Char>> =
+    iterator().withIndex()
 
 fun Iterable<String>.maxLength(): Int {
     var maximum = 0

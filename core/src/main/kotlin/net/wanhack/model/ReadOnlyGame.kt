@@ -22,7 +22,7 @@ import net.wanhack.model.item.ItemInfo
 import net.wanhack.model.region.Coordinate
 import net.wanhack.model.region.CellSet
 
-trait ReadOnlyGame {
+interface ReadOnlyGame {
     val inventoryItems: List<ItemInfo>
     val statistics: GameStatistics
 

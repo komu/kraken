@@ -18,18 +18,18 @@ package net.wanhack.model.creature
 
 import net.wanhack.model.Game
 import net.wanhack.model.common.Attack
+import net.wanhack.model.common.Color
 import net.wanhack.model.events.OneTimeEvent
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.armor.Armor
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.model.region.Cell
+import net.wanhack.model.region.CellSet
 import net.wanhack.model.region.VisibilityChecker
 import net.wanhack.model.skill.Proficiency
 import net.wanhack.model.skill.SkillSet
 import net.wanhack.utils.RandomUtils
-import net.wanhack.model.region.CellSet
-import net.wanhack.model.common.Color
 import kotlin.properties.Delegates
 
 class Player(name: String): Creature(name) {
@@ -42,16 +42,16 @@ class Player(name: String): Creature(name) {
     var hunger = 2000
     var fainted = false
     var regenerated = false
-    var sex = RandomUtils.randomEnum(javaClass<Sex>())
-    var sight = 20;
+    var sex = RandomUtils.randomEnum(Sex::class.java)
+    var sight = 20
 
     private val game: Game
         get() = region.world.game
 
     override var tickRate: Int = 90
-        get() = Math.max(1, super.tickRate + weightPenalty);
+        get() = Math.max(1, super.tickRate + weightPenalty)
 
-    {
+    init {
         letter = '@'
         color = Color.BLUE
         maximumHitPoints = 8 + RandomUtils.rollDie(5)
@@ -59,7 +59,7 @@ class Player(name: String): Creature(name) {
         skills.setWeaponProficiency(WeaponClass.SWORD, Proficiency.BASIC)
     }
 
-    public fun getThrowRange(weight: Int): Int =
+    fun getThrowRange(weight: Int): Int =
         when {
             weight < 1000  -> 30
             weight < 2000  -> 20
@@ -85,7 +85,7 @@ class Player(name: String): Creature(name) {
 
     val activatedItems: List<Item>
         get() {
-            val result = listBuilder<Item>()
+            val result = mutableListOf<Item>()
 
             val weapon = wieldedWeapon
             if (weapon != null)
@@ -94,7 +94,7 @@ class Player(name: String): Creature(name) {
             for (armor in armoring)
                 result.add(armor)
 
-            return result.build()
+            return result
         }
 
     override fun die(killer: String) {
@@ -188,7 +188,7 @@ class Player(name: String): Creature(name) {
             creature != null && creature != this && !creature.friendly
         }
 
-    protected override fun onTick(game: Game) {
+    override fun onTick(game: Game) {
         updateVisiblePoints()
     }
 

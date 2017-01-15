@@ -24,7 +24,7 @@ import javax.swing.JButton
 import javax.swing.JDialog
 import javax.swing.JPanel
 import kotlin.swing.action
-import net.wanhack.model.common.Direction
+import net.wanhack.common.Direction
 import net.wanhack.desktop.extensions.*
 
 private class SelectDirectionDialog(owner: Frame): JDialog() {

@@ -20,12 +20,12 @@ import java.util.regex.Pattern
 
 class DirectivePattern(pattern: String) {
 
-    val pattern = Pattern.compile(pattern.replace("[int]", "(\\d+)").replace("[str]", "\"([^\"]+)\"").replaceAll("\\ +", "\\\\s+"))
+    val pattern = Pattern.compile(pattern.replace("[int]", "(\\d+)").replace("[str]", "\"([^\"]+)\"").replace("\\ +", "\\\\s+"))
 
     fun getTokens(str: String): Array<String>? {
         val m = pattern.matcher(str)
         return if (m.matches())
-            Array<String>(m.groupCount()) { i -> m.group(i+1)!! }
+            Array(m.groupCount()) { i -> m.group(i+1)!! }
         else
             return null
     }

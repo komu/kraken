@@ -26,7 +26,7 @@ abstract class BasicWeapon(name: String, override val weaponClass: WeaponClass, 
 
     var damage = Expression.parse(damage);
 
-    {
+    init {
         letter = '/'
         weight = 3
     }
