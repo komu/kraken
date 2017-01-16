@@ -1,11 +1,13 @@
 package net.wanhack.model.region
 
-import org.junit.Test as test
-import kotlin.test.*
+import org.junit.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class CoordinateTest {
 
-    test fun adjacency() {
+    @Test
+    fun adjacency() {
         assertTrue(Coordinate(5, 5).isAdjacent(Coordinate(4, 5)))
         assertTrue(Coordinate(5, 5).isAdjacent(Coordinate(6, 5)))
 

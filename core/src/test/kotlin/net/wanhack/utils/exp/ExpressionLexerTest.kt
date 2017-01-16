@@ -16,12 +16,13 @@
 
 package net.wanhack.utils.exp
 
-import org.junit.Test as test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class ExpressionLexerTest {
-    
-    test fun lexing() {
+
+    @Test
+    fun lexing() {
         assertTokens("")
         assertTokens("foo", "foo")
         assertTokens("foo bar", "foo", "bar")
@@ -29,8 +30,9 @@ class ExpressionLexerTest {
         assertTokens("(1 + 20) * 3", "(", "1", "+", "20", ")", "*", "3")
         assertTokens("(1+2) * 3 / randint(4, 5)", "(", "1", "+", "2", ")", "*", "3", "/", "randint", "(", "4", ",", "5", ")")
     }
-    
-    test fun pushBack() {
+
+    @Test
+    fun pushBack() {
         val lexer = ExpressionLexer("foo bar")
 
         assertEquals(TokenType.IDENTIFIER, lexer.next())
@@ -50,14 +52,14 @@ class ExpressionLexerTest {
         assertEquals(TokenType.EOF, lexer.next())
     }
 
-    class object {
+    companion object {
 
         private fun assertTokens(exp: String, vararg expected: String) {
             assertEquals(expected.toList(), lex(exp))
         }
 
         private fun lex(exp: String): List<String> {
-            val tokens = listBuilder<String>()
+            val tokens = mutableListOf<String>()
             val lexer = ExpressionLexer(exp)
 
             while (true) {
@@ -71,7 +73,7 @@ class ExpressionLexerTest {
                     tokens.add(token.toString())
             }
 
-            return tokens.build()
+            return tokens
         }
     }
 }

@@ -16,24 +16,26 @@
 
 package net.wanhack.utils.collections
 
-import org.junit.Test as test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class CircularBufferTest {
-    
-    test fun empty() {
+
+    @Test
+    fun empty() {
         val buffer = CircularBuffer<String>(2)
 
         assertEquals("capacity", 2, buffer.capacity)
         assertEquals("size", 0, buffer.size)
     }
 
-    test(expected=javaClass<IllegalArgumentException>())
+    @Test(expected = IllegalArgumentException::class)
     fun constructWithZeroSize() {
         CircularBuffer<String>(0)
     }
-    
-    test fun addWithoutOverflow() {
+
+    @Test
+    fun addWithoutOverflow() {
         val buffer = CircularBuffer<String>(2)
         
         assertEquals("size", 0, buffer.size)
@@ -49,8 +51,9 @@ class CircularBufferTest {
         assertEquals("size", 2, buffer.size)
         assertEquals("[foo, bar]", buffer.toString())
     }
-    
-    test fun addOverflowing() {
+
+    @Test
+    fun addOverflowing() {
         val buffer = CircularBuffer<String>(2)
         
         assertEquals("size", 0, buffer.size)
@@ -82,7 +85,8 @@ class CircularBufferTest {
         assertEquals("[bad, xyzzy]", buffer.toString())
     }
 
-    test fun lastN() {
+    @Test
+    fun lastN() {
         val buffer = CircularBuffer<String>(3)
         buffer.add("1")
         buffer.add("2")

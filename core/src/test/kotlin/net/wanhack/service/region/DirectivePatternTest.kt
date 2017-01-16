@@ -16,19 +16,20 @@
 
 package net.wanhack.service.region
 
-import org.junit.Test as test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Test
 
 class DirectivePatternTest {
-    test fun testNoMatch() {
+    @Test fun testNoMatch() {
         assertNoMatch("foo [int] [str]", "foo bar baz")
     }
 
-    test fun testParseSimpleTokens() {
+    @Test fun testParseSimpleTokens() {
         assertMatch("foo [str] [str]", "foo \"bar\" \"baz\"", "bar", "baz")
     }
 
-    class object {
+    companion object {
         fun assertNoMatch(pattern: String, line: String) {
             val directivePattern = DirectivePattern(pattern)
             assertNull(directivePattern.getTokens(line))

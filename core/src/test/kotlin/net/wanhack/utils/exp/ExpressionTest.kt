@@ -16,13 +16,14 @@
 
 package net.wanhack.utils.exp
 
-import org.junit.Test as test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Test
 
 class ExpressionTest {
 
-    test fun simple() {
+    @Test
+    fun simple() {
         assertExpression(0, "0")
         assertExpression(1, "1")
         assertExpression(5, "5")
@@ -30,31 +31,37 @@ class ExpressionTest {
         assertExpression(5, "+5")
     }
 
-    test fun additiveExpression()  {
+    @Test
+    fun additiveExpression()  {
         assertExpression(4, "2 + 2")
         assertExpression(3, "5 - 2")
         assertExpression(6, "1 + 2 + 3")
         assertExpression(2, "5 - 2 - 1")
     }
 
-    test fun multiplicativeExpression()  {
+    @Test
+    fun multiplicativeExpression()  {
         assertExpression(6, "2 * 3")
         assertExpression(11, "1 + 2 * 3 + 4")
     }
 
-    test fun parenthesizedExpression() {
+    @Test
+    fun parenthesizedExpression() {
         assertExpression(21, "(1 + 2) * (3 + 4)")
     }
 
-    test fun functionCalls() {
+    @Test
+    fun functionCalls() {
         assertExpression(2, "max(1, 2)")
     }
 
-    test fun variables() {
+    @Test
+    fun variables() {
         assertExpression(3, "one + two", mapOf("one" to 1, "two" to 2))
     }
 
-    test fun diceSyntax() {
+    @Test
+    fun diceSyntax() {
         assertExpression(2, "d1 + d1")
         assertExpression(4, "3d1 + 1")
 
@@ -62,7 +69,7 @@ class ExpressionTest {
         assertTrue(result >= 1 && result <= 4)
     }
 
-    class object {
+    companion object {
 
         fun assertExpression(expected: Int, exp: String) {
             assertEquals(expected, Expression.evaluate(exp))

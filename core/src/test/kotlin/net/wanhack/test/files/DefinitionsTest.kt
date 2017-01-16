@@ -16,12 +16,15 @@
 
 package net.wanhack.test.files
 
-import org.junit.Test as test
-import net.wanhack.definitions.*
+import net.wanhack.definitions.Creatures
+import net.wanhack.definitions.Items
+import net.wanhack.definitions.Weapons
+import org.junit.Test
 
 class DefinitionsTest {
 
-    test fun loadDefinitions() {
+    @Test
+    fun loadDefinitions() {
         for (def in Weapons.itemDefinitions)
             def.create()
 

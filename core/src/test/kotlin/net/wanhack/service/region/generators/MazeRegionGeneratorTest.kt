@@ -1,21 +1,22 @@
 package net.wanhack.service.region.generators
 
-import org.junit.Test as test
-import kotlin.test.*
-import net.wanhack.model.region.World
+import net.wanhack.common.Direction
 import net.wanhack.model.Game
 import net.wanhack.model.GameConfiguration
 import net.wanhack.model.common.Console
 import net.wanhack.model.item.Item
-import net.wanhack.common.Direction
+import net.wanhack.model.region.World
 import net.wanhack.model.region.generators.MazeRegionGenerator
+import org.junit.Test
+import kotlin.test.assertTrue
 
 class MazeRegionGeneratorTest {
 
     val world = World(Game(GameConfiguration(), MyConsole, {} ))
 
-    test fun generateRandomRegions() {
-        1000 times {
+    @Test
+    fun generateRandomRegions() {
+        repeat(1000) {
             val region = MazeRegionGenerator.generate(world, "foo", 20, "bar", "baz")
             assertTrue(region.isSurroundedByUndiggableWalls())
         }
