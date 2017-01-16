@@ -16,12 +16,14 @@
 
 package net.wanhack.android
 
-import kotlin.properties.ReadOnlyProperty
-import android.view.View
 import android.app.Activity
+import android.view.View
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
-class ViewProperty<T : View>(val id: Int) : ReadOnlyProperty<Activity,T> {
+@Suppress("UNCHECKED_CAST")
+class ViewProperty<out T : View>(val id: Int) : ReadOnlyProperty<Activity,T> {
 
-    override fun get(thisRef: Activity, desc: PropertyMetadata) =
+    override fun getValue(thisRef: Activity, property: KProperty<*>): T =
         thisRef.findViewById(id) as T
 }

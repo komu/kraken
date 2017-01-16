@@ -17,27 +17,23 @@
 package net.wanhack.android
 
 import android.R
-import java.lang.Math.abs
 import android.app.Activity
+import android.app.AlertDialog
 import android.os.Bundle
-import net.wanhack.model.GameFacade
+import android.util.Log
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.widget.Toast
+import net.wanhack.common.Direction
+import net.wanhack.common.Directions
 import net.wanhack.model.GameConfiguration
+import net.wanhack.model.GameFacade
 import net.wanhack.model.common.Console
 import net.wanhack.model.item.Item
-import net.wanhack.common.Direction
-import android.util.Log
-import android.view.ContextMenu
-import android.view.View
-import android.view.MenuItem
-import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
-import android.view.MotionEvent
-import net.wanhack.common.Directions
-import java.util.concurrent.CountDownLatch
-import android.app.AlertDialog
-import java.util.HashSet
+import java.lang.Math.abs
+import java.util.*
 import java.util.Collections.emptySet
-import android.widget.Toast
+import java.util.concurrent.CountDownLatch
 import kotlin.properties.Delegates
 
 class GameActivity : Activity() {
@@ -52,7 +48,7 @@ class GameActivity : Activity() {
         registerForContextMenu(gameView)
 
         val gestureDetector = GestureDetector(this, MyGestureListener())
-        gameView.setOnTouchListener { (v, event) ->
+        gameView.setOnTouchListener { v, event ->
             gestureDetector.onTouchEvent(event)
         }
 
@@ -71,12 +67,12 @@ class GameActivity : Activity() {
         game.movePlayer(dir)
     }
 
-    public override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-        getMenuInflater()!!.inflate(R.menu.game_actions, menu)
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        menuInflater.inflate(R.menu.game_actions, menu)
     }
 
-    public override fun onContextItemSelected(item: MenuItem?): Boolean {
-        when (item!!.getItemId()) {
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.skipTurn   -> game.skipTurn()
             R.id.moveUp     -> game.movePlayerVertically(true)
             R.id.moveDown   -> game.movePlayerVertically(false)
@@ -101,18 +97,18 @@ class GameActivity : Activity() {
         val SWIPE_MAX_OFF_PATH = 250
         val SWIPE_THRESHOLD_VELOCITY = 200
 
-        public override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
             e1!!
             e2!!
 
             var dx = 0
             var dy = 0
 
-            if (abs(velocityX) > SWIPE_THRESHOLD_VELOCITY && abs(e1.getX() - e2.getX()) > SWIPE_MIN_DISTANCE)
-                dx = if (e1.getX() < e2.getX()) 1 else -1
+            if (abs(velocityX) > SWIPE_THRESHOLD_VELOCITY && abs(e1.x - e2.x) > SWIPE_MIN_DISTANCE)
+                dx = if (e1.x < e2.x) 1 else -1
 
-            if (abs(velocityY) > SWIPE_THRESHOLD_VELOCITY && abs(e1.getY() - e2.getY()) > SWIPE_MIN_DISTANCE)
-                dy = if (e1.getY() < e2.getY()) 1 else -1
+            if (abs(velocityY) > SWIPE_THRESHOLD_VELOCITY && abs(e1.y - e2.y) > SWIPE_MIN_DISTANCE)
+                dy = if (e1.y < e2.y) 1 else -1
 
             val direction = Directions.forDeltas(dx, dy)
             if (direction != null)
@@ -131,15 +127,15 @@ class GameActivity : Activity() {
         }
 
         override fun ask(question: String): Boolean =
-            waitForUI<Boolean> { setResult ->
+            waitForUI { setResult ->
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle(question)
 
-                builder.setPositiveButton("Yes") { (dialog, id) ->
+                builder.setPositiveButton("Yes") { dialog, id ->
                     setResult(true)
                 }
 
-                builder.setNegativeButton("No") { (dialog, id) ->
+                builder.setNegativeButton("No") { dialog, id ->
                     setResult(false)
                 }
 
@@ -151,13 +147,13 @@ class GameActivity : Activity() {
             }
 
         override fun <T: Item> selectItem(message: String, items: Collection<T>): T? =
-            waitForUI<T?> { setResult ->
+            waitForUI { setResult ->
                 val itemList = items.toList()
-                val titles = Array<String>(itemList.size) { i -> itemList[i].title }
+                val titles = Array(itemList.size) { i -> itemList[i].title }
 
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle(message)
-                builder.setItems(titles) { (dialog, which) ->
+                builder.setItems(titles) { dialog, which ->
                     setResult(itemList[which])
                 }
                 builder.setOnCancelListener {
@@ -166,17 +162,17 @@ class GameActivity : Activity() {
                 builder.create()!!.show()
             }
 
-        override fun selectItems<T: Item>(message: String, items: Collection<T>): Set<T> =
-            waitForUI<Set<T>> { setResult ->
+        override fun <T: Item> selectItems(message: String, items: Collection<T>): Set<T> =
+            waitForUI { setResult ->
                 val itemList = items.toList()
-                val titles = Array<String>(itemList.size) { i -> itemList[i].title }
+                val titles = Array(itemList.size) { i -> itemList[i].title }
 
                 val selections = HashSet<T>()
 
                 val builder = AlertDialog.Builder(this@GameActivity)
 
                 builder.setTitle(message)
-                builder.setMultiChoiceItems(titles, null) { (dialog, which, isChecked) ->
+                builder.setMultiChoiceItems(titles, null) { dialog, which, isChecked ->
                     val item = itemList[which]
                     if (isChecked) {
                         selections.add(item)
@@ -185,11 +181,11 @@ class GameActivity : Activity() {
                     }
                 }
 
-                builder.setPositiveButton("Ok") { (dialog, id) ->
+                builder.setPositiveButton("Ok") { dialog, id ->
                     setResult(selections)
                 }
 
-                builder.setNegativeButton("Cancel") { (dialog, id) ->
+                builder.setNegativeButton("Cancel") { dialog, id ->
                     setResult(emptySet())
                 }
 
@@ -201,13 +197,13 @@ class GameActivity : Activity() {
             }
 
         override fun selectDirection(): Direction? =
-            waitForUI<Direction?> { setResult ->
+            waitForUI { setResult ->
                 val directions = Direction.values()
-                val titles = Array<String>(directions.size) { i -> directions[i].shortName }
+                val titles = Array(directions.size) { i -> directions[i].shortName }
 
                 val builder = AlertDialog.Builder(this@GameActivity)
                 builder.setTitle("Select direction")
-                builder.setItems(titles) { (dialog, which) ->
+                builder.setItems(titles) { dialog, which ->
                     setResult(directions[which])
                 }
                 builder.setOnCancelListener {
@@ -216,7 +212,7 @@ class GameActivity : Activity() {
                 builder.create()!!.show()
             }
 
-        fun waitForUI<T>(callback: (setResult: (T) -> Unit) -> Unit): T {
+        fun <T> waitForUI(callback: (setResult: (T) -> Unit) -> Unit): T {
             var result: T? = null
             val latch = CountDownLatch(1)
 
@@ -232,7 +228,7 @@ class GameActivity : Activity() {
         }
     }
 
-    class object {
+    companion object {
         val tag = "wanhack"
     }
 }
