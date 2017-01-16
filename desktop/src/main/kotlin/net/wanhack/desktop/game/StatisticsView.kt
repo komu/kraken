@@ -16,43 +16,34 @@
 
 package net.wanhack.desktop.game
 
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.Font
-import java.awt.FontMetrics
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.util.ArrayList
-import javax.swing.JComponent
-import net.wanhack.model.creature.HungerLevel
-import net.wanhack.model.creature.Player
-import net.wanhack.model.Game
-import net.wanhack.model.ReadOnlyGame
-import net.wanhack.desktop.extensions.fontMetrics
 import net.wanhack.model.GameStatistics
+import net.wanhack.model.creature.HungerLevel
+import java.awt.*
+import java.util.*
+import javax.swing.JComponent
 
 class StatisticsView: JComponent() {
 
     private var line1: Line? = null
-    private var line2: Line? = null;
+    private var line2: Line? = null
 
-    {
-        setBackground(Color.BLACK)
-        setBorder(null)
-        setFont(Font("Monospaced", Font.PLAIN, 14))
+    init {
+        background = Color.BLACK
+        border = null
+        font = Font("Monospaced", Font.PLAIN, 14)
     }
 
-    public override fun getPreferredSize() =
-        Dimension(300, 2 * getFontMetrics(getFont())?.getHeight()!!)
+    override fun getPreferredSize() =
+        Dimension(300, 2 * getFontMetrics(font).height)
 
-    public override fun paint(g: Graphics) {
+    override fun paint(g: Graphics) {
         val g2 = g as Graphics2D
-        g2.setPaint(getBackground())
-        g2.fillRect(0, 0, getWidth(), getHeight())
-        g2.setFont(getFont())
+        g2.paint = background
+        g2.fillRect(0, 0, width, height)
+        g2.font = font
         val fm = g2.fontMetrics
-        drawLine(g2, line1, fm.getAscent())
-        drawLine(g2, line2, fm.getAscent() * 2)
+        drawLine(g2, line1, fm.ascent)
+        drawLine(g2, line2, fm.ascent * 2)
     }
 
     private fun drawLine(g: Graphics2D, line: Line?, y: Int) {
@@ -62,7 +53,7 @@ class StatisticsView: JComponent() {
         val fm = g.fontMetrics
         var x = 0
         for (fragment in line.fragments) {
-            g.setColor(fragment.color)
+            g.color = fragment.color
             g.drawString(fragment.text, x, y)
             x += fm.stringWidth(fragment.text)
         }
@@ -89,7 +80,7 @@ class StatisticsView: JComponent() {
         return line
     }
 
-    class object {
+    companion object {
         private fun getHitPointsColor(player: GameStatistics) =
             if (player.hitPoints <= player.maximumHitPoints / 4)
                 Color.RED

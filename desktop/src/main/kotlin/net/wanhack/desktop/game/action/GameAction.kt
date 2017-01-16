@@ -16,23 +16,23 @@
 
 package net.wanhack.desktop.game.action
 
+import net.wanhack.model.GameFacade
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
-import net.wanhack.model.GameFacade
 
 abstract class GameAction(name: String, game: GameFacade? = null): AbstractAction(name) {
 
     var game: GameFacade? = game
-        set(game: GameFacade?) {
-            $game = game
-            setEnabled(game != null)
+        set(game) {
+            field = game
+            isEnabled = game != null
         }
 
-    {
-        setEnabled(false)
+    init {
+        isEnabled = false
     }
 
-    public override fun actionPerformed(e: ActionEvent) {
+    override fun actionPerformed(e: ActionEvent) {
         val g = game
         if (g != null)
             actionPerformed(e, g)

@@ -16,22 +16,15 @@
 
 package net.wanhack.desktop.game
 
-import javax.swing.ButtonGroup
-import javax.swing.JComboBox
-import javax.swing.JDialog
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.JRadioButton
-import javax.swing.JTextField
-import net.wanhack.model.GameConfiguration
-import net.wanhack.model.GameConfiguration.PetType
-import net.wanhack.model.creature.Sex
-import net.wanhack.utils.SystemAccess
 import com.jgoodies.forms.builder.DefaultFormBuilder
 import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
-import kotlin.swing.*
+import net.wanhack.model.GameConfiguration
+import net.wanhack.model.GameConfiguration.PetType
+import net.wanhack.model.creature.Sex
+import net.wanhack.utils.SystemAccess
+import javax.swing.*
 
 class StartGameDialog(owner: JFrame): JDialog() {
 
@@ -39,10 +32,10 @@ class StartGameDialog(owner: JFrame): JDialog() {
     private val nameField = JTextField(20)
     private val maleRadio = JRadioButton("male", true)
     private val femaleRadio = JRadioButton("female", false)
-    private val petCombo = JComboBox<PetType>(PetType.values());
+    private val petCombo = JComboBox<PetType>(PetType.values())
 
-    {
-        setModal(true)
+    init {
+        isModal = true
         initContent()
         val sexButtonGroup = ButtonGroup()
         sexButtonGroup.add(maleRadio)
@@ -51,20 +44,20 @@ class StartGameDialog(owner: JFrame): JDialog() {
         setLocationRelativeTo(owner)
     }
 
-    public fun showDialog(): GameConfiguration? {
+    fun showDialog(): GameConfiguration? {
         configuration = null
-        nameField.setText(SystemAccess.getSystemProperty("name", ""))
-        nameField.setSelectionStart(0)
-        nameField.setSelectionEnd(nameField.getText()!!.length)
-        setVisible(true)
+        nameField.text = SystemAccess.getSystemProperty("name", "")
+        nameField.selectionStart = 0
+        nameField.selectionEnd = nameField.text.length
+        isVisible = true
         return configuration
     }
 
     private fun createConfiguration(): GameConfiguration {
         val config = GameConfiguration()
-        config.name = nameField.getText()!!
-        config.sex = if (maleRadio.isSelected()) Sex.MALE else Sex.FEMALE
-        config.pet = petCombo.getSelectedItem() as PetType
+        config.name = nameField.text
+        config.sex = if (maleRadio.isSelected) Sex.MALE else Sex.FEMALE
+        config.pet = petCombo.selectedItem as PetType
         return config
     }
 
@@ -81,19 +74,19 @@ class StartGameDialog(owner: JFrame): JDialog() {
         builder.addLabel("Pet", cc.xy(1, 6))
         builder.add(petCombo, cc.xy(3, 6))
         builder.add(createButtonBar(), cc.xyw(1, 8, 3))
-        setContentPane(builder.getPanel())
+        contentPane = builder.panel
     }
 
     private fun createButtonBar(): JPanel {
-        val ok = button("Ok") {
+        val ok = JButton("Ok").apply {
             configuration = createConfiguration()
-            setVisible(false)
+            isVisible = false
         }
-        val cancel = button("Cancel") {
+        val cancel = JButton("Cancel").apply {
             configuration = null
-            setVisible(false)
+            isVisible = false
         }
-        getRootPane()?.setDefaultButton(ok)
+        rootPane.defaultButton = ok
         return ButtonBarFactory.buildOKCancelBar(ok, cancel)
     }
 }

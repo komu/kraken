@@ -16,6 +16,9 @@
 
 package net.wanhack.desktop.console
 
+import net.wanhack.common.Direction
+import net.wanhack.desktop.extensions.makeAction
+import net.wanhack.desktop.extensions.set
 import java.awt.Frame
 import java.awt.GridLayout
 import java.awt.event.ActionEvent
@@ -23,20 +26,14 @@ import javax.swing.AbstractAction
 import javax.swing.JButton
 import javax.swing.JDialog
 import javax.swing.JPanel
-import kotlin.swing.action
-import net.wanhack.common.Direction
-import net.wanhack.desktop.extensions.*
 
-private class SelectDirectionDialog(owner: Frame): JDialog() {
+class SelectDirectionDialog(owner: Frame): JDialog() {
 
-    private var selectedDirection: Direction? = null;
+    private var selectedDirection: Direction? = null
 
-    {
-        val contentPane = getContentPane()!!
-        val rootPane = getRootPane()!!
-
-        setModal(true)
-        contentPane.setLayout(GridLayout(3, 3))
+    init {
+        isModal = true
+        contentPane.layout = GridLayout(3, 3)
         add(selectDirectionButton(Direction.NW))
         add(selectDirectionButton(Direction.NORTH))
         add(selectDirectionButton(Direction.NE))
@@ -66,9 +63,9 @@ private class SelectDirectionDialog(owner: Frame): JDialog() {
         for (dir in Direction.values())
             actionMap[dir] = SelectDirectionAction(dir)
 
-        actionMap["escape"] = action("Escape") {
+        actionMap["escape"] = makeAction("Escape") {
             selectedDirection = null
-            setVisible(false)
+            isVisible = false
         }
         pack()
         setLocationRelativeTo(owner)
@@ -77,16 +74,16 @@ private class SelectDirectionDialog(owner: Frame): JDialog() {
     fun selectDirectionButton(dir: Direction) = JButton(SelectDirectionAction(dir))
 
     inner class SelectDirectionAction(val dir: Direction): AbstractAction(dir.shortName) {
-        public override fun actionPerformed(e: ActionEvent) {
+        override fun actionPerformed(e: ActionEvent) {
             selectedDirection = dir
-            setVisible(false)
+            isVisible = false
         }
     }
 
-    class object {
+    companion object {
         fun selectDirection(frame: Frame): Direction? {
             val dlg = SelectDirectionDialog(frame)
-            dlg.setVisible(true)
+            dlg.isVisible = true
             return dlg.selectedDirection
         }
     }

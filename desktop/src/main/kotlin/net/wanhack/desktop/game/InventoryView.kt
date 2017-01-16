@@ -16,37 +16,24 @@
 
 package net.wanhack.desktop.game
 
+import net.wanhack.model.item.ItemInfo
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Vector
-import javax.swing.BorderFactory
-import javax.swing.JList
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.ListSelectionModel
-import net.wanhack.desktop.game.action.DropItemAction
-import javax.swing.SwingUtilities
-import kotlin.swing.*
-import net.wanhack.model.ReadOnlyGame
-import net.wanhack.model.GameFacade
-import net.wanhack.model.item.ItemInfo
+import java.util.*
+import javax.swing.*
 
 class InventoryView : JPanel(BorderLayout()) {
-    private val list = JList<ItemInfo>();
+    private val list = JList<ItemInfo>()
 
-    {
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-        list.setCellRenderer(InventoryCellRenderer())
-        list.setFocusable(false)
-        list.setBackground(Color.BLACK)
-        setPreferredSize(Dimension(200, 200))
+    init {
+        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
+        list.cellRenderer = InventoryCellRenderer()
+        list.isFocusable = false
+        list.background = Color.BLACK
+        preferredSize = Dimension(200, 200)
         val scrollPane = JScrollPane(list)
-        scrollPane.setBorder(BorderFactory.createEmptyBorder())
+        scrollPane.border = BorderFactory.createEmptyBorder()
         add(scrollPane, BorderLayout.CENTER)
     }
 

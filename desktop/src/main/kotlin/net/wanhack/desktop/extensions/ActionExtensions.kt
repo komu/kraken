@@ -16,16 +16,22 @@
 
 package net.wanhack.desktop.extensions
 
-import javax.swing.Action
-import javax.swing.ActionMap
-import javax.swing.InputMap
-import javax.swing.KeyStroke
+import java.awt.event.ActionEvent
+import javax.swing.*
 
-fun ActionMap.set(name: Any, action: Action?) =
+operator fun ActionMap.set(name: Any, action: Action?) =
     put(name, action)
 
-fun InputMap.set(keyStroke: KeyStroke, actionMapKey: Any?) =
+operator fun InputMap.set(keyStroke: KeyStroke, actionMapKey: Any?) =
     put(keyStroke, actionMapKey)
 
-fun InputMap.set(keyStroke: String, actionMapKey: Any?) =
+operator fun InputMap.set(keyStroke: String, actionMapKey: Any?) =
     put(KeyStroke.getKeyStroke(keyStroke), actionMapKey)
+
+fun makeAction(name: String = "", mnemonic: Int? = null, code: () -> Unit): Action = object : AbstractAction(name) {
+    init {
+        if (mnemonic != null)
+            putValue(Action.MNEMONIC_KEY, mnemonic)
+    }
+    override fun actionPerformed(e: ActionEvent?) = code()
+}

@@ -16,25 +16,26 @@
 
 package net.wanhack.desktop
 
-import java.awt.BorderLayout
-import java.awt.event.*
-import java.awt.event.KeyEvent.*
-import javax.swing.*
-import kotlin.swing.*
-import net.wanhack.common.Version
 import net.wanhack.common.Direction
+import net.wanhack.common.Version
 import net.wanhack.desktop.common.ErrorDialog
 import net.wanhack.desktop.console.ConsoleView
-import net.wanhack.desktop.game.action.GameActionSet
+import net.wanhack.desktop.extensions.makeAction
+import net.wanhack.desktop.extensions.set
 import net.wanhack.desktop.game.InventoryView
 import net.wanhack.desktop.game.RegionView
-import net.wanhack.desktop.game.StatisticsView
 import net.wanhack.desktop.game.StartGameDialog
-import net.wanhack.desktop.extensions.*
+import net.wanhack.desktop.game.StatisticsView
+import net.wanhack.desktop.game.action.GameActionSet
+import net.wanhack.model.GameFacade
 import net.wanhack.utils.SystemAccess
 import net.wanhack.utils.logger
+import java.awt.BorderLayout
+import java.awt.event.KeyEvent.*
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import java.util.logging.Level
-import net.wanhack.model.GameFacade
+import javax.swing.*
 
 class Main(val wizardMode: Boolean) {
 
@@ -44,18 +45,18 @@ class Main(val wizardMode: Boolean) {
     private val statisticsView = StatisticsView()
     private var gameFacade: GameFacade? = null
     private val regionView = RegionView()
-    private val log = javaClass<Main>().logger()
-    private val gameActions = GameActionSet();
+    private val log = Main::class.java.logger()
+    private val gameActions = GameActionSet()
 
-    {
+    init {
         JOptionPane.setRootFrame(frame)
 
-        frame.jmenuBar = createMenuBar()
+        frame.jMenuBar = createMenuBar()
         initializeInputMap()
         initializeActionMap()
 
-        val mainPanel = panel {
-            setLayout(BorderLayout())
+        val mainPanel = JPanel().apply {
+            layout = BorderLayout()
 
             add(consoleView, BorderLayout.NORTH)
             add(regionView, BorderLayout.CENTER)
@@ -63,14 +64,14 @@ class Main(val wizardMode: Boolean) {
         }
 
         val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, inventoryView)
-        splitPane.setDividerSize(2)
-        splitPane.setContinuousLayout(true)
-        splitPane.setResizeWeight(1.0)
+        splitPane.dividerSize = 2
+        splitPane.isContinuousLayout = true
+        splitPane.resizeWeight = 1.0
 
-        frame.contentPane!!.add(splitPane, BorderLayout.CENTER)
+        frame.contentPane.add(splitPane, BorderLayout.CENTER)
 
         frame.pack()
-        frame.setLocationByPlatform(true)
+        frame.isLocationByPlatform = true
 
         initUncaughtExceptionHandler()
 
@@ -83,7 +84,7 @@ class Main(val wizardMode: Boolean) {
             }
         })
 
-        frame.setVisible(true)
+        frame.isVisible = true
         startNewGame()
     }
 
@@ -94,45 +95,45 @@ class Main(val wizardMode: Boolean) {
     }
 
     fun createMenuBar() =
-        menuBar {
-            menu("Game") {
+        JMenuBar().apply {
+            add(JMenu("Game").apply {
                 mnemonic = VK_G
 
-                add(action("New Game", mnemonic=VK_N) {
+                add(makeAction("New Game", mnemonic=VK_N) {
                     startNewGame()
                 })
 
                 addSeparator()
 
-                add(action("Exit", mnemonic=VK_X) {
-                    exit();
+                add(makeAction("Exit", mnemonic=VK_X) {
+                    exit()
                 })
-            }
+            })
 
-            menu("Action") {
+            add(JMenu("Action").apply {
                 mnemonic = VK_A
 
                 for (action in gameActions.actions)
                     add(action)
-            }
+            })
 
             if (wizardMode) {
-                menu("Debug") {
+                add(JMenu("Debug").apply {
                     mnemonic = VK_D
 
-                    add(action("Reveal Current Region", mnemonic=VK_R) {
+                    add(makeAction("Reveal Current Region", mnemonic=VK_R) {
                         gameFacade?.revealCurrentRegion()
                         regionView.repaint()
                     })
-                }
-            }
-
-            menu("Help") {
-                mnemonic = VK_H
-                add(action("About Wanhack", mnemonic=VK_A) {
-                    showAbout()
                 })
             }
+
+            add(JMenu("Help").apply {
+                mnemonic = VK_H
+                add(makeAction("About Wanhack", mnemonic=VK_A) {
+                    showAbout()
+                })
+            })
         }
 
     fun initializeInputMap() {
@@ -185,34 +186,34 @@ class Main(val wizardMode: Boolean) {
     }
 
     fun initializeActionMap() {
-        log.fine("Initializing action map");
+        log.fine("Initializing action map")
 
         val actionMap = regionView.actionMap
 
         for (direction in Direction.values()) {
-            actionMap[direction]        = action("") { gameFacade?.movePlayer(direction) }
-            actionMap["run $direction"] = action("") { gameFacade?.runTowards(direction) }
+            actionMap[direction]        = makeAction { gameFacade?.movePlayer(direction) }
+            actionMap["run $direction"] = makeAction { gameFacade?.runTowards(direction) }
         }
 
-        actionMap["down"]           = action("") { gameFacade?.movePlayerVertically(false) }
-        actionMap["up"]             = action("") { gameFacade?.movePlayerVertically(true) }
-        actionMap["rest"]           = action("") { gameFacade?.skipTurn() }
+        actionMap["down"]           = makeAction { gameFacade?.movePlayerVertically(false) }
+        actionMap["up"]             = makeAction { gameFacade?.movePlayerVertically(true) }
+        actionMap["rest"]           = makeAction { gameFacade?.skipTurn() }
 
-        actionMap["history up"]     = action("") { consoleView.scrollUp() }
-        actionMap["history down"]   = action("") { consoleView.scrollDown() }
-        actionMap["map"]            = action("") { regionView.translate = !regionView.translate; regionView.repaint() }
+        actionMap["history up"]     = makeAction { consoleView.scrollUp() }
+        actionMap["history down"]   = makeAction { consoleView.scrollDown() }
+        actionMap["map"]            = makeAction { regionView.translate = !regionView.translate; regionView.repaint() }
     }
 
     fun startNewGame() {
         log.fine("starting new game")
 
-        val dialog = StartGameDialog(frame);
-        val config = dialog.showDialog();
+        val dialog = StartGameDialog(frame)
+        val config = dialog.showDialog()
 
         if (config != null) {
             config.wizardMode = wizardMode
             val game = GameFacade(config, consoleView) { tick -> update(tick) }
-            consoleView.clear();
+            consoleView.clear()
             gameActions.gameFacade = game
             regionView.gameFacade = game
 
@@ -244,12 +245,12 @@ class Main(val wizardMode: Boolean) {
                 // for the newly created AWT event handler thread.
                 setAWTUncaughtExceptionHandler(this)
             }
-        });
+        })
     }
 
     fun setAWTUncaughtExceptionHandler(eh: Thread.UncaughtExceptionHandler) {
         SwingUtilities.invokeLater {
-            Thread.currentThread().setUncaughtExceptionHandler(eh)
+            Thread.currentThread().uncaughtExceptionHandler = eh
         }
     }
 

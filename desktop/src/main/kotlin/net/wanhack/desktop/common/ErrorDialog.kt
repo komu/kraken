@@ -16,31 +16,34 @@
 
 package net.wanhack.desktop.common
 
+import net.wanhack.desktop.extensions.label
+import java.awt.BorderLayout
+import java.awt.Dimension
+import java.awt.FlowLayout
+import java.awt.Frame
 import javax.swing.*
-import java.awt.*
-import kotlin.swing.*
-import net.wanhack.desktop.extensions.*
 
 class ErrorDialog(parent: Frame?, title: String, val throwable: Throwable): JDialog() {
 
-    val okButton = button("Ok") {
-        setVisible(false)
-    };
+    val okButton = JButton("Ok").apply {
+        isVisible = false
+    }
 
-    {
-        setModal(true)
-        setResizable(false)
-        setLayout(BorderLayout())
+    init {
+        this.title = title
+        isModal = true
+        isResizable = false
+        layout = BorderLayout()
         add(createDetailPane(), BorderLayout.CENTER)
         add(createButtonPane(), BorderLayout.SOUTH)
-        getRootPane()?.setDefaultButton(okButton)
+        rootPane.defaultButton = okButton
         pack()
         setLocationRelativeTo(parent)
     }
 
     private fun createDetailPane() =
-        panel {
-            setLayout(FlowLayout(FlowLayout.LEFT))
+        JPanel().apply {
+            layout = FlowLayout(FlowLayout.LEFT)
             add(label {
                 icon = UIManager.getDefaults()?.getIcon("OptionPane.errorIcon")
                 horizontalAlignment = SwingConstants.LEFT
@@ -51,18 +54,20 @@ class ErrorDialog(parent: Frame?, title: String, val throwable: Throwable): JDia
                 border = BorderFactory.createEmptyBorder(10, 5, 10, 10)
             })
 
-            preferredWidth = Math.max(preferredWidth, 250)
+            val ps = preferredSize
+            preferredSize = Dimension(ps.width.coerceAtLeast(250), ps.height)
         }
 
     private fun createButtonPane() =
-        panel {
-            setLayout(FlowLayout(FlowLayout.CENTER))
+        JPanel().apply {
+            layout = FlowLayout(FlowLayout.CENTER)
             add(okButton)
         }
 
-    class object {
+    companion object {
         fun show(frame: Frame?, title: String, exception: Throwable) {
-            ErrorDialog(frame, title, exception).setVisible(true)
+            val dialog = ErrorDialog(frame, title, exception)
+            dialog.isVisible = true
         }
     }
 }

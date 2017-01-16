@@ -16,17 +16,13 @@
 
 package net.wanhack.desktop.console
 
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.Font
-import java.awt.Graphics
-import javax.swing.JComponent
-import javax.swing.JOptionPane
-import net.wanhack.model.common.Console
 import net.wanhack.common.Direction
+import net.wanhack.model.common.Console
 import net.wanhack.model.item.Item
 import net.wanhack.utils.collections.CircularBuffer
-import java.awt.Frame
+import java.awt.*
+import javax.swing.JComponent
+import javax.swing.JOptionPane
 
 class ConsoleView : JComponent(), Console {
 
@@ -35,10 +31,10 @@ class ConsoleView : JComponent(), Console {
     private var currentRow = 0
     private val rowsToShow = 3;
 
-    {
-        setBackground(Color.BLACK)
-        setForeground(Color.WHITE)
-        setFont(Font("Monospaced", Font.PLAIN, 14))
+    init {
+        background = Color.BLACK
+        foreground = Color.WHITE
+        font = Font("Monospaced", Font.PLAIN, 14)
     }
 
     val frame: Frame
@@ -53,28 +49,27 @@ class ConsoleView : JComponent(), Console {
     }
 
     fun scrollDown() {
-        currentRow = Math.min(buffer.size() - 1, currentRow + 1)
+        currentRow = Math.min(buffer.size - 1, currentRow + 1)
         repaint()
     }
 
-    fun paint(g: Graphics?) {
-        g!!
-        g.setColor(getBackground())
-        g.fillRect(0, 0, getWidth(), getHeight())
+    override fun paint(g: Graphics) {
+        g.color = background
+        g.fillRect(0, 0, width, height)
 
-        if (!buffer.empty && currentRow < buffer.size) {
-            g.setColor(getForeground())
-            val fm = getFontMetrics(getFont())!!
-            val maxWidth = getWidth()
+        if (!buffer.isEmpty() && currentRow < buffer.size) {
+            g.color = foreground
+            val fm = getFontMetrics(font)
+            val maxWidth = width
             val text = buffer[currentRow]
             val words = text.split(" ")
             var x = 0
-            var y = fm.getAscent()
+            var y = fm.ascent
             for (word in words) {
-                var wordWidth = fm.stringWidth(word)
+                val wordWidth = fm.stringWidth(word)
                 if (x != 0 && x + wordWidth >= maxWidth) {
                     x = 0
-                    y += fm.getHeight()
+                    y += fm.height
                 }
 
                 g.drawString(word, x, y)
@@ -85,24 +80,24 @@ class ConsoleView : JComponent(), Console {
     }
 
     override fun getPreferredSize(): Dimension {
-        val fm = getFontMetrics(getFont())!!
-        return Dimension(200, rowsToShow * fm.getHeight())
+        val fm = getFontMetrics(font)
+        return Dimension(200, rowsToShow * fm.height)
     }
 
     fun turnEnd() {
         if (!hasOutputOnThisTurn)
-            if (!buffer.isEmpty() && !"".equals(buffer.last()))
+            if (!buffer.isEmpty() && "" != buffer.last())
                 buffer.add("")
 
         hasOutputOnThisTurn = false
-        currentRow = buffer.size() - 1
+        currentRow = buffer.size - 1
         repaint()
     }
 
     override fun message(message: String) {
         if (hasOutputOnThisTurn) {
-            var last = buffer.last()
-            buffer.replaceLast(last + " " + message)
+            val last = buffer.last()
+            buffer.replaceLast("$last $message")
         } else {
             if (!buffer.isEmpty() && "" == buffer.last())
                 buffer.replaceLast(message)
@@ -115,10 +110,10 @@ class ConsoleView : JComponent(), Console {
     override fun selectDirection(): Direction? =
         SelectDirectionDialog.selectDirection(frame)
 
-    override fun selectItem<T: Item> (message: String, items: Collection<T>) =
+    override fun <T: Item> selectItem(message: String, items: Collection<T>) =
         SelectItemsDialog.selectItem(frame, message, items)
 
-    override fun selectItems<T : Item>(message: String, items: Collection<T>) =
+    override fun <T : Item> selectItems(message: String, items: Collection<T>) =
         SelectItemsDialog.selectItems(frame, message, items)
 
     fun clear() {

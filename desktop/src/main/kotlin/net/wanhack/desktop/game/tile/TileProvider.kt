@@ -16,18 +16,14 @@
 
 package net.wanhack.desktop.game.tile
 
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.Font
-import java.awt.Graphics2D
-import java.awt.Paint
-import java.lang.Math.max
-import java.lang.Math.min
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.Item
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.CellType.*
 import net.wanhack.model.region.Coordinate
+import java.awt.*
+import java.lang.Math.max
+import java.lang.Math.min
 
 class TileProvider {
 
@@ -57,7 +53,7 @@ class TileProvider {
     }
     
     fun drawSelection(g: Graphics2D, coordinate: Coordinate) {
-        g.setPaint(Color(0.8.toFloat(), 0.3.toFloat(), 0.3.toFloat(), 0.5.toFloat()))
+        g.paint = Color(0.8.toFloat(), 0.3.toFloat(), 0.3.toFloat(), 0.5.toFloat())
         g.fillRect(coordinate.x * tileWidth, coordinate.y * tileHeight, tileWidth, tileHeight)
     }
 
@@ -67,8 +63,8 @@ class TileProvider {
     }
 
     private fun drawLetter(g: Graphics2D, x: Int, y: Int, letter: Char, paint: Paint) {
-        g.setFont(font)
-        g.setPaint(paint)
+        g.font = font
+        g.paint = paint
         chars[0] = letter
         g.drawChars(chars, 0, 1, x * tileWidth, y * tileHeight + 10)
     }
@@ -91,7 +87,7 @@ class TileProvider {
     private fun drawFloor(g: Graphics2D, cell: Cell, visible: Boolean, shadow: Boolean) {
         val paint = if (visible) getFloorColor(cell.lighting, shadow) else ROOM_FLOOR_INVISIBLE
 
-        g.setPaint(paint)
+        g.paint = paint
         g.fillRect(cell.coordinate.x * tileWidth, cell.coordinate.y * tileHeight, tileWidth, tileHeight)
     }
 
@@ -104,11 +100,11 @@ class TileProvider {
     }
 
     private fun drawWall(g: Graphics2D, x: Int, y: Int, visible: Boolean) {
-        g.setPaint(if (visible) WALL_VISIBLE else WALL_INVISIBLE)
+        g.paint = if (visible) WALL_VISIBLE else WALL_INVISIBLE
         g.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight)
     }
 
-    class object {
+    companion object {
         private val chars = CharArray(1)
         private val ROOM_FLOOR_INVISIBLE = Color(80, 80, 80)
         private val WALL_VISIBLE = Color.DARK_GRAY

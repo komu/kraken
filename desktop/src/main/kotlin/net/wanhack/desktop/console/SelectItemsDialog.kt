@@ -16,28 +16,27 @@
 
 package net.wanhack.desktop.console
 
-import javax.swing.*
-import java.awt.*
-import java.util.LinkedHashSet
-import java.util.HashSet
 import com.jgoodies.forms.builder.DefaultFormBuilder
 import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
+import net.wanhack.desktop.extensions.makeAction
+import net.wanhack.desktop.extensions.set
 import net.wanhack.model.item.Item
-import net.wanhack.desktop.extensions.*
-import kotlin.swing.*
+import java.awt.Component
+import java.awt.Frame
+import java.util.*
+import javax.swing.*
 
-private class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: Collection<T>): JDialog() {
+class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: Collection<T>): JDialog() {
 
-    private val itemList: JList<T>
-    private var selectedItems = HashSet<T>();
+    private val itemList: JList<T> = JList(Vector(items))
+    private var selectedItems = HashSet<T>()
 
-    {
-        setModal(true)
+    init {
+        isModal = true
 
-        itemList = JList<T>(items.toArray(Array<T>(0) { throw Exception("unexpected") }))
-        itemList.setCellRenderer(ItemCellRenderer())
+        itemList.cellRenderer = ItemCellRenderer()
         initContent()
 
         itemList.inputMap["ESCAPE"] = "cancel"
@@ -53,52 +52,51 @@ private class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: C
         builder.setDefaultDialogBorder()
         builder.add(JScrollPane(itemList))
         builder.add(createButtonBar(), cc.xy(1, 3))
-        setContentPane(builder.getPanel())
+        contentPane = builder.panel
     }
 
     private fun setAllowMultipleSelections(b: Boolean) {
-        itemList.setSelectionMode(if (b) ListSelectionModel.MULTIPLE_INTERVAL_SELECTION else ListSelectionModel.SINGLE_SELECTION)
+        itemList.selectionMode = if (b) ListSelectionModel.MULTIPLE_INTERVAL_SELECTION else ListSelectionModel.SINGLE_SELECTION
     }
 
     private fun createButtonBar(): JPanel {
-        val ok = button("Ok") {
-            selectedItems = LinkedHashSet<T>(itemList.getSelectedValuesList())
-            setVisible(false)
+        val ok = JButton("Ok").apply {
+            selectedItems = LinkedHashSet<T>(itemList.selectedValuesList)
+            isVisible = false
         }
-        getRootPane()!!.setDefaultButton(ok)
+        rootPane.defaultButton = ok
 
         return ButtonBarFactory.buildOKCancelBar(ok, JButton(cancelAction()))
     }
 
-    private fun cancelAction() = action("Cancel") {
+    private fun cancelAction() = makeAction("Cancel") {
         setVisible(false)
     }
 
-    class object {
-        fun selectItems<T : Item>(frame: Frame, message: String, items: Collection<T>): Set<T> {
+    companion object {
+        fun <T : Item> selectItems(frame: Frame, message: String, items: Collection<T>): Set<T> {
             val dlg = SelectItemsDialog(frame, message, items)
             dlg.setAllowMultipleSelections(true)
-            dlg.setVisible(true)
+            dlg.isVisible = true
             return dlg.selectedItems
         }
 
-        fun selectItem<T : Item>(frame: Frame, message: String, items: Collection<T>): T? {
+        fun <T : Item> selectItem(frame: Frame, message: String, items: Collection<T>): T? {
             val dlg = SelectItemsDialog(frame, message, items)
             dlg.setAllowMultipleSelections(false)
-            dlg.setVisible(true)
+            dlg.isVisible = true
 
-            val selected = dlg.selectedItems
-            return if (!selected.empty) selected.first() else null
+            return dlg.selectedItems.firstOrNull()
         }
 
         class ItemCellRenderer : DefaultListCellRenderer() {
 
-            public override fun getListCellRendererComponent(list: JList<out Any>, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+            override fun getListCellRendererComponent(list: JList<out Any>, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
 
                 val item = value as Item?
 
-                setText(item?.title ?: "")
+                text = item?.title ?: ""
                 return this
             }
         }

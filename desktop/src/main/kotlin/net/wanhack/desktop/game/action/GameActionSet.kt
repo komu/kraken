@@ -16,12 +16,12 @@
 
 package net.wanhack.desktop.game.action
 
+import net.wanhack.model.GameFacade
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent.*
-import java.util.ArrayList
-import javax.swing.KeyStroke
+import java.util.*
 import javax.swing.Action
-import net.wanhack.model.GameFacade
+import javax.swing.KeyStroke
 
 class GameActionSet {
 
@@ -29,13 +29,13 @@ class GameActionSet {
 
     var gameFacade: GameFacade? = null
         set(gameFacade) {
-            $gameFacade = gameFacade
+            field = gameFacade
 
             for (action in actions)
                 action.game = gameFacade
         }
 
-    {
+    init {
         add("Equip", VK_W, "shift E")       { it.equip() }
         add("Rest", VK_R, "R")              { it.rest(-1) }
         add("Talk", VK_T, "T")              { it.talk() }
@@ -50,7 +50,7 @@ class GameActionSet {
 
     fun add(name: String, mnemonic: Int, accelerator: String, action: (GameFacade) -> Unit) {
         actions.add(object : GameAction(name) {
-            {
+            init {
                 putValue(Action.MNEMONIC_KEY, mnemonic)
                 putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator))
             }

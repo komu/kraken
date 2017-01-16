@@ -16,49 +16,41 @@
 
 package net.wanhack.desktop.game
 
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.RenderingHints
-import java.awt.geom.AffineTransform
-import javax.swing.JComponent
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.Region
 import net.wanhack.desktop.game.tile.TileProvider
 import net.wanhack.model.GameFacade
-import net.wanhack.model.region.Size
-import net.wanhack.model.region.Coordinate
-import java.awt.event.MouseEvent
+import net.wanhack.model.region.*
+import java.awt.*
 import java.awt.event.MouseAdapter
-import java.awt.Point
-import net.wanhack.model.region.CellSet
+import java.awt.event.MouseEvent
+import java.awt.geom.AffineTransform
+import javax.swing.JComponent
 
 class RegionView: JComponent() {
 
     var gameFacade: GameFacade? = null
-        get() = $gameFacade
+        get() = field
         set(gameFacade) {
-            $gameFacade = gameFacade
+            field = gameFacade
             repaint()
         }
 
     var translate = true
-    private val tileProvider = TileProvider();
-    private var transform: AffineTransform? = null;
+    private val tileProvider = TileProvider()
+    private var transform: AffineTransform? = null
 
-    {
-        setBackground(Color.BLACK)
+    init {
+        background = Color.BLACK
         addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                gameFacade?.runTowards(toCoordinate(e.getPoint()));
+                gameFacade?.runTowards(toCoordinate(e.point))
             }
-        });
+        })
     }
 
     private fun toCoordinate(p: Point):Coordinate {
-        val p2 = Point();
-        transform?.inverseTransform(p, p2);
-        return Coordinate(p2.x / tileProvider.tileWidth, p2.y / tileProvider.tileHeight);
+        val p2 = Point()
+        transform?.inverseTransform(p, p2)
+        return Coordinate(p2.x / tileProvider.tileWidth, p2.y / tileProvider.tileHeight)
     }
 
 
@@ -87,8 +79,8 @@ class RegionView: JComponent() {
     }
 
     private fun getTransform(coordinate: Coordinate, regionSize: Size): AffineTransform? {
-        val width = getWidth()
-        val height = getHeight()
+        val width = this.width
+        val height = this.height
         val regionWidth = regionSize.width
         val regionHeight = regionSize.width
         val tileWidth = tileProvider.tileWidth
@@ -114,8 +106,8 @@ class RegionView: JComponent() {
     }
 
     private fun paintBackground(g2: Graphics2D) {
-        g2.setPaint(getBackground())
-        g2.fillRect(0, 0, getWidth(), getHeight())
+        g2.paint = background
+        g2.fillRect(0, 0, width, height)
     }
 
     private fun paintCell(g2: Graphics2D, cell: Cell, visibleCells: CellSet) {
