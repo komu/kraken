@@ -17,6 +17,7 @@
 package net.wanhack.desktop.common
 
 import net.wanhack.desktop.extensions.label
+import net.wanhack.desktop.extensions.makeAction
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.FlowLayout
@@ -25,9 +26,9 @@ import javax.swing.*
 
 class ErrorDialog(parent: Frame?, title: String, val throwable: Throwable): JDialog() {
 
-    val okButton = JButton("Ok").apply {
+    val okButton = JButton(makeAction("Ok") {
         isVisible = false
-    }
+    })
 
     init {
         this.title = title

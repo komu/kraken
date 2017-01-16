@@ -20,6 +20,7 @@ import com.jgoodies.forms.builder.DefaultFormBuilder
 import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
+import net.wanhack.desktop.extensions.makeAction
 import net.wanhack.model.GameConfiguration
 import net.wanhack.model.GameConfiguration.PetType
 import net.wanhack.model.creature.Sex
@@ -78,14 +79,14 @@ class StartGameDialog(owner: JFrame): JDialog() {
     }
 
     private fun createButtonBar(): JPanel {
-        val ok = JButton("Ok").apply {
+        val ok = JButton(makeAction("Ok") {
             configuration = createConfiguration()
             isVisible = false
-        }
-        val cancel = JButton("Cancel").apply {
+        })
+        val cancel = JButton(makeAction("Cancel") {
             configuration = null
             isVisible = false
-        }
+        })
         rootPane.defaultButton = ok
         return ButtonBarFactory.buildOKCancelBar(ok, cancel)
     }

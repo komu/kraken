@@ -11,18 +11,7 @@ buildscript {
 }
 
 subprojects {
-    apply plugin: 'kotlin'
-    apply plugin: 'java'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
     repositories {
         jcenter()
-    }
-
-    dependencies {
-        testCompile "junit:junit:4.12"
-        testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
     }
 }

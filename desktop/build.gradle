@@ -1,4 +1,9 @@
+apply plugin: 'kotlin'
+
 dependencies {
     compile project(':core')
     compile "com.jgoodies:forms:1.2.1"
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
 }

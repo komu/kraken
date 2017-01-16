@@ -60,10 +60,10 @@ class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: Collectio
     }
 
     private fun createButtonBar(): JPanel {
-        val ok = JButton("Ok").apply {
+        val ok = JButton(makeAction("Ok") {
             selectedItems = LinkedHashSet<T>(itemList.selectedValuesList)
             isVisible = false
-        }
+        })
         rootPane.defaultButton = ok
 
         return ButtonBarFactory.buildOKCancelBar(ok, JButton(cancelAction()))

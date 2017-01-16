@@ -16,17 +16,10 @@
 
 package net.wanhack.service.region
 
-import java.util.regex.Pattern
-
 class DirectivePattern(pattern: String) {
 
-    val pattern = Pattern.compile(pattern.replace("[int]", "(\\d+)").replace("[str]", "\"([^\"]+)\"").replace("\\ +", "\\\\s+"))
+    val pattern = Regex(pattern.replace("[int]", "(\\d+)").replace("[str]", "\"([^\"]+)\"").replace(Regex(" +"), "\\\\s+"))
 
-    fun getTokens(str: String): Array<String>? {
-        val m = pattern.matcher(str)
-        return if (m.matches())
-            Array(m.groupCount()) { i -> m.group(i+1)!! }
-        else
-            return null
-    }
+    fun getTokens(str: String): Array<String>? =
+        pattern.matchEntire(str)?.groupValues?.drop(1)?.toTypedArray()
 }
