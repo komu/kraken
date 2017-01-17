@@ -16,7 +16,6 @@
 
 package net.wanhack.android
 
-import android.R
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
@@ -36,13 +35,13 @@ import java.util.Collections.emptySet
 import java.util.concurrent.CountDownLatch
 import kotlin.properties.Delegates
 
-class GameActivity : Activity() {
+open class GameActivity : Activity() {
 
     var game: GameFacade by Delegates.notNull()
     val gameView: GameView by ViewProperty(R.id.gameView)
 
-    protected override fun onCreate(savedInstanceState: Bundle?) {
-        super<Activity>.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         setContentView(R.layout.game)
         registerForContextMenu(gameView)

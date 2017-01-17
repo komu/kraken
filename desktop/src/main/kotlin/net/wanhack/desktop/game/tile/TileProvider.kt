@@ -53,7 +53,7 @@ class TileProvider {
     }
     
     fun drawSelection(g: Graphics2D, coordinate: Coordinate) {
-        g.paint = Color(0.8.toFloat(), 0.3.toFloat(), 0.3.toFloat(), 0.5.toFloat())
+        g.paint = Color(0.8f, 0.3f, 0.3f, 0.5f)
         g.fillRect(coordinate.x * tileWidth, coordinate.y * tileHeight, tileWidth, tileHeight)
     }
 

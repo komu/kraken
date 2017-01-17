@@ -16,17 +16,17 @@
 
 package net.wanhack.android
 
-import java.lang.Math.max
-import java.lang.Math.min
-import net.wanhack.model.common.Color as WColor
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.CellType.*
-import net.wanhack.model.creature.Creature
-import net.wanhack.model.item.Item
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import net.wanhack.model.creature.Creature
+import net.wanhack.model.item.Item
+import net.wanhack.model.region.Cell
+import net.wanhack.model.region.CellType.*
+import java.lang.Math.max
+import java.lang.Math.min
+import net.wanhack.model.common.Color as WColor
 
 class TileProvider {
 
@@ -56,10 +56,10 @@ class TileProvider {
     }
 
     private fun drawLetter(g: Canvas, x: Int, y: Int, letter: Char, paint: Paint) {
-        // g.setFont(font)
+        // g.font = font
 
         val bounds = Rect()
-        paint.setTextSize(20.toFloat())
+        paint.textSize = 20f
 
         chars[0] = letter
         paint.getTextBounds(chars, 0, 1, bounds);
@@ -106,7 +106,7 @@ class TileProvider {
         g.drawRect(xx, yy, xx+tileWidth, yy+tileHeight, paint)
     }
 
-    class object {
+    companion object {
         private val chars = CharArray(1)
         private val BLACK = WColor.BLACK.toPaint()
         private val ROOM_FLOOR_INVISIBLE = WColor(80, 80, 80).toPaint()
@@ -115,10 +115,8 @@ class TileProvider {
         private val DOOR_VISIBLE = WColor(100, 100, 0).toPaint()
         private val DOOR_INVISIBLE = WColor(100, 100, 0).darker().toPaint()
 
-        fun WColor.toPaint(): Paint {
-            val paint = Paint()
-            paint.setColor(Color.rgb(this.r, this.g, this.b))
-            return paint
+        fun WColor.toPaint() = Paint().apply {
+            color = Color.rgb(r, g, b)
         }
 
         fun Canvas.drawRect(x1: Int, y1: Int, x2: Int, y2: Int, paint: Paint) {
