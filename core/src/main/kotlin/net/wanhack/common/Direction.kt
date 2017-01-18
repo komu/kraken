@@ -29,14 +29,17 @@ enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
     NW("NW", -1, -1);
 
     fun isOpposite(rhs: Direction) = dx == -rhs.dx && dy == -rhs.dy
+
+    val isMain: Boolean
+        get() = dx == 0 || dy == 0
 }
 
 object Directions {
-    val allDirections = Direction.values().toList()
-    val mainDirections = listOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
+    val directions = Direction.values().toList()
+    val mainDirections = directions.filter { it.isMain }
 
-    fun randomDirection() = Direction.values().randomElement()
+    fun randomDirection() = directions.randomElement()
 
     fun forDeltas(dx: Int, dy: Int): Direction? =
-        Direction.values().find { d -> dx == d.dx && dy == d.dy }
+        directions.find { d -> dx == d.dx && dy == d.dy }
 }

@@ -185,7 +185,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     val adjacentCells: List<Cell>
-        get() = adjacentCells(Directions.allDirections)
+        get() = adjacentCells(Directions.directions)
 
     val adjacentCellsInMainDirections: List<Cell>
         get() = adjacentCells(Directions.mainDirections)

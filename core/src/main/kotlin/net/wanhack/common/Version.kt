@@ -16,35 +16,19 @@
 
 package net.wanhack.common
 
-import java.util.Properties
 import net.wanhack.service.resources.ResourceLoader
 
-class Version(val version: String, val revision: String) {
+class Version(val version: String) {
 
     companion object {
-        val instance = ResourceLoader.openStream("/version.properties").use { inputStream ->
-            val properties = Properties()
-            properties.load(inputStream)
-
-            val version = properties.getProperty("version") ?: "unknown"
-            val revision = properties.getProperty("revision") ?: ""
-
-            Version(version, revision)
+        val instance = ResourceLoader.readProperties("/version.properties").let { properties ->
+            Version(properties.getProperty("version", "unknown"))
         }
 
         val fullVersion: String
-            get() {
-                val version = instance
-                return if (version.revision != "")
-                    "${version.version} (r${version.revision})"
-                else
-                    version.version
-            }
+            get() = instance.version
 
         val version: String
             get() = instance.version
-
-        val revision: String
-            get() = instance.revision
     }
 }
