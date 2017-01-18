@@ -255,7 +255,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     fun updateLighting() {
         val lightSourceEffectiveness = calculateLightSourceEffectiveness()
         if (lightSourceEffectiveness > 0) {
-            val cells = VisibilityChecker.getVisibleCells(this, lightSourceEffectiveness / 10)
+            val cells = getVisibleCells(lightSourceEffectiveness / 10)
             for (cell in cells)
                 cell.lighting += max(lightSourceEffectiveness - 10 * distance(cell), 0)
         }

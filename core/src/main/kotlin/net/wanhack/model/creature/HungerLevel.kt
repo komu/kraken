@@ -33,10 +33,5 @@ enum class HungerLevel(val min: Int) {
             name.toLowerCase()
 }
 
-fun getHungerLevel(level: Int): HungerLevel {
-    for (hunger in HungerLevel.values())
-        if (level >= hunger.min)
-            return hunger
-
-    return HungerLevel.FAINTING
-}
+fun Int.toHungerLevel(): HungerLevel =
+    HungerLevel.values().firstOrNull { this >= it.min } ?: HungerLevel.FAINTING

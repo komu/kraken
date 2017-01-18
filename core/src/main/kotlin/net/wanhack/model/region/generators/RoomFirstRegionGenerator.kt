@@ -17,14 +17,12 @@
 package net.wanhack.model.region.generators
 
 import net.wanhack.model.region.*
-import net.wanhack.service.region.generators.CorridorPathSearcher
-import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.utils.Probability
 import net.wanhack.utils.logger
 import net.wanhack.utils.randomElement
 import net.wanhack.utils.randomInt
 
-class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
+class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
     private val region = Region(world, name, level, rp.width, rp.height)
     private val connectConnectedProbability = Probability(50)
     private val doorProbability = Probability(30)

@@ -25,7 +25,7 @@ class Armoring : Iterable<Armor> {
         armors.values.iterator()
 
     fun removeAllArmors(): Collection<Armor> {
-        val result = ArrayList(armors.values)
+        val result = armors.values.toList()
         armors.clear()
         return result
     }

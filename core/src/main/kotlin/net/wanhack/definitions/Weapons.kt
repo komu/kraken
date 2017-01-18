@@ -16,9 +16,10 @@
 
 package net.wanhack.definitions
 
-import net.wanhack.model.item.weapon.*
 import net.wanhack.model.common.Color
+import net.wanhack.model.item.weapon.*
 
+@Suppress("unused")
 object Weapons : Definitions() {
 
     // Blades

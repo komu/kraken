@@ -25,7 +25,7 @@ class Corpse(name: String): Food(name) {
     var poisonDamage: Expression? = null
     var taste = Taste.CHICKEN
 
-    public override fun onEatenBy(eater: Player) {
+    override fun onEatenBy(eater: Player) {
         eater.decreaseHungriness(effectiveness)
         val poisonDamage = calculatePoisonDamage()
         if (poisonDamage > 0) {

@@ -16,10 +16,8 @@
 
 package net.wanhack.utils
 
-import java.util.Calendar
+import java.time.LocalDate
+import java.time.Month
 
-fun Calendar.isFriday() =
-    get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
-
-fun Calendar.isFestivus() =
-    get(Calendar.MONTH) == Calendar.DECEMBER && get(Calendar.DAY_OF_MONTH) == 23
+val LocalDate.isFestivus: Boolean
+    get() = month == Month.DECEMBER && dayOfMonth == 23

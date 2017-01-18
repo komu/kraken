@@ -28,7 +28,7 @@ fun <T> Lock.relinquish(callback: () -> T): T =
     }
 
 fun WriteLock.yieldLock() {
-    if (isHeldByCurrentThread()) {
+    if (isHeldByCurrentThread) {
         unlock()
         lock()
     }

@@ -19,20 +19,18 @@ package net.wanhack.definitions
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.Item
 import net.wanhack.utils.exp.Expression
-import net.wanhack.utils.randomInt
-import java.util.*
 
 abstract class Definitions {
 
-    val itemDefinitions = ArrayList<ItemDefinition<*>>()
-    val creatureDefinitions = ArrayList<CreatureDefinition<*>>()
+    val itemDefinitions = mutableListOf<ItemDefinition<*>>()
+    val creatureDefinitions = mutableListOf<CreatureDefinition<*>>()
 
     fun <T : Item> item(name: String,
                         level: Int? = null,
                         probability: Int? = null,
                         maximumInstances: Int? = null,
                         create: () -> T): ItemDefinition<T> {
-        val def = ItemDefinition<T>(name, create)
+        val def = ItemDefinition(name, create)
 
         if (level != null)
             def.level = level
@@ -52,7 +50,7 @@ abstract class Definitions {
                                 probability: Int? = null,
                                 swarmSize: Expression? = null,
                                 create: () -> T): CreatureDefinition<T> {
-        val def = CreatureDefinition<T>(name, level, create)
+        val def = CreatureDefinition(name, level, create)
 
         if (probability != null)
             def.probability = probability
@@ -65,11 +63,4 @@ abstract class Definitions {
     }
 
     fun exp(exp: String) = Expression.parse(exp)
-
-    fun randint(min: Int, max: Int) = randomInt(min, max)
-
-    fun <T : Any> T.init(callback: T.() -> Unit): T {
-        callback()
-        return this
-    }
 }

@@ -23,24 +23,25 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
     private val buffer = Array<Any?>(capacity) { null }
     private var start = 0
     private var _size = 0
-    private var modCount = 0;
+    private var modCount = 0
 
     init {
         require(capacity > 0)
     }
 
-    override fun add(e: E): Boolean {
+    override fun add(element: E): Boolean {
         modCount++
         if (_size < capacity) {
-            buffer[_size] = e
+            buffer[_size] = element
             _size++
         } else {
-            buffer[start] = e
+            buffer[start] = element
             start = (start + 1) % buffer.size
         }
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     operator fun get(index: Int): E =
         buffer[index(index)]!! as E
 
@@ -67,7 +68,7 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
         if (count < 0)
             throw IllegalArgumentException("negative count")
 
-        val n = Math.min(count, _size)
+        val n = count.coerceAtMost(_size)
         val result = ArrayList<E>(n)
         for (i in 0..n - 1)
             result.add(get(_size - n + i))
@@ -107,10 +108,7 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
 
         if (other is CircularBuffer<*>) {
             if (_size == other._size && buffer.size == other.buffer.size) {
-                for (i in indices)
-                    if (this[i] != other[i])
-                        return false
-                return true
+                return indices.none { this[it] != other[it] }
             } else
                 return false
         }

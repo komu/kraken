@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.wanhack.common
+package net.wanhack.model.common
 
 interface MessageTarget {
     fun message(pattern: String, vararg args: Any?)

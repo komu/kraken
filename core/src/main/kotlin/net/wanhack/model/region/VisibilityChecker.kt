@@ -16,12 +16,10 @@
 
 package net.wanhack.model.region
 
-object VisibilityChecker {
-    fun getVisibleCells(from: Cell, sight: Int): CellSet {
-        val visible = MutableCellSet(from.region)
+fun Cell.getVisibleCells(sight: Int): CellSet {
+    val visible = MutableCellSet(region)
 
-        visible.addAll(from.cellsNearestFirst(sight).filter { it.hasLineOfSight(from) })
+    visible.addAll(cellsNearestFirst(sight).filter { it.hasLineOfSight(this) })
 
-        return visible
-    }
+    return visible
 }

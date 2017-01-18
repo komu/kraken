@@ -39,8 +39,12 @@ import net.wanhack.model.item.food.Food
 import net.wanhack.model.region.*
 import net.wanhack.service.config.ObjectFactory
 import net.wanhack.service.score.HighScoreService
-import net.wanhack.utils.*
-import java.util.*
+import net.wanhack.utils.MaximumCounter
+import net.wanhack.utils.isFestivus
+import net.wanhack.utils.logger
+import net.wanhack.utils.rollDie
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
@@ -67,11 +71,13 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         get() {
             val infos = mutableListOf<ItemInfo>()
 
-            for (item in player.activatedItems)
-                infos.add(ItemInfo(item.title, item.description, item.letter, true))
+            player.activatedItems.mapTo(infos) {
+                ItemInfo(it.title, it.description, it.letter, true)
+            }
 
-            for (item in player.inventory.items)
-                infos.add(ItemInfo(item.title, item.description, item.letter, false))
+            player.inventory.items.mapTo(infos) {
+                ItemInfo(it.title, it.description, it.letter, false)
+            }
 
             return infos
         }
@@ -102,15 +108,15 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         currentRegion.updateSeenCells(player.visibleCells)
         player.message("Hello %s, welcome to Wanhack!", player.name)
 
-        val today = Calendar.getInstance()
-        if (today.isFestivus()) {
+        val today = LocalDate.now()
+        if (today.isFestivus) {
             player.message("Happy Festivus!")
             player.strength += 10
             player.luck = 2
             player.inventory.add(Weapons.aluminiumPole.create())
         }
 
-        if (today.isFriday()) {
+        if (today.dayOfWeek == DayOfWeek.FRIDAY) {
             player.message("It is Friday, good luck!")
             player.luck = 1
         }
@@ -170,12 +176,10 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     private fun Cell.findAdjacentPet(): Pet? {
-        for (cell in adjacentCells) {
-            val pet = cell.creature as? Pet
-            if (pet != null)
-                return pet
-        }
-        return null
+        return adjacentCells
+                .asSequence()
+                .mapNotNull { it.creature as? Pet }
+                .firstOrNull()
     }
 
     fun addCreature(creature: Creature, target: Cell) {

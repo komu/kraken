@@ -18,12 +18,12 @@ package net.wanhack.model.creature
 
 import net.wanhack.common.Direction
 import net.wanhack.common.Directions
-import net.wanhack.common.MessageTarget
 import net.wanhack.model.Game
 import net.wanhack.model.Inventory
 import net.wanhack.model.common.Actor
 import net.wanhack.model.common.Attack
 import net.wanhack.model.common.Color
+import net.wanhack.model.common.MessageTarget
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.armor.Armoring
 import net.wanhack.model.item.food.Corpse
@@ -33,7 +33,6 @@ import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
 import net.wanhack.utils.Probability
-import net.wanhack.utils.collections.toOption
 import net.wanhack.utils.exp.Expression
 import net.wanhack.utils.rollDie
 import java.lang.Math.max
@@ -173,7 +172,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         cell.hasLineOfSight(target)
 
     val adjacentCreatures: Collection<Creature>
-        get() = cell.adjacentCells.flatMap { it.creature.toOption() }
+        get() = cell.adjacentCells.mapNotNull(Cell::creature)
 
     override fun toString() = "$name [hp=$hitPoints]"
 

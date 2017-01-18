@@ -16,11 +16,12 @@
 
 package net.wanhack.definitions
 
-import net.wanhack.model.item.*
+import net.wanhack.model.common.Color
+import net.wanhack.model.item.Item
+import net.wanhack.model.item.LightSource
+import net.wanhack.model.item.armor.Armor
 import net.wanhack.model.item.armor.BodyPart.*
 import net.wanhack.model.item.food.*
-import net.wanhack.model.item.armor.Armor
-import net.wanhack.model.common.Color
 
 @Suppress("unused")
 object Items : Definitions() {
@@ -30,7 +31,7 @@ object Items : Definitions() {
     // Rocks
 
     fun rock(name: String, probability: Int? = null) = item(name, probability=probability) {
-        Item(name).init {
+        Item(name).apply {
             letter = '*'
         }
     }
@@ -50,21 +51,21 @@ object Items : Definitions() {
     // Light sources
 
     val torch = item("a torch", level = 1, probability = 75) {
-        LightSource("a torch").init {
+        LightSource("a torch").apply {
             color = Color.BROWN
             weight = 300
         }
     }
 
     val lantern = item("a lantern", level = 10, probability = 10) {
-        LightSource("a lantern").init {
+        LightSource("a lantern").apply {
             color = Color.LIGHT_BROWN
             weight = 600
         }
     }
 
     val norwegianLantern = item("a Norwegian lantern", level = 25, probability = 15, maximumInstances = 5) {
-        LightSource("a Norwegian lantern").init {
+        LightSource("a Norwegian lantern").apply {
             color = Color.RED
             weight = 820
         }
@@ -73,7 +74,7 @@ object Items : Definitions() {
     // EDIBLES
 
     fun food(name: String, probability: Int? = null, init: Food.() -> Unit) = item(name, probability=probability) {
-        Food(name).init { init() }
+        Food(name).apply { init() }
     }
 
     val foodRation = food("food ration") {
@@ -101,7 +102,7 @@ object Items : Definitions() {
     }
 
     val fridayBun = item("Friday bun", probability = 30) {
-        HealingEdible("Friday bun").init {
+        HealingEdible("Friday bun").apply {
             color = Color.BROWNISH
             effectiveness = 400
             healingEffect = 5
@@ -110,7 +111,7 @@ object Items : Definitions() {
     }
 
     val wraithEssence = item("wraith essence", probability = 0) {
-        HealingEdible("wraith essence").init {
+        HealingEdible("wraith essence").apply {
             color = Color.WHITE
             effectiveness = 100
             weight = 4
@@ -126,7 +127,7 @@ object Items : Definitions() {
     // POTIONS
 
     val healingPotion = item("healing potion", probability = 25) {
-        HealingEdible("healing potion").init {
+        HealingEdible("healing potion").apply {
             color = Color.LIGHT_BLUE
             effectiveness = 10
             healingEffect = 10
@@ -138,7 +139,7 @@ object Items : Definitions() {
     // SCROLLS
 
     fun scroll(name: String) = item(name) {
-        Item(name).init {
+        Item(name).apply {
             color = Color.WHITE
             letter = '?'
         }
@@ -147,7 +148,7 @@ object Items : Definitions() {
     // WANDS  
 
     fun wand(name: String) = item(name) {
-        Item(name).init {
+        Item(name).apply {
             color = Color.BROWN
             letter = '-'
         }
@@ -156,7 +157,7 @@ object Items : Definitions() {
     // STAVES 
 
     fun staff(name: String) = item(name) {
-        Item(name).init {
+        Item(name).apply {
             color = Color.BROWN
             letter = '_'
         }
@@ -165,7 +166,7 @@ object Items : Definitions() {
     // RINGS  
 
     fun ring(name: String) = item(name) {
-        Item(name).init {
+        Item(name).apply {
             color = Color.BROWN
             letter = '='
         }
@@ -179,7 +180,7 @@ object Items : Definitions() {
 
     fun lightArmor(name: String, level: Int, probability: Int? = null, maximumInstances: Int? = null, init: Armor.() -> Unit) =
         item(name, level = level, probability = probability, maximumInstances = maximumInstances) {
-            Armor(name).init {
+            Armor(name).apply {
                 letter = ']'
                 init()
             }
@@ -187,7 +188,7 @@ object Items : Definitions() {
 
     fun heavyArmor(name: String, level: Int, probability: Int? = null, maximumInstances: Int? = null, init: Armor.() -> Unit) =
         item(name, level = level, probability = probability, maximumInstances = maximumInstances) {
-            Armor(name).init {
+            Armor(name).apply {
                 letter = '['
                 init()
             }
@@ -344,14 +345,14 @@ object Items : Definitions() {
     // ARTIFACT ITEMS
 
     val grailShapedLantern = item("the Grail-shaped lantern", level = 30, probability = 0, maximumInstances = 5) {
-        LightSource("the Grail-shaped lantern").init {
+        LightSource("the Grail-shaped lantern").apply {
             weight = 800
         }
     }
 
     // TODO: class for digger items - pick-axe, pick, shovel at least
     val unordinaryShovel = item("the Unordinary Shovel", level = 0, probability = 0, maximumInstances = 1) {
-        Item("the Unordinary Shovel").init {
+        Item("the Unordinary Shovel").apply {
             color = Color.WHITE
             letter = 'ٱ'
             weight = 2500

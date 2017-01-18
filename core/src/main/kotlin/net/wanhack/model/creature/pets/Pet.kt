@@ -26,7 +26,7 @@ import net.wanhack.utils.Probability
 abstract class Pet(name: String): Creature(name) {
 
     private var lastKnownPlayerPosition: Cell? = null
-    private var naturalWeapon = NaturalWeapon("bite", "1", "randint(3, 7)");
+    private var naturalWeapon = NaturalWeapon("bite", "1", "randint(3, 7)")
 
     init {
         friendly = true

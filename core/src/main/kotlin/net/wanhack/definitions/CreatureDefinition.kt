@@ -19,12 +19,11 @@ package net.wanhack.definitions
 import net.wanhack.model.creature.Creature
 import net.wanhack.utils.exp.Expression
 
-class CreatureDefinition<T : Creature>(val name: String, override val level: Int, val createCreature: () -> T) : ObjectDefinition<T>() {
+class CreatureDefinition<out T : Creature>(val name: String, override val level: Int, val createCreature: () -> T) : ObjectDefinition<T>() {
 
     var swarmSize = Expression.constant(1)
 
-    val instantiable: Boolean
-        get() = true
+    var instantiable = true
 
     fun createSwarm(): Collection<T> {
         val swarm = mutableListOf<T>()

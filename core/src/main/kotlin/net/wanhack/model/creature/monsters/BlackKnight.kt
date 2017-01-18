@@ -32,10 +32,10 @@ class BlackKnight: Monster("The Black Knight") {
     private var lastKnownPlayerPosition: Cell? = null
     private val bite = NaturalWeapon("bite", "1", "randint(0, 1)")
     private var hasBeenFighting = false
-    private var maxHitPoints = 1;
+    private var maxHitPoints = 1
 
     override var hitPoints: Int = 5
-        set(hitPoints: Int) {
+        set(hitPoints) {
             super.hitPoints = hitPoints
             maxHitPoints = Math.max(maxHitPoints, hitPoints)
         }
@@ -127,7 +127,7 @@ class BlackKnight: Monster("The Black Knight") {
     }
 
     private fun dropToAdjacentCell(item: Item) {
-        val target = cell.adjacentCells.shuffled().find { it.canDropItemToCell } ?: cell
+        val target = cell.adjacentCells.shuffled().find(Cell::canDropItemToCell) ?: cell
         target.items.add(item)
     }
 

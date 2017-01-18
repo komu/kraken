@@ -21,9 +21,9 @@ import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.events.PersistentEvent
 import net.wanhack.model.region.Cell
+import net.wanhack.model.region.CellSet
 import net.wanhack.model.region.Region
 import net.wanhack.utils.logger
-import net.wanhack.model.region.CellSet
 
 class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
 
@@ -48,7 +48,7 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
 
     private fun selectRandomTargetCell(candidates: CellSet, creature: Creature): Cell? {
         var tries = 0
-        while (!candidates.isEmpty() && tries++ < 100) {
+        while (candidates.isNotEmpty() && tries++ < 100) {
             val cell = candidates.randomElement()
             if (cell.creature == null && cell.canMoveInto(creature.corporeal))
                 return cell

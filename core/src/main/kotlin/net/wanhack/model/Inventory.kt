@@ -34,8 +34,8 @@ class Inventory {
     }
 
     val weight: Int
-        get() = items.sumBy { it.weight }
+        get() = items.sumBy(Item::weight)
 
     val lighting: Int
-        get() = items.sumBy { it.lighting }
+        get() = items.sumBy(Item::lighting)
 }

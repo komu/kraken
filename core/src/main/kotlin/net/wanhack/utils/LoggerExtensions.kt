@@ -19,4 +19,4 @@ package net.wanhack.utils
 import java.util.logging.Logger
 
 fun Class<*>.logger() =
-    Logger.getLogger(getName())
+    Logger.getLogger(name)!!

@@ -77,7 +77,7 @@ open class ShortestPathSearcher(val region: Region) {
         override fun iterator() = object : AbstractIterator<Cell>() {
             var next: Node? = this@Node
 
-            protected override fun computeNext() {
+            override fun computeNext() {
                 val node = next
                 if (node != null) {
                     setNext(node.cell)

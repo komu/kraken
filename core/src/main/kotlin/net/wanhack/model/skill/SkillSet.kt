@@ -16,7 +16,7 @@
 
 package net.wanhack.model.skill
 
-import net.wanhack.common.MessageTarget
+import net.wanhack.model.common.MessageTarget
 import net.wanhack.model.item.weapon.WeaponClass
 import java.util.*
 

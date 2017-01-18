@@ -16,12 +16,4 @@
 
 package net.wanhack.utils
 
-fun String.withIndices(): Iterator<IndexedValue<Char>> =
-    iterator().withIndex()
-
-fun Iterable<String>.maxLength(): Int {
-    var maximum = 0
-    for (s in this)
-        maximum = Math.max(maximum, s.length)
-    return maximum
-}
+fun Iterable<String>.maxLength(): Int = maxBy { it.length }?.length ?: 0

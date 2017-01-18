@@ -27,11 +27,7 @@ enum class Proficiency(val level: Int, val bonus: Int) {
     GRAND_MASTER(6, 5);
 
     val next: Proficiency?
-        get() =
-            if (ordinal + 1 < values().size)
-                values()[ordinal + 1]
-            else
-                null
+        get() = values().elementAtOrNull(ordinal + 1)
 
     val trainingToReachThisLevel = square(level - 1) * 20
 

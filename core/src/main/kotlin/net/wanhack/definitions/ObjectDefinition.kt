@@ -18,7 +18,7 @@ package net.wanhack.definitions
 
 import net.wanhack.utils.randomInt
 
-abstract class ObjectDefinition<T> {
+abstract class ObjectDefinition<out T> {
     abstract val level: Int?
     var probability = 100
 
@@ -26,10 +26,7 @@ abstract class ObjectDefinition<T> {
 }
 
 fun <T : ObjectDefinition<*>> Collection<T>.weightedRandom(): T {
-    var probabilitySum = 0
-
-    for (od in this)
-        probabilitySum += od.probability
+    val probabilitySum = sumBy { it.probability }
 
     var item = randomInt(probabilitySum)
     for (dp in this) {
@@ -39,7 +36,7 @@ fun <T : ObjectDefinition<*>> Collection<T>.weightedRandom(): T {
         item -= dp.probability
     }
 
-    throw RuntimeException("could not randomize definition")
+    error("could not randomize definition")
 }
 
 fun <T : ObjectDefinition<*>> Collection<T>.betweenLevels(minLevel: Int, maxLevel: Int): List<T> =

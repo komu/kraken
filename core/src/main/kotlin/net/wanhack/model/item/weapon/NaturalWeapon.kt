@@ -22,6 +22,8 @@ import net.wanhack.utils.exp.Expression
 
 open class NaturalWeapon(val verb: String, val toHit: Expression, val damage: Expression): Attack {
 
+    constructor(verb: String, toHit: String, damage: String): this(verb, Expression.parse(toHit), Expression.parse(damage))
+
     override val weaponClass = WeaponClass.NATURAL
     override val attackVerb = verb
 
@@ -31,5 +33,3 @@ open class NaturalWeapon(val verb: String, val toHit: Expression, val damage: Ex
 
     override fun toString() = "NaturalWeapon [verb=$verb, toHit=$toHit, damage=$damage]"
 }
-
-fun NaturalWeapon(verb: String, toHit: String, damage: String) = NaturalWeapon(verb, Expression.parse(toHit), Expression.parse(damage))

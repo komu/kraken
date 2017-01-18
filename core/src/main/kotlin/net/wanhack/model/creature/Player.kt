@@ -26,7 +26,7 @@ import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.CellSet
-import net.wanhack.model.region.VisibilityChecker
+import net.wanhack.model.region.getVisibleCells
 import net.wanhack.model.skill.Proficiency
 import net.wanhack.model.skill.SkillSet
 import net.wanhack.utils.randomEnum
@@ -155,7 +155,7 @@ class Player(name: String): Creature(name) {
     }
 
     val hungerLevel: HungerLevel
-        get() = getHungerLevel(hunger)
+        get() = hunger.toHungerLevel()
 
     private fun addExperience(exp: Int) {
         experience += exp
@@ -201,7 +201,7 @@ class Player(name: String): Creature(name) {
         target in visibleCells
 
     private fun updateVisiblePoints() {
-        visibleCells = VisibilityChecker.getVisibleCells(cell, sight)
+        visibleCells = cell.getVisibleCells(sight)
     }
 
     fun getInvisibleCells(): CellSet {

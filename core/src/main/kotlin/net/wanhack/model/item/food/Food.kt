@@ -21,7 +21,7 @@ import net.wanhack.model.item.Item
 
 open class Food(name: String): Item(name) {
 
-    var effectiveness = 100;
+    var effectiveness = 100
 
     init {
         letter = '%'

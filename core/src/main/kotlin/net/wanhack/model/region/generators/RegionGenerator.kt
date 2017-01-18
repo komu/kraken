@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.wanhack.service.region.generators
+package net.wanhack.model.region.generators
 
 import net.wanhack.model.region.Region
 import net.wanhack.model.region.World

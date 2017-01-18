@@ -17,7 +17,6 @@
 package net.wanhack.definitions
 
 import net.wanhack.model.item.Item
-import java.util.*
 
 class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) : ObjectDefinition<T>() {
 
@@ -25,7 +24,7 @@ class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) : Obje
 
     var createdInstances = 0
     var maximumInstances = Integer.MAX_VALUE
-    private val initHooks = ArrayList<T.() -> Unit>()
+    private val initHooks = mutableListOf<T.() -> Unit>()
 
     val instantiable: Boolean
         get() = createdInstances < maximumInstances

@@ -19,13 +19,12 @@ package net.wanhack.model.region.generators
 import net.wanhack.common.Direction
 import net.wanhack.common.Directions
 import net.wanhack.model.region.*
-import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.utils.Probability
 import net.wanhack.utils.logger
 import net.wanhack.utils.randomInt
 import net.wanhack.utils.shuffled
 
-class MazeRegionGenerator(val world: World, val name: String, val level: Int, val up: String?, val down: String?) {
+class MazeRegionGenerator(world: World, val name: String, val level: Int, val up: String?, val down: String?) {
     private val region = Region(world, name, level, 80, 25)
     private val randomness = Probability(40)
     private val sparseness = 5

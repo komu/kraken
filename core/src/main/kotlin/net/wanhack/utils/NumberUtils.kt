@@ -32,12 +32,3 @@ fun signum(n: Int) =
         n > 0 -> 1
         else  -> 0
     }
-
-fun mod(x: Int, mod: Int): Int {
-    if (x >= 0) {
-        return x % mod
-    } else {
-        val xx = Math.abs(x) % mod
-        return if (xx != 0) (mod - xx) else 0
-    }
-}
