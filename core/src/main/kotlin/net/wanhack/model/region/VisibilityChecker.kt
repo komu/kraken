@@ -16,8 +16,6 @@
 
 package net.wanhack.model.region
 
-import net.wanhack.utils.collections.addAll
-
 object VisibilityChecker {
     fun getVisibleCells(from: Cell, sight: Int): CellSet {
         val visible = MutableCellSet(from.region)

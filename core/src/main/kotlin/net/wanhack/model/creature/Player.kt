@@ -29,7 +29,9 @@ import net.wanhack.model.region.CellSet
 import net.wanhack.model.region.VisibilityChecker
 import net.wanhack.model.skill.Proficiency
 import net.wanhack.model.skill.SkillSet
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomEnum
+import net.wanhack.utils.randomInt
+import net.wanhack.utils.rollDie
 import kotlin.properties.Delegates
 
 class Player(name: String): Creature(name) {
@@ -42,7 +44,7 @@ class Player(name: String): Creature(name) {
     var hunger = 2000
     var fainted = false
     var regenerated = false
-    var sex = RandomUtils.randomEnum(Sex::class.java)
+    var sex = randomEnum<Sex>()
     var sight = 20
 
     private val game: Game
@@ -54,7 +56,7 @@ class Player(name: String): Creature(name) {
     init {
         letter = '@'
         color = Color.BLUE
-        maximumHitPoints = 8 + RandomUtils.rollDie(5)
+        maximumHitPoints = 8 + rollDie(5)
         hitPoints = maximumHitPoints
         skills.setWeaponProficiency(WeaponClass.SWORD, Proficiency.BASIC)
     }
@@ -91,8 +93,7 @@ class Player(name: String): Creature(name) {
             if (weapon != null)
                 result.add(weapon)
 
-            for (armor in armoring)
-                result.add(armor)
+            result += armoring
 
             return result
         }
@@ -139,7 +140,7 @@ class Player(name: String): Creature(name) {
             message("You faint.")
             hitPoints = 1
             fainted = true
-            val ticks = 100 * RandomUtils.randomInt(5, 50)
+            val ticks = 100 * randomInt(5, 50)
             game.addGlobalEvent(OneTimeEvent(ticks) {
                 if (fainted) {
                     message("You wake up.")
@@ -163,7 +164,7 @@ class Player(name: String): Creature(name) {
     }
 
     private fun gainLevel() {
-        val newHp = 3 + RandomUtils.rollDie(3)
+        val newHp = 3 + rollDie(3)
         maximumHitPoints += newHp
         hitPoints = Math.min(hitPoints + newHp, maximumHitPoints)
         level += 1

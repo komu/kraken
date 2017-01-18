@@ -16,7 +16,7 @@
 
 package net.wanhack.common
 
-import net.wanhack.utils.collections.randomElement
+import net.wanhack.utils.randomElement
 
 enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
     NORTH("N", 0, -1),

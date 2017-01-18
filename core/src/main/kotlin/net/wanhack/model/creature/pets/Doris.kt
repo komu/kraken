@@ -19,7 +19,7 @@ package net.wanhack.model.creature.pets
 import net.wanhack.model.Game
 import net.wanhack.model.creature.Creature
 import net.wanhack.utils.Probability
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomItem
 
 class Doris(name: String): Pet(name) {
 
@@ -29,7 +29,7 @@ class Doris(name: String): Pet(name) {
     }
 
     override fun talk(target: Creature) {
-        val verb = RandomUtils.randomItem("meows", "purrs")
+        val verb = randomItem("meows", "purrs")
         target.message("%s %s.", name, verb)
     }
 

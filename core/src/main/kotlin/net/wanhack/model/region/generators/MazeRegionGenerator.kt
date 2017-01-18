@@ -17,18 +17,13 @@
 package net.wanhack.model.region.generators
 
 import net.wanhack.common.Direction
-import net.wanhack.model.region.Cell
-import net.wanhack.model.region.MutableCellSet
-import net.wanhack.model.region.CellType
-import net.wanhack.model.region.Region
-import net.wanhack.model.region.World
-import net.wanhack.utils.Probability
 import net.wanhack.common.Directions
-import net.wanhack.utils.collections.shuffled
-import net.wanhack.utils.RandomUtils
-import net.wanhack.model.region.CellSet
+import net.wanhack.model.region.*
 import net.wanhack.service.region.generators.RegionGenerator
+import net.wanhack.utils.Probability
 import net.wanhack.utils.logger
+import net.wanhack.utils.randomInt
+import net.wanhack.utils.shuffled
 
 class MazeRegionGenerator(val world: World, val name: String, val level: Int, val up: String?, val down: String?) {
     private val region = Region(world, name, level, 80, 25)
@@ -80,7 +75,7 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     }
 
     private fun generateMaze() {
-        val first = region[RandomUtils.randomInt(1, region.width-2), RandomUtils.randomInt(1, region.height-2)]
+        val first = region[randomInt(1, region.width-2), randomInt(1, region.height-2)]
         first.setType(CellType.HALLWAY_FLOOR)
 
         val candidates = MutableCellSet(region)
@@ -153,16 +148,16 @@ class MazeRegionGenerator(val world: World, val name: String, val level: Int, va
     }
 
     private fun addRooms() {
-        repeat(RandomUtils.randomInt(minRooms, maxRooms)) {
+        repeat(randomInt(minRooms, maxRooms)) {
             addRoom()
         }
     }
 
     private fun addRoom() {
-        val width = RandomUtils.randomInt(roomMinWidth, roomMaxWidth)
-        val height = RandomUtils.randomInt(roomMinHeight, roomMaxHeight)
-        val x = 2 + RandomUtils.randomInt(region.width - width - 4)
-        val y = 2 + RandomUtils.randomInt(region.height - height - 4)
+        val width = randomInt(roomMinWidth, roomMaxWidth)
+        val height = randomInt(roomMinHeight, roomMaxHeight)
+        val x = 2 + randomInt(region.width - width - 4)
+        val y = 2 + randomInt(region.height - height - 4)
 
         for (yy in y..y+height)
             for (xx in x..x+width)

@@ -22,13 +22,14 @@ import net.wanhack.model.common.Color
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Monster
 import net.wanhack.model.item.weapon.NaturalWeapon
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomEnum
+import net.wanhack.utils.randomInt
 
 class BugsBunny: Monster("Bugs Bunny") {
 
     init {
         level = 20
-        hitPoints = RandomUtils.randomInt(100, 200)
+        hitPoints = randomInt(100, 200)
         letter = 'r'
         color = Color.WHITE
         luck = 2
@@ -47,7 +48,7 @@ class BugsBunny: Monster("Bugs Bunny") {
         moveRandomly()
 
         if (seesCreature(game.player)) {
-            val direction = RandomUtils.randomEnum(Direction::class.java)
+            val direction = randomEnum<Direction>()
             game.movePlayer(direction)
         }
     }

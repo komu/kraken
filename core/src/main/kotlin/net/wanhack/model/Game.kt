@@ -274,7 +274,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun equip() = gameAction {
-        val item = console.selectItem("Select item to equip", player.inventory.byType(Equipable::class.java))
+        val item = console.selectItem("Select item to equip", player.inventory.byType<Equipable>())
         if (item != null) {
             if (item.equip(player))
                 tick()
@@ -298,7 +298,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun eat() = gameAction {
-        val food = console.selectItem("Select food to eat", player.inventory.byType(Food::class.java))
+        val food = console.selectItem("Select food to eat", player.inventory.byType<Food>())
         if (food != null) {
             player.inventory.remove(food)
             food.onEatenBy(player)
@@ -315,7 +315,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun fling() = gameAction {
-        val projectile = console.selectItem("Select item to throw", player.inventory.byType(Item::class.java))
+        val projectile = console.selectItem("Select item to throw", player.inventory.byType<Item>())
         if (projectile != null) {
             val dir = console.selectDirection()
             if (dir != null) {
@@ -344,7 +344,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     private fun throwAttack(attacker: Creature, projectile: Item, target: Creature): Boolean {
         target.onAttackedBy(attacker)
         val rollToHit = findRollToHit(attacker, projectile, target)
-        if (RandomUtils.rollDie(20) <= rollToHit) {
+        if (rollDie(20) <= rollToHit) {
             message("%s %s %s at %s.", attacker.You(), attacker.verb("throw"), projectile.title, target.you())
             assignDamage(attacker, projectile, target)
             attacker.onSuccessfulHit(target, projectile)
@@ -520,7 +520,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         target.onAttackedBy(attacker)
         val weapon = attacker.attack
         val rollToHit = findRollToHit(attacker, weapon, target)
-        if (RandomUtils.rollDie(20) <= rollToHit) {
+        if (rollDie(20) <= rollToHit) {
             message("%s %s %s.", attacker.You(), attacker.verb(weapon.attackVerb), target.you())
             assignDamage(attacker, weapon, target)
             attacker.onSuccessfulHit(target, weapon)

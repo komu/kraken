@@ -17,14 +17,13 @@
 package net.wanhack.model
 
 import net.wanhack.model.item.Item
-import net.wanhack.utils.collections.filterByType
 import java.util.*
 
 class Inventory {
 
     val items = HashSet<Item>()
 
-    fun <T> byType(cl: Class<T>) = items.filterByType(cl)
+    inline fun <reified T : Any> byType() = items.filterIsInstance<T>()
 
     fun add(item: Item) {
         items.add(item)
@@ -35,20 +34,8 @@ class Inventory {
     }
 
     val weight: Int
-        get() {
-            var weight = 0
-
-            for (item in items)
-                weight += item.weight
-
-            return weight
-        }
+        get() = items.sumBy { it.weight }
 
     val lighting: Int
-        get() {
-            var total = 0
-            for (item in items)
-                total += item.lighting
-            return total
-        }
+        get() = items.sumBy { it.lighting }
 }

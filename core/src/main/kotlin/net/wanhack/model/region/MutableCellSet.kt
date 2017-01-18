@@ -16,7 +16,7 @@
 
 package net.wanhack.model.region
 
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomInt
 import java.util.*
 
 class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
@@ -36,7 +36,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
     }
 
     override fun randomElement(): Cell =
-        this[RandomUtils.randomInt(size)]
+        this[randomInt(size)]
 
     private fun point(index: Int): Cell =
         region[index % region.width, index / region.width]

@@ -21,7 +21,6 @@ import net.wanhack.common.Directions
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
-import net.wanhack.utils.collections.maximumBy
 import net.wanhack.utils.countOfCellsAtDistance
 import java.lang.Math.*
 import java.util.*
@@ -68,7 +67,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     val largestItem: Item?
-        get() = items.maximumBy { it.weight }
+        get() = items.maxBy(Item::weight)
 
     fun isReachable(goal: Cell) = this == goal || region.findPath(this, goal) != null
 

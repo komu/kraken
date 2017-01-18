@@ -16,11 +16,11 @@
 
 package net.wanhack.definitions
 
-import net.wanhack.model.item.Item
-import java.util.ArrayList
-import net.wanhack.utils.exp.Expression
 import net.wanhack.model.creature.Creature
-import net.wanhack.utils.RandomUtils
+import net.wanhack.model.item.Item
+import net.wanhack.utils.exp.Expression
+import net.wanhack.utils.randomInt
+import java.util.*
 
 abstract class Definitions {
 
@@ -66,7 +66,7 @@ abstract class Definitions {
 
     fun exp(exp: String) = Expression.parse(exp)
 
-    fun randint(min: Int, max: Int) = RandomUtils.randomInt(min, max)
+    fun randint(min: Int, max: Int) = randomInt(min, max)
 
     fun <T : Any> T.init(callback: T.() -> Unit): T {
         callback()

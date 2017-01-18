@@ -16,11 +16,14 @@
 
 package net.wanhack.model.creature
 
+import net.wanhack.common.Direction
+import net.wanhack.common.Directions
 import net.wanhack.common.MessageTarget
 import net.wanhack.model.Game
+import net.wanhack.model.Inventory
 import net.wanhack.model.common.Actor
 import net.wanhack.model.common.Attack
-import net.wanhack.common.Direction
+import net.wanhack.model.common.Color
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.armor.Armoring
 import net.wanhack.model.item.food.Corpse
@@ -30,15 +33,10 @@ import net.wanhack.model.item.weapon.WeaponClass
 import net.wanhack.model.region.Cell
 import net.wanhack.model.region.Region
 import net.wanhack.utils.Probability
-import net.wanhack.utils.RandomUtils
-import net.wanhack.utils.exp.Expression
-import java.lang.Math.max
-import java.util.*
-import net.wanhack.utils.collections.filterByType
-import net.wanhack.common.Directions
 import net.wanhack.utils.collections.toOption
-import net.wanhack.model.common.Color
-import net.wanhack.model.Inventory
+import net.wanhack.utils.exp.Expression
+import net.wanhack.utils.rollDie
+import java.lang.Math.max
 
 abstract class Creature(var name: String): Actor, MessageTarget {
 
@@ -82,8 +80,8 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     var canUseDoors: Boolean = false
     var corpsePoisonousness = Expression.parse("randint(1, 3)")
     var wieldedWeapon: Weapon? = null
-    var strength = RandomUtils.rollDie(10, 10)
-    var charisma = RandomUtils.rollDie(10, 10)
+    var strength = rollDie(10, 10)
+    var charisma = rollDie(10, 10)
     var taste = Taste.CHICKEN
     val armoring = Armoring()
     val inventory = Inventory()

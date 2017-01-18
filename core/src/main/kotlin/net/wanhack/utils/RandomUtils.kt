@@ -16,33 +16,41 @@
 
 package net.wanhack.utils
 
-import net.wanhack.utils.collections.randomElement
 import java.util.*
 
-object RandomUtils {
+private val random = Random()
 
-    private val random = Random()
+inline fun <reified T: Enum<T>> randomEnum(): T =
+    T::class.java.enumConstants.toList().randomElement()
 
-    fun <T: Enum<T>> randomEnum(cl: Class<T>): T =
-        cl.getEnumConstants()!!.toList().randomElement()
+fun <T> randomItem(vararg items: T): T =
+    items.randomElement()
 
-    fun <T> randomItem(vararg items: T): T =
-        items.randomElement()
+fun rollDie(sides: Int, times: Int = 1): Int {
+    var total = 0
 
-    fun rollDie(sides: Int, times: Int = 1): Int {
-        var total = 0
-
-        repeat(times) {
-            total += 1 + random.nextInt(sides)
-        }
-
-        return total
+    repeat(times) {
+        total += 1 + random.nextInt(sides)
     }
 
-    fun shuffle(list: MutableList<*>) {
-        Collections.shuffle(list, random)
-    }
-
-    fun randomInt(n: Int): Int = random.nextInt(n)
-    fun randomInt(min: Int, max:Int) = min + random.nextInt(max - min + 1)
+    return total
 }
+
+fun randomInt(n: Int): Int = random.nextInt(n)
+fun randomInt(min: Int, max:Int) = min + random.nextInt(max - min + 1)
+
+fun MutableList<*>.shuffle() {
+    Collections.shuffle(this, random)
+}
+
+fun <T> Collection<T>.shuffled(): MutableList<T> {
+    val result = this.toMutableList()
+    result.shuffle()
+    return result
+}
+
+fun <T> List<T>.randomElement(): T =
+        this[randomInt(this.size)]
+
+fun <T> Array<T>.randomElement(): T =
+        this[randomInt(this.size)]

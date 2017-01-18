@@ -19,7 +19,6 @@ package net.wanhack.model.region
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.creature.Player
 import net.wanhack.model.item.Item
-import net.wanhack.utils.collections.toOption
 import java.util.*
 
 class Region(val world: World, val name: String, val level: Int, val width: Int, val height: Int): Iterable<Cell> {
@@ -57,7 +56,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     }
 
     val creatures: Sequence<Creature>
-        get() = cells.asSequence().flatMap { it.creature.toOption().asSequence() }
+        get() = cells.asSequence().mapNotNull(Cell::creature)
 
     fun findPath(start: Cell, goal: Cell): Iterable<Cell>? =
         ShortestPathSearcher(this).findShortestPath(start, goal)

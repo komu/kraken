@@ -36,9 +36,7 @@ class CreatureDefinition<T : Creature>(val name: String, override val level: Int
         return swarm
     }
 
-    override fun create(): T {
-        return createCreature()
-    }
+    override fun create(): T = createCreature()
 
     override fun toString() = "CreatureDefinition [name=$name]"
 }

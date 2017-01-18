@@ -24,8 +24,8 @@ import net.wanhack.model.creature.Monster
 import net.wanhack.model.item.Item
 import net.wanhack.model.item.weapon.NaturalWeapon
 import net.wanhack.model.region.Cell
-import net.wanhack.utils.collections.randomElement
-import net.wanhack.utils.collections.shuffled
+import net.wanhack.utils.randomElement
+import net.wanhack.utils.shuffled
 
 class BlackKnight: Monster("The Black Knight") {
 

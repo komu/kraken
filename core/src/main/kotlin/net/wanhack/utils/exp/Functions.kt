@@ -16,8 +16,8 @@
 
 package net.wanhack.utils.exp
 
-import java.util.HashMap
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomInt
+import java.util.*
 
 object Functions {
 
@@ -27,8 +27,8 @@ object Functions {
         functions["abs" to 1] = { args -> Math.abs(args[0]) }
         functions["max" to 2] = { args -> Math.max(args[0], args[1]) }
         functions["min" to 2] = { args -> Math.min(args[0], args[1]) }
-        functions["randint" to 1] = { args -> RandomUtils.randomInt(args[0]) }
-        functions["randint" to 2] = { args -> RandomUtils.randomInt(args[0], args[1]) }
+        functions["randint" to 1] = { args -> randomInt(args[0]) }
+        functions["randint" to 2] = { args -> randomInt(args[0], args[1]) }
     }
 
     fun findFunction(name: String, arity: Int): ((List<Int>) -> Int)? = functions[name to arity]

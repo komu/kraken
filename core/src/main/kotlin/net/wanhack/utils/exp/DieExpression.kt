@@ -16,12 +16,12 @@
 
 package net.wanhack.utils.exp
 
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.rollDie
 
 class DieExpression(val multiplier: Int, val sides: Int): Expression() {
 
     override fun evaluate(env: Map<String, Int>) =
-        RandomUtils.rollDie(sides, multiplier)
+        rollDie(sides, multiplier)
 
     override fun toString() = "${multiplier}d${sides}"
 }

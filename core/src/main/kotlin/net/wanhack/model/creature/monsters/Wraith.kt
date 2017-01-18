@@ -16,11 +16,11 @@
 
 package net.wanhack.model.creature.monsters
 
-import net.wanhack.model.creature.Monster
-import net.wanhack.utils.Probability
-import net.wanhack.utils.RandomUtils
 import net.wanhack.definitions.Items
 import net.wanhack.model.common.Color
+import net.wanhack.model.creature.Monster
+import net.wanhack.utils.Probability
+import net.wanhack.utils.rollDie
 
 class Wraith(name: String): Monster(name) {
 
@@ -33,7 +33,7 @@ class Wraith(name: String): Monster(name) {
     override fun createCorpse() =
         if (Probability.check(10)) {
             val essence = Items.wraithEssence.create()
-            essence.healingEffect = RandomUtils.rollDie(killExperience)
+            essence.healingEffect = rollDie(killExperience)
             essence
         } else {
             val rags = Items.oldRags.create()

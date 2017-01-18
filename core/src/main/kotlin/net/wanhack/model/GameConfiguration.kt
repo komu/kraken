@@ -17,14 +17,14 @@
 package net.wanhack.model
 
 import net.wanhack.model.creature.Sex
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomEnum
 
 class GameConfiguration {
 
     var name = ""
         get() = if (field.isEmpty()) "Anonymous Coward" else field
 
-    var sex = RandomUtils.randomEnum(Sex::class.java)
+    var sex = randomEnum<Sex>()
     var pet = PetType.DORIS
     var wizardMode = false
 

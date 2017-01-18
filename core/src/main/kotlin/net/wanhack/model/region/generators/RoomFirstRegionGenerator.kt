@@ -20,9 +20,9 @@ import net.wanhack.model.region.*
 import net.wanhack.service.region.generators.CorridorPathSearcher
 import net.wanhack.service.region.generators.RegionGenerator
 import net.wanhack.utils.Probability
-import net.wanhack.utils.RandomUtils
-import net.wanhack.utils.collections.randomElement
 import net.wanhack.utils.logger
+import net.wanhack.utils.randomElement
+import net.wanhack.utils.randomInt
 
 class RoomFirstRegionGenerator(val world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
     private val region = Region(world, name, level, rp.width, rp.height)
@@ -43,7 +43,7 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     private fun createRooms(): List<Room> {
         val rooms = mutableListOf<Room>()
 
-        repeat(RandomUtils.randomInt(rp.minRooms, rp.maxRooms)) {
+        repeat(randomInt(rp.minRooms, rp.maxRooms)) {
             rooms.add(createRoom())
         }
 
@@ -165,10 +165,10 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
     }
 
     private fun randomRoom(): Room {
-        val w = RandomUtils.randomInt(rp.roomMinWidth, rp.roomMaxWidth)
-        val h = RandomUtils.randomInt(rp.roomMinHeight, rp.roomMaxHeight)
-        val x = RandomUtils.randomInt(1, region.width - w - 1)
-        val y = RandomUtils.randomInt(1, region.height - h - 1)
+        val w = randomInt(rp.roomMinWidth, rp.roomMaxWidth)
+        val h = randomInt(rp.roomMinHeight, rp.roomMaxHeight)
+        val x = randomInt(1, region.width - w - 1)
+        val y = randomInt(1, region.height - h - 1)
         return Room(region, x, y, w, h)
     }
 
@@ -176,8 +176,8 @@ class RoomFirstRegionGenerator(val world: World, val name: String, val level: In
         operator fun contains(c: Coordinate) = c.x >= x && c.x < x + w && c.y >= y && c.y < y + h
 
         fun randomCell(): Cell {
-            val xx = x + 1 + RandomUtils.randomInt(w - 2)
-            val yy = y + 1 + RandomUtils.randomInt(h - 2)
+            val xx = x + 1 + randomInt(w - 2)
+            val yy = y + 1 + randomInt(h - 2)
             return region[xx, yy]
         }
 

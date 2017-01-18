@@ -18,14 +18,14 @@ package net.wanhack.model.creature.monsters
 
 import net.wanhack.model.Game
 import net.wanhack.model.creature.Monster
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.rollDie
 
 class KnightOfNi(name: String): Monster(name) {
 
     override fun onTick(game: Game) {
         val player = game.player
         if (seesCreature(player))
-            when (RandomUtils.rollDie(20)) {
+            when (rollDie(20)) {
                 0, 1, 2 -> player.say(this, "Ni!")
                 3       -> player.say(this, "Noo!")
                 else    -> {  }

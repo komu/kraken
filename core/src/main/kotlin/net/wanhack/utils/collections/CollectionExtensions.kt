@@ -16,46 +16,4 @@
 
 package net.wanhack.utils.collections
 
-import net.wanhack.utils.RandomUtils
-import java.util.*
-
-fun <T> MutableCollection<T>.addAll(it: Iterator<T>) {
-    for (x in it)
-        add(x)
-}
-
-fun <T> Collection<T>.shuffled(): MutableList<T> {
-    val result = ArrayList(this)
-    RandomUtils.shuffle(result)
-    return result
-}
-
-fun <T> List<T>.randomElement(): T =
-    this[RandomUtils.randomInt(this.size)]
-
-fun <T> Array<T>.randomElement(): T =
-    this[RandomUtils.randomInt(this.size)]
-
-fun <T> Collection<*>.filterByType(cl: Class<T>): List<T> =
-    this.filterIsInstance(cl)
-
-fun <T : Any> Collection<T>.unique(): T? =
-    if (size == 1) first() else null
-
-fun <T : Any, C: Comparable<C>> Collection<T>.maximumBy(comparison: (T) -> C): T? {
-    var maxScore: C? = null
-    var largest: T? = null
-
-    for (item in this) {
-        val score = comparison(item)
-        val max = maxScore
-        if (max == null || score > max) {
-            maxScore = score
-            largest = item
-        }
-    }
-
-    return largest
-}
-
-fun <T: Any> T?.toOption(): Set<T> = if (this == null) setOf<T>() else setOf<T>(this)
+fun <T: Any> T?.toOption(): Set<T> = if (this == null) setOf<T>() else setOf(this)

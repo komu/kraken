@@ -23,7 +23,7 @@ import net.wanhack.model.region.generators.MazeRegionGenerator
 import net.wanhack.model.region.generators.RoomFirstRegionGenerator
 import net.wanhack.service.region.RegionLoader
 import net.wanhack.utils.Probability
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomInt
 import java.util.*
 
 class World(val game: Game) {
@@ -83,7 +83,7 @@ class World(val game: Game) {
         if (region.level == 0)
             return
 
-        val monsterCount = RandomUtils.randomInt(1, 1 + 2 * region.level)
+        val monsterCount = randomInt(1, 1 + 2 * region.level)
         val emptyCells = region.getCellsForItemsAndCreatures()
 
         for (i in 1..monsterCount) {
@@ -108,7 +108,7 @@ class World(val game: Game) {
             return
 
         val items = game.objectFactory.instantiableItems.betweenLevels(0, region.level)
-        repeat(RandomUtils.randomInt(6)) {
+        repeat(randomInt(6)) {
             val item = items.weightedRandom().create()
             emptyCells.randomElement().items.add(item)
         }

@@ -20,7 +20,7 @@ import net.wanhack.model.common.Attack
 import net.wanhack.model.common.Color
 import net.wanhack.model.creature.Creature
 import net.wanhack.model.item.weapon.WeaponClass
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.rollDie
 
 open class Item(title: String): Attack {
 
@@ -49,8 +49,8 @@ open class Item(title: String): Attack {
 
     override fun getDamage(target: Creature) =
         when {
-            weight > 5000 -> RandomUtils.rollDie(3)
-            weight > 1000 -> RandomUtils.rollDie(2)
+            weight > 5000 -> rollDie(3)
+            weight > 1000 -> rollDie(2)
             else          -> 1
         }
 }

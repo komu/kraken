@@ -27,7 +27,7 @@ class Probability(private val percentage: Int) {
     companion object {
         fun check(percentage: Int): Boolean {
             require(percentage >= 0 && percentage <= 100)
-            return percentage > RandomUtils.randomInt(100)
+            return percentage > randomInt(100)
         }
     }
 }

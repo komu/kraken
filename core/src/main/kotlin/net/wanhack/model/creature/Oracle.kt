@@ -19,9 +19,9 @@ package net.wanhack.model.creature
 import net.wanhack.model.Game
 import net.wanhack.model.common.Color
 import net.wanhack.model.item.weapon.NaturalWeapon
-import net.wanhack.utils.collections.randomElement
+import net.wanhack.utils.randomElement
 
-class Oracle(): Creature("The Oracle") {
+class Oracle : Creature("The Oracle") {
 
     private val curse = NaturalWeapon("curse", "20", "0");
 

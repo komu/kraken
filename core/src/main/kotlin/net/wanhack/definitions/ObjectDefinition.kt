@@ -16,7 +16,7 @@
 
 package net.wanhack.definitions
 
-import net.wanhack.utils.RandomUtils
+import net.wanhack.utils.randomInt
 
 abstract class ObjectDefinition<T> {
     abstract val level: Int?
@@ -31,7 +31,7 @@ fun <T : ObjectDefinition<*>> Collection<T>.weightedRandom(): T {
     for (od in this)
         probabilitySum += od.probability
 
-    var item = RandomUtils.randomInt(probabilitySum)
+    var item = randomInt(probabilitySum)
     for (dp in this) {
         if (item < dp.probability)
             return dp

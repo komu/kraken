@@ -17,8 +17,8 @@
 package net.wanhack.model.item.food
 
 import net.wanhack.model.creature.Player
-import net.wanhack.utils.RandomUtils
 import net.wanhack.utils.exp.Expression
+import net.wanhack.utils.rollDie
 
 class Corpse(name: String): Food(name) {
 
@@ -43,7 +43,7 @@ class Corpse(name: String): Food(name) {
     private fun calculatePoisonDamage(): Int {
         val baseDamage = poisonDamage?.evaluate() ?: 0
         return if (baseDamage > 0)
-            RandomUtils.rollDie(baseDamage * level)
+            rollDie(baseDamage * level)
         else
             0
     }
