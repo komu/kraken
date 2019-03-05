@@ -35,7 +35,6 @@ import dev.komu.kraken.model.item.ItemInfo
 import dev.komu.kraken.model.item.food.Food
 import dev.komu.kraken.model.region.*
 import dev.komu.kraken.service.config.ObjectFactory
-import dev.komu.kraken.service.score.HighScoreService
 import dev.komu.kraken.utils.MaximumCounter
 import dev.komu.kraken.utils.isFestivus
 import dev.komu.kraken.utils.logger
@@ -585,9 +584,6 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     fun gameOver(reason: String) {
         over = true
-        if (!player.regenerated) {
-            HighScoreService().saveGameScore(this, reason)
-        }
     }
 
     private fun gameAction(callback: () -> Unit) {

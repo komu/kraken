@@ -3,3 +3,5 @@
 build
 /android/gen
 local.properties
+/core/out
+/desktop/out
