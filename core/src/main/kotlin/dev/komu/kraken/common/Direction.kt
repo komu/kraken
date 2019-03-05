@@ -16,14 +16,14 @@ enum class Direction(val shortName: String, val dx: Int, val dy: Int) {
 
     val isMain: Boolean
         get() = dx == 0 || dy == 0
-}
 
-object Directions {
-    val directions = Direction.values().toList()
-    val mainDirections = directions.filter { it.isMain }
+    companion object {
+        val directions = values().toList()
+        val mainDirections = directions.filter { it.isMain }
 
-    fun randomDirection() = directions.randomElement()
+        fun randomDirection() = directions.randomElement()
 
-    fun forDeltas(dx: Int, dy: Int): Direction? =
-        directions.find { d -> dx == d.dx && dy == d.dy }
+        fun forDeltas(dx: Int, dy: Int): Direction? =
+            directions.find { d -> dx == d.dx && dy == d.dy }
+    }
 }

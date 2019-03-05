@@ -6,7 +6,14 @@ import dev.komu.kraken.utils.logger
 import dev.komu.kraken.utils.randomElement
 import dev.komu.kraken.utils.randomInt
 
-class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, val rp: RegionParameters, val up: String?, val down: String?) {
+class RoomFirstRegionGenerator private constructor(
+    world: World,
+    val name: String,
+    val level: Int,
+    private val rp: RegionParameters,
+    val up: String?,
+    val down: String?
+) {
     private val region = Region(world, name, level, rp.width, rp.height)
     private val connectConnectedProbability = Probability(50)
     private val doorProbability = Probability(30)
@@ -15,21 +22,11 @@ class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, v
     private val log = javaClass.logger()
 
     fun generate(): Region {
-        val rooms = createRooms()
+        val rooms = List(randomInt(rp.rooms)) { createRoom() }
         createCorridors(rooms)
         createDoors()
         addStairsUpAndDown(rooms)
         return region
-    }
-
-    private fun createRooms(): List<Room> {
-        val rooms = mutableListOf<Room>()
-
-        repeat(randomInt(rp.minRooms, rp.maxRooms)) {
-            rooms.add(createRoom())
-        }
-
-        return rooms
     }
 
     private fun createRoom(): Room {
@@ -53,9 +50,9 @@ class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, v
             return false
 
         val neighbors = cell.adjacentCellsInMainDirections
-        val roomNeighbour    = neighbors.find { it.cellType == CellType.ROOM_FLOOR }
+        val roomNeighbour = neighbors.find { it.cellType == CellType.ROOM_FLOOR }
         val hallwayNeighbour = neighbors.find { it.cellType == CellType.HALLWAY_FLOOR }
-        val walls            = neighbors.count { it.cellType == CellType.ROOM_WALL }
+        val walls = neighbors.count { it.cellType == CellType.ROOM_WALL }
 
         if (roomNeighbour != null && hallwayNeighbour != null && walls == 2) {
             val room = cell.getDirection(roomNeighbour)
@@ -122,8 +119,8 @@ class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, v
     private fun addStairsUpAndDown(rooms: List<Room>) {
         val stairsUpRoom = rooms.randomElement()
         val empty = region.getRoomFloorCells()
-        if (empty.size < 2)
-            throw IllegalStateException("not enough empty cells to place stairs")
+
+        check(empty.size >= 2) { "not enough empty cells to place stairs" }
 
         val stairsUp = stairsUpRoom.randomCell()
         stairsUp.setType(CellType.STAIRS_UP)
@@ -147,11 +144,9 @@ class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, v
     }
 
     private fun randomRoom(): Room {
-        val w = randomInt(rp.roomMinWidth, rp.roomMaxWidth)
-        val h = randomInt(rp.roomMinHeight, rp.roomMaxHeight)
-        val x = randomInt(1, region.width - w - 1)
-        val y = randomInt(1, region.height - h - 1)
-        return Room(region, x, y, w, h)
+        val w = randomInt(rp.roomWidth)
+        val h = randomInt(rp.roomHeight)
+        return Room(region, x = randomInt(1, region.width - w - 1), y = randomInt(1, region.height - h - 1), w = w, h = h)
     }
 
     private class Room(val region: Region, val x: Int, val y: Int, val w: Int, val h: Int) {
@@ -170,23 +165,23 @@ class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, v
             get() = region[x + w / 2, y + h / 2]
 
         fun addToRegion() {
-            for (yy in 1..h - 1 - 1)
-                for (xx in 1..w - 1 - 1)
+            for (yy in 1 until h - 1)
+                for (xx in 1 until w - 1)
                     region[x + xx, y + yy].setType(CellType.ROOM_FLOOR)
 
-            for (xx in 0..w - 1) {
+            for (xx in 0 until w) {
                 region[x + xx, y].setType(CellType.ROOM_WALL)
                 region[x + xx, y + h - 1].setType(CellType.ROOM_WALL)
             }
-            for (yy in 0..h - 1) {
+            for (yy in 0 until h) {
                 region[x, y + yy].setType(CellType.ROOM_WALL)
                 region[x + w - 1, y + yy].setType(CellType.ROOM_WALL)
             }
         }
 
         fun overlapsExisting(): Boolean {
-            for (yy in y..y + h - 1)
-                for (xx in x..x + w - 1)
+            for (yy in y until y + h)
+                for (xx in x until x + w)
                     if (region[xx, yy].cellType != CellType.WALL)
                         return true
 
@@ -198,57 +193,19 @@ class RoomFirstRegionGenerator(world: World, val name: String, val level: Int, v
         override fun generate(world: World, name: String, level: Int, up: String?, down: String?): Region =
             RoomFirstRegionGenerator(world, name, level, regionParameters(level), up, down).generate()
 
-        fun regionParameters(level: Int): RegionParameters {
-            val rp = RegionParameters()
-            if (level < 5) {
-                rp.width = 80
-                rp.height = 25
-                rp.minRooms = 4
-                rp.maxRooms = 10
-                rp.roomMinWidth = 6
-                rp.roomMaxWidth = 18
-                rp.roomMinHeight = 5
-                rp.roomMaxHeight = 9
-            } else if (level < 10) {
-                rp.width = 120
-                rp.height = 30
-                rp.minRooms = 6
-                rp.maxRooms = 12
-                rp.roomMinWidth = 6
-                rp.roomMaxWidth = 18
-                rp.roomMinHeight = 5
-                rp.roomMaxHeight = 9
-            } else if (level < 20) {
-                rp.width = 160
-                rp.height = 40
-                rp.minRooms = 8
-                rp.maxRooms = 16
-                rp.roomMinWidth = 6
-                rp.roomMaxWidth = 18
-                rp.roomMinHeight = 5
-                rp.roomMaxHeight = 9
-            } else {
-                rp.width = 200
-                rp.height = 50
-                rp.minRooms = 10
-                rp.maxRooms = 25
-                rp.roomMinWidth = 6
-                rp.roomMaxWidth = 18
-                rp.roomMinHeight = 5
-                rp.roomMaxHeight = 9
-            }
-            return rp
+        private fun regionParameters(level: Int) = when {
+            level < 5 -> RegionParameters(width = 80, height = 25, rooms = 4..10, roomWidth = 6..18, roomHeight = 5..9)
+            level < 10 -> RegionParameters(width = 120, height = 30, rooms = 6..12, roomWidth = 6..18, roomHeight = 5..9)
+            level < 20 -> RegionParameters(width = 160, height = 40, rooms = 8..16, roomWidth = 6..18, roomHeight = 5..9)
+            else -> RegionParameters(width = 200, height = 50, rooms = 10..25, roomWidth = 6..18, roomHeight = 5..9)
         }
     }
 
-    class RegionParameters {
-        var width = 0
-        var height = 0
-        var minRooms = 4
-        var maxRooms = 10
-        var roomMinWidth = 6
-        var roomMaxWidth = 18
-        var roomMinHeight = 5
-        var roomMaxHeight = 9
-    }
+    private class RegionParameters(
+        val width: Int,
+        val height: Int,
+        val rooms: ClosedRange<Int>,
+        val roomWidth: ClosedRange<Int>,
+        val roomHeight: ClosedRange<Int>
+    )
 }

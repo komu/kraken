@@ -1,7 +1,6 @@
 package dev.komu.kraken.model.region.generators
 
 import dev.komu.kraken.common.Direction
-import dev.komu.kraken.common.Directions
 import dev.komu.kraken.model.region.*
 import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.logger
@@ -58,7 +57,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
     }
 
     private fun generateMaze() {
-        val first = region[randomInt(1, region.width-2), randomInt(1, region.height-2)]
+        val first = region[randomInt(1, region.width - 2), randomInt(1, region.height - 2)]
         first.setType(CellType.HALLWAY_FLOOR)
 
         val candidates = MutableCellSet(region)
@@ -68,7 +67,13 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
         }
     }
 
-    private fun generatePathFrom(current: Cell, candidates: MutableCellSet?, visited: MutableCellSet?, gridSize: Int, stopOnEmpty: Boolean): Cell? {
+    private fun generatePathFrom(
+        current: Cell,
+        candidates: MutableCellSet?,
+        visited: MutableCellSet?,
+        gridSize: Int,
+        stopOnEmpty: Boolean
+    ): Cell? {
         val currentCoordinate = current.coordinate
 
         for (dir in pathDirections()) {
@@ -78,7 +83,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
             if (isCandidateForPath(xx, yy) && (visited == null || !visited.contains(xx, yy))) {
                 val cell = region[xx, yy]
                 if (!cell.isPassable && cell.cellType != CellType.UNDIGGABLE_WALL) {
-                    for (i in 1..gridSize - 1)
+                    for (i in 1 until gridSize)
                         region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
 
                     cell.setType(CellType.HALLWAY_FLOOR)
@@ -87,7 +92,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
                     return cell
                 } else if (stopOnEmpty) {
-                    for (i in 1..gridSize - 1)
+                    for (i in 1 until gridSize)
                         region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
 
                     return null
@@ -102,9 +107,9 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
     private fun pathDirections(): List<Direction> =
         if (randomness.check())
-            Directions.mainDirections.shuffled()
+            Direction.mainDirections.shuffled()
         else
-            Directions.mainDirections
+            Direction.mainDirections
 
     private fun sparsify() {
         repeat(sparseness) {
@@ -142,8 +147,8 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
         val x = 2 + randomInt(region.width - width - 4)
         val y = 2 + randomInt(region.height - height - 4)
 
-        for (yy in y..y+height)
-            for (xx in x..x+width)
+        for (yy in y..y + height)
+            for (xx in x..x + width)
                 region[xx, yy].setType(CellType.ROOM_FLOOR)
     }
 

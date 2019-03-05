@@ -4,7 +4,7 @@ import java.util.*
 
 private val random = Random()
 
-inline fun <reified T: Enum<T>> randomEnum(): T =
+inline fun <reified T : Enum<T>> randomEnum(): T =
     T::class.java.enumConstants.toList().randomElement()
 
 fun <T> randomItem(vararg items: T): T =
@@ -21,7 +21,8 @@ fun rollDie(sides: Int, times: Int = 1): Int {
 }
 
 fun randomInt(n: Int): Int = random.nextInt(n)
-fun randomInt(min: Int, max:Int) = min + random.nextInt(max - min + 1)
+fun randomInt(min: Int, max: Int) = min + random.nextInt(max - min + 1)
+fun randomInt(range: ClosedRange<Int>) = range.start + random.nextInt(range.endInclusive - range.start + 1)
 
 fun MutableList<*>.shuffle() {
     shuffle(random)
@@ -34,7 +35,7 @@ fun <T> Collection<T>.shuffled(): MutableList<T> {
 }
 
 fun <T> List<T>.randomElement(): T =
-        this[randomInt(this.size)]
+    this[randomInt(this.size)]
 
 fun <T> Array<T>.randomElement(): T =
-        this[randomInt(this.size)]
+    this[randomInt(this.size)]

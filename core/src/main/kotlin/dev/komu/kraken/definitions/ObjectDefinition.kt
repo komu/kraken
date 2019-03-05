@@ -24,8 +24,7 @@ fun <T : ObjectDefinition<*>> Collection<T>.weightedRandom(): T {
 }
 
 fun <T : ObjectDefinition<*>> Collection<T>.betweenLevels(minLevel: Int, maxLevel: Int): List<T> =
-    filter { d->
-        val level = d.level
+    filter {
+        val level = it.level
         level == null || (level in minLevel..maxLevel)
     }
-

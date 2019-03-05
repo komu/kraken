@@ -1,13 +1,13 @@
 package dev.komu.kraken.model.region
 
 import dev.komu.kraken.common.Direction
-import dev.komu.kraken.common.Directions
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Item
-import dev.komu.kraken.utils.countOfCellsAtDistance
-import java.lang.Math.*
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class Cell(val region: Region, val coordinate: Coordinate, var state: CellState) {
 
@@ -123,55 +123,39 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     fun cellsNearestFirst(): Sequence<Cell> =
         cellsNearestFirst(max(max(coordinate.x, region.width - coordinate.x), max(coordinate.y, region.height - coordinate.y)))
 
-    fun cellsNearestFirst(maxDistance: Int): Sequence<Cell> =
-        object : AbstractIterator<Cell>() {
-            var distance = 0
-            var pos = 0
-            var cellsAtCurrentDistance = listOf(this@Cell)
+    private fun cellsNearestFirst(maxDistance: Int): Sequence<Cell> = sequence {
+        for (distance in 1..maxDistance) {
+            val x1 = max(0, coordinate.x - distance)
+            val y1 = max(0, coordinate.y - distance)
+            val x2 = min(region.width - 1, coordinate.x + distance)
+            val y2 = min(region.height - 1, coordinate.y + distance)
 
-            override fun computeNext() {
-                while (pos == cellsAtCurrentDistance.size) {
-                    if (distance >= maxDistance) {
-                        done()
-                        return
-                    }
+            for (xx in x1..x2)
+                yield(region[xx, y1])
 
-                    cellsAtCurrentDistance = cellsAtDistance(++distance)
-                    pos = 0
-                }
-                setNext(cellsAtCurrentDistance[pos++])
+            for (yy in y1 + 1 until y2) {
+                yield(region[x1, yy])
+                yield(region[x2, yy])
             }
-        }.asSequence()
 
-    private fun cellsAtDistance(distance: Int): List<Cell> {
-        if (distance == 0)
-            return listOf(this)
-
-        val cells = ArrayList<Cell>(countOfCellsAtDistance(distance))
-        val x1 = max(0, coordinate.x - distance)
-        val y1 = max(0, coordinate.y - distance)
-        val x2 = min(region.width-1, coordinate.x + distance)
-        val y2 = min(region.height-1, coordinate.y + distance)
-
-        for (xx in x1..x2)
-            cells.add(region[xx, y1])
-
-        for (yy in y1+1 .. y2-1) {
-            cells.add(region[x1, yy])
-            cells.add(region[x2, yy])
+            for (xx in x1..x2)
+                yield(region[xx, y2])
         }
-
-        for (xx in x1..x2)
-            cells.add(region[xx, y2])
-
-        return cells
     }
 
     val adjacentCells: List<Cell>
-        get() = adjacentCells(Directions.directions)
+        get() = adjacentCells(Direction.directions)
 
     val adjacentCellsInMainDirections: List<Cell>
-        get() = adjacentCells(Directions.mainDirections)
+        get() = adjacentCells(Direction.mainDirections)
+
+    fun getVisibleCells(sight: Int): CellSet {
+        val visible = MutableCellSet(region)
+
+        cellsNearestFirst(sight).filterTo(visible) { it.hasLineOfSight(this) }
+
+        return visible
+    }
 
     private fun adjacentCells(directions: Collection<Direction>): List<Cell> {
         val adjacent = ArrayList<Cell>(directions.size)
@@ -185,14 +169,14 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     fun countPassableMainNeighbours() =
-        Directions.mainDirections.count { getCellTowards(it).isPassable }
+        Direction.mainDirections.count { getCellTowards(it).isPassable }
 
     fun getDirection(cell: Cell) = coordinate.directionOf(cell.coordinate)
 
     fun hasLineOfSight(target: Cell) =
         cellsBetween(target).all { it == target || it == this || it.canSeeThrough }
 
-    fun cellsBetween(target: Cell): List<Cell> {
+    private fun cellsBetween(target: Cell): List<Cell> {
         // see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
         val cells = ArrayList<Cell>(distance(target))
 
@@ -214,7 +198,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
             if (x0 == x1 && y0 == y1)
                 break
 
-            val e2 = 2*err
+            val e2 = 2 * err
             if (e2 > -dy) {
                 err -= dy
                 x0 += sx
@@ -237,23 +221,10 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     fun updateLighting() {
-        val lightSourceEffectiveness = calculateLightSourceEffectiveness()
-        if (lightSourceEffectiveness > 0) {
-            val cells = getVisibleCells(lightSourceEffectiveness / 10)
-            for (cell in cells)
-                cell.lighting += max(lightSourceEffectiveness - 10 * distance(cell), 0)
-        }
-    }
-
-    private fun calculateLightSourceEffectiveness(): Int {
-        var effectiveness = 0
-
-        for (item in items)
-            effectiveness += item.lighting
-
-        effectiveness += creature?.lighting ?: 0
-
-        return lightPower + effectiveness
+        val totalLighting = lightPower + (creature?.lighting ?: 0) + items.sumBy { it.lighting }
+        if (totalLighting > 0)
+            for (cell in getVisibleCells(totalLighting / 10))
+                cell.lighting += max(totalLighting - 10 * distance(cell), 0)
     }
 
     override fun toString() = coordinate.toString()

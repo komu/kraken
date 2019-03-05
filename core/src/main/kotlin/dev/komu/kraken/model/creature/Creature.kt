@@ -1,7 +1,6 @@
 package dev.komu.kraken.model.creature
 
 import dev.komu.kraken.common.Direction
-import dev.komu.kraken.common.Directions
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.Inventory
 import dev.komu.kraken.model.common.Actor
@@ -121,7 +120,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         }
     }
 
-    protected fun move(direction: Direction): Boolean {
+    private fun move(direction: Direction): Boolean {
         val target = cell.getCellTowards(direction)
         if (canMoveTo(target)) {
             target.enter(this)
@@ -135,12 +134,12 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         }
     }
 
-    protected fun canMoveTo(cell: Cell): Boolean =
+    private fun canMoveTo(cell: Cell): Boolean =
         cell.canMoveInto(corporeal)
 
     protected fun moveRandomly() {
         if (Probability.check(75))
-            move(Directions.randomDirection())
+            move(Direction.randomDirection())
     }
 
     protected abstract fun onTick(game: Game)
@@ -152,7 +151,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         return calculateCanSee(target)
     }
 
-    protected fun calculateCanSee(target: Cell): Boolean =
+    private fun calculateCanSee(target: Cell): Boolean =
         cell.hasLineOfSight(target)
 
     val adjacentCreatures: Collection<Creature>

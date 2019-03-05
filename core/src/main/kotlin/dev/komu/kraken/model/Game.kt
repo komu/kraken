@@ -35,20 +35,16 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     val player = Player(config.name)
     private val world = World(this)
 
-    val objectFactory = ObjectFactory()
+    val objectFactory = ObjectFactory().apply {
+        addDefinitions(Weapons)
+        addDefinitions(Items)
+        addDefinitions(Creatures)
+    }
 
-    val maximumDungeonLevel = MaximumCounter(0)
+    private val maximumDungeonLevel = MaximumCounter(0)
     var over = false
 
     override var selectedCell: Coordinate? = null
-
-    init {
-        player.sex = config.sex
-
-        objectFactory.addDefinitions(Weapons)
-        objectFactory.addDefinitions(Items)
-        objectFactory.addDefinitions(Creatures)
-    }
 
     override val inventoryItems: List<ItemInfo>
         get() {
@@ -104,8 +100,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             player.luck = 1
         }
 
-        addGlobalEvent(HungerEvent())
-        addGlobalEvent(RegainHitPointsEvent())
+        addGlobalEvent(HungerEvent)
+        addGlobalEvent(RegainHitPointsEvent)
     }
 
     private fun putPetNextToPlayer(pet: Creature) {

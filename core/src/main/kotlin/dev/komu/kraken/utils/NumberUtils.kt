@@ -9,10 +9,3 @@ fun countOfCellsAtDistance(distance: Int): Int {
 }
 
 fun square(n: Int) = n * n
-
-fun signum(n: Int) =
-    when {
-        n < 0 -> -1
-        n > 0 -> 1
-        else  -> 0
-    }

@@ -10,7 +10,6 @@ import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.CellSet
-import dev.komu.kraken.model.region.getVisibleCells
 import dev.komu.kraken.model.skill.Proficiency
 import dev.komu.kraken.model.skill.SkillSet
 import dev.komu.kraken.utils.randomEnum
@@ -28,7 +27,6 @@ class Player(name: String): Creature(name) {
     var hunger = 2000
     var fainted = false
     var regenerated = false
-    var sex = randomEnum<Sex>()
     var sight = 20
 
     private val game: Game

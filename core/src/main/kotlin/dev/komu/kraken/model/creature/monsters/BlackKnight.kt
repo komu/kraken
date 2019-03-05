@@ -11,7 +11,7 @@ import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.utils.randomElement
 import dev.komu.kraken.utils.shuffled
 
-class BlackKnight: Monster("The Black Knight") {
+class BlackKnight : Monster("The Black Knight") {
 
     private var lastKnownPlayerPosition: Cell? = null
     private val bite = NaturalWeapon("bite", "1", "randint(0, 1)")
@@ -40,22 +40,22 @@ class BlackKnight: Monster("The Black Knight") {
         wieldedWeapon = Weapons.blackSword.create()
     }
 
-    override fun talk(target: Creature)  {
+    override fun talk(target: Creature) {
         val yells = when (hitPointPercentage) {
-            in 0..20  -> TORSO_YELLS
+            in 0..20 -> TORSO_YELLS
             in 21..40 -> ONE_LEGGED_YELLS
             in 41..60 -> ARMLESS_YELLS
             in 61..80 -> ONE_ARMED_YELLS
-            else      -> HEALTHY_YELLS
+            else -> HEALTHY_YELLS
         }
 
         target.say(this, yells.randomElement())
     }
 
-    val hitPointPercentage: Int
+    private val hitPointPercentage: Int
         get() = 100 * hitPoints / maxHitPoints
 
-    val fullyCrippled: Boolean
+    private val fullyCrippled: Boolean
         get() = hitPointPercentage < 20
 
     override fun onTick(game: Game) {
