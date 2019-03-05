@@ -1,19 +1,3 @@
-/*
- * Copyright 2013 The Releasers of Kraken
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
@@ -26,7 +10,7 @@ import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomInt
 
 @Suppress("unused")
-object Creatures : dev.komu.kraken.definitions.Definitions() {
+object Creatures : Definitions() {
 
     fun monster(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
             creature(name, level = level, swarmSize = swarmSize, probability = probability) {
@@ -42,13 +26,13 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (a) Ants
 
     fun ant(name: String, level: Int, swarmSize: Expression? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(name, level = level, swarmSize = swarmSize) {
+        monster(name, level = level, swarmSize = swarmSize) {
             letter = 'a'
             corpsePoisonousness = exp("2")
             init()
         }
 
-    val whiteAnt = dev.komu.kraken.definitions.Creatures.ant("white ant", level = 4) {
+    val whiteAnt = ant("white ant", level = 4) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randomInt(3, 7)
         color = Color.WHITE
@@ -60,7 +44,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 800
     }
 
-    val greyAnt = dev.komu.kraken.definitions.Creatures.ant("grey ant", level = 6) {
+    val greyAnt = ant("grey ant", level = 6) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,4)"))
         hitPoints = randomInt(4, 8)
         color = Color.GRAY
@@ -72,7 +56,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 850
     }
 
-    val redAnt = dev.komu.kraken.definitions.Creatures.ant("red ant", level = 7) {
+    val redAnt = ant("red ant", level = 7) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,5)"))
         hitPoints = randomInt(6, 12)
         color = Color.RED
@@ -84,7 +68,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 1100
     }
 
-    val blackAnt = dev.komu.kraken.definitions.Creatures.ant("black ant", level = 9, swarmSize = exp("randint(3, 6)")) {
+    val blackAnt = ant("black ant", level = 9, swarmSize = exp("randint(3, 6)")) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(2,6)"))
         hitPoints = randomInt(10, 16)
         color = Color.BLACK
@@ -97,7 +81,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     }
 
     val yellowAnt =
-        dev.komu.kraken.definitions.Creatures.ant("yellow ant", level = 12, swarmSize = exp("randint(2, 7)")) {
+        ant("yellow ant", level = 12, swarmSize = exp("randint(2, 7)")) {
             naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(4,6)"))
             hitPoints = randomInt(16, 24)
             color = Color.YELLOW
@@ -110,7 +94,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val greenAnt =
-        dev.komu.kraken.definitions.Creatures.ant("green ant", level = 14, swarmSize = exp("randint(4, 6)")) {
+        ant("green ant", level = 14, swarmSize = exp("randint(4, 6)")) {
             naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(2,7)"))
             hitPoints = randomInt(20, 35)
             color = Color.GREEN
@@ -122,7 +106,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             weight = 1300
         }
 
-    val blueAnt = dev.komu.kraken.definitions.Creatures.ant("blue ant", level = 16, swarmSize = exp("randint(5, 9)")) {
+    val blueAnt = ant("blue ant", level = 16, swarmSize = exp("randint(5, 9)")) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(5,12)"))
         hitPoints = randomInt(34, 48)
         color = Color.BLUE
@@ -137,7 +121,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (A) Angelic Beings
 
     fun baseAngel(name: String, level: Int, swarmSize: Expression? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(name, level = level, swarmSize = swarmSize) {
+        monster(name, level = level, swarmSize = swarmSize) {
             letter = 'A'
             canUseDoors = true
             corpsePoisonousness = exp("0")
@@ -145,7 +129,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val angel = dev.komu.kraken.definitions.Creatures.baseAngel("angel", level = 30) {
+    val angel = baseAngel("angel", level = 30) {
         naturalWeapon = NaturalWeapon("hit", exp("5"), exp("randint(6,16)"))
         hitPoints = randomInt(250, 350)
         level = 30
@@ -156,7 +140,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 45000
     }
 
-    val archangel = dev.komu.kraken.definitions.Creatures.baseAngel("archangel", level = 60) {
+    val archangel = baseAngel("archangel", level = 60) {
         naturalWeapon = NaturalWeapon("hit", exp("8"), exp("randint(10,25)"))
         hitPoints = randomInt(650, 850)
         level = 60
@@ -170,13 +154,13 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
     // (b) Bats
     fun bat(name: String, level: Int, swarmSize: Expression? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(name, level = level, swarmSize = swarmSize) {
+        monster(name, level = level, swarmSize = swarmSize) {
             letter = 'b'
             corpsePoisonousness = exp("1")
             init()
         }
 
-    val giantBat = dev.komu.kraken.definitions.Creatures.bat("giant bat", level = 1) {
+    val giantBat = bat("giant bat", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randomInt(2, 5)
         color = Color.BROWN
@@ -188,7 +172,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 2300
     }
 
-    val giantWhiteBat = dev.komu.kraken.definitions.Creatures.bat("giant white bat", level = 3) {
+    val giantWhiteBat = bat("giant white bat", level = 3) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(2,4)"))
         hitPoints = randomInt(3, 7)
         color = Color.WHITE
@@ -201,7 +185,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     }
 
     val giantBlackBat =
-        dev.komu.kraken.definitions.Creatures.bat("giant black bat", level = 5, swarmSize = exp("randint(2, 4)")) {
+        bat("giant black bat", level = 5, swarmSize = exp("randint(2, 4)")) {
             naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,6)"))
             hitPoints = randomInt(5, 9)
             color = Color.BLACK
@@ -214,7 +198,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val giantGreenBat =
-        dev.komu.kraken.definitions.Creatures.bat("giant green bat", level = 8, swarmSize = exp("randint(3, 5)")) {
+        bat("giant green bat", level = 8, swarmSize = exp("randint(3, 5)")) {
             naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(3,7)"))
             hitPoints = randomInt(8, 13)
             color = Color.GREEN
@@ -228,7 +212,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
     // "No, a Siamese bat. They're more dangerous."
     val siameseBat =
-        dev.komu.kraken.definitions.Creatures.bat("siamese bat", level = 8, swarmSize = exp("randint(3, 5)")) {
+        bat("siamese bat", level = 8, swarmSize = exp("randint(3, 5)")) {
             naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(3,8)"))
             hitPoints = randomInt(9, 15)
             color = Color.GREEN
@@ -243,7 +227,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (B) Birds
 
     fun bird(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -254,7 +238,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val headlessChicken = dev.komu.kraken.definitions.Creatures.bird("headless chicken", level = 1, probability = 20) {
+    val headlessChicken = bird("headless chicken", level = 1, probability = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,2)"))
         hitPoints = randomInt(1, 1)
         color = Color.WHITE
@@ -266,7 +250,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 1700
     }
 
-    val europeanSwallow = dev.komu.kraken.definitions.Creatures.bird("european swallow", level = 1) {
+    val europeanSwallow = bird("european swallow", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,2)"))
         hitPoints = randomInt(1, 3)
         color = Color.BLACK
@@ -278,7 +262,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 100
     }
 
-    val africanSwallow = dev.komu.kraken.definitions.Creatures.bird("african swallow", level = 2, probability = 60) {
+    val africanSwallow = bird("african swallow", level = 2, probability = 60) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randomInt(2, 4)
         color = Color.BLACK
@@ -290,7 +274,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 200
     }
 
-    val crow = dev.komu.kraken.definitions.Creatures.bird("crow", level = 4, swarmSize = exp("randint(1, 6)")) {
+    val crow = bird("crow", level = 4, swarmSize = exp("randint(1, 6)")) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,4)"))
         hitPoints = randomInt(3, 7)
         color = Color.BLACK
@@ -305,13 +289,13 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (c) Centipedes
 
     fun centipede(name: String, level: Int, swarmSize: Expression? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(name, level = level, swarmSize = swarmSize) {
+        monster(name, level = level, swarmSize = swarmSize) {
             letter = 'c'
             corpsePoisonousness = exp("1")
             init()
         }
 
-    val giantWhiteCentipede = dev.komu.kraken.definitions.Creatures.centipede("giant white centipede", level = 1) {
+    val giantWhiteCentipede = centipede("giant white centipede", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randomInt(3, 5)
         color = Color.WHITE
@@ -323,7 +307,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 800
     }
 
-    val giantYellowCentipede = dev.komu.kraken.definitions.Creatures.centipede("giant yellow centipede", level = 2) {
+    val giantYellowCentipede = centipede("giant yellow centipede", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,4)"))
         hitPoints = randomInt(4, 6)
         color = Color.YELLOW
@@ -335,7 +319,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 800
     }
 
-    val giantGreenCentipede = dev.komu.kraken.definitions.Creatures.centipede("giant green centipede", level = 4) {
+    val giantGreenCentipede = centipede("giant green centipede", level = 4) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(1,6)"))
         hitPoints = randomInt(6, 10)
         color = Color.GREEN
@@ -347,7 +331,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 900
     }
 
-    val giantRedCentipede = dev.komu.kraken.definitions.Creatures.centipede("giant red centipede", level = 6) {
+    val giantRedCentipede = centipede("giant red centipede", level = 6) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,7)"))
         hitPoints = randomInt(9, 14)
         color = Color.RED
@@ -363,7 +347,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
 
     fun canine(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -374,7 +358,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val jackal = dev.komu.kraken.definitions.Creatures.canine("jackal", level = 1, swarmSize = exp("randint(3, 6)")) {
+    val jackal = canine("jackal", level = 1, swarmSize = exp("randint(3, 6)")) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randomInt(1, 5)
         color = Color.BROWNISH
@@ -386,7 +370,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 6000
     }
 
-    val wildDog = dev.komu.kraken.definitions.Creatures.canine("wild dog", level = 2) {
+    val wildDog = canine("wild dog", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randomInt(3, 5)
         color = Color.BROWN
@@ -398,7 +382,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 14000
     }
 
-    val wolf = dev.komu.kraken.definitions.Creatures.canine("wolf", level = 11) {
+    val wolf = canine("wolf", level = 11) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(2,10)"))
         hitPoints = randomInt(23, 35)
         color = Color.DARK_GRAY
@@ -414,7 +398,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (d) Young/Mature Dragons
 
     fun youngDragon(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -426,7 +410,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val youngRedDragon = dev.komu.kraken.definitions.Creatures.youngDragon("young red dragon", level = 10) {
+    val youngRedDragon = youngDragon("young red dragon", level = 10) {
         naturalWeapon = NaturalWeapon("hit", exp("3"), exp("randint(3,13)"))
         hitPoints = randomInt(60, 80)
         color = Color.RED
@@ -438,7 +422,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 120000
     }
 
-    val youngBlackDragon = dev.komu.kraken.definitions.Creatures.youngDragon("young black dragon", level = 13) {
+    val youngBlackDragon = youngDragon("young black dragon", level = 13) {
         naturalWeapon = NaturalWeapon("hit", exp("3"), exp("randint(6,15)"))
         hitPoints = randomInt(70, 90)
         color = Color.BLACK
@@ -450,7 +434,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 145000
     }
 
-    val matureRedDragon = dev.komu.kraken.definitions.Creatures.youngDragon("mature red dragon", level = 22) {
+    val matureRedDragon = youngDragon("mature red dragon", level = 22) {
         naturalWeapon = NaturalWeapon("hit", exp("6"), exp("randint(6,20)"))
         hitPoints = randomInt(220, 300)
         color = Color.RED
@@ -462,7 +446,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 420000
     }
 
-    val matureBlackDragon = dev.komu.kraken.definitions.Creatures.youngDragon("mature black dragon", level = 27) {
+    val matureBlackDragon = youngDragon("mature black dragon", level = 27) {
         naturalWeapon = NaturalWeapon("hit", exp("6"), exp("randint(5,22)"))
         hitPoints = randomInt(270, 390)
         color = Color.BLACK
@@ -477,7 +461,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (D) Ancient Dragons
 
     fun ancientDragon(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -489,7 +473,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val ancientRedDragon = dev.komu.kraken.definitions.Creatures.ancientDragon("ancient red dragon", level = 60) {
+    val ancientRedDragon = ancientDragon("ancient red dragon", level = 60) {
         naturalWeapon = NaturalWeapon("hit", exp("12"), exp("randint(8,30)"))
         hitPoints = randomInt(600, 800)
         color = Color.RED
@@ -501,7 +485,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 800000
     }
 
-    val ancientBlackDragon = dev.komu.kraken.definitions.Creatures.ancientDragon("ancient black dragon", level = 65) {
+    val ancientBlackDragon = ancientDragon("ancient black dragon", level = 65) {
         naturalWeapon = NaturalWeapon("hit", exp("12"), exp("randint(10,40)"))
         hitPoints = randomInt(700, 850)
         color = Color.BLACK
@@ -516,7 +500,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (e) Floating Eyes
 
     fun eye(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -528,7 +512,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val floatingEye = dev.komu.kraken.definitions.Creatures.eye("floating eye", level = 3) {
+    val floatingEye = eye("floating eye", level = 3) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,5)"))
         hitPoints = randomInt(8, 14)
         color = Color.YELLOW
@@ -543,7 +527,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (E) Elementals
 
     fun <T: Creature> elemental(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, create: (String) -> T, init: T.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -557,7 +541,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val emmentalElemental =
-        dev.komu.kraken.definitions.Creatures.elemental("emmental elemental", level = 8, create = ::EmmentalElemental) {
+        elemental("emmental elemental", level = 8, create = ::EmmentalElemental) {
             naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(1,8)"))
             hitPoints = randomInt(70, 140)
             color = Color.YELLOW
@@ -570,7 +554,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val fogElemental =
-        dev.komu.kraken.definitions.Creatures.elemental("fog elemental", level = 18, create = ::Monster) {
+        elemental("fog elemental", level = 18, create = ::Monster) {
             naturalWeapon = NaturalWeapon("hit", exp("7"), exp("randint(3,5)"))
             hitPoints = randomInt(120, 180)
             color = Color.WHITE
@@ -583,7 +567,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val brunostElemental =
-        dev.komu.kraken.definitions.Creatures.elemental("brunost elemental", level = 38, create = ::EmmentalElemental) {
+        elemental("brunost elemental", level = 38, create = ::EmmentalElemental) {
             naturalWeapon = NaturalWeapon("hit", exp("10"), exp("randint(1,11)"))
             hitPoints = randomInt(270, 340)
             color = Color.YELLOW
@@ -598,7 +582,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (f) Felines
 
     fun feline(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -609,7 +593,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val crazyCat = dev.komu.kraken.definitions.Creatures.feline("crazy cat", level = 1) {
+    val crazyCat = feline("crazy cat", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randomInt(1, 4)
         color = Color.BLACK
@@ -621,7 +605,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 2200
     }
 
-    val lion = dev.komu.kraken.definitions.Creatures.feline("lion", level = 12) {
+    val lion = feline("lion", level = 12) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,8)"))
         hitPoints = randomInt(21, 45)
         color = Color.YELLOWISH
@@ -638,7 +622,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (g) Golems
 
     fun golem(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -650,7 +634,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val strawGolem = dev.komu.kraken.definitions.Creatures.golem("straw golem", level = 5) {
+    val strawGolem = golem("straw golem", level = 5) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,6)"))
         hitPoints = randomInt(10, 30)
         color = Color.YELLOW
@@ -663,7 +647,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 15000
     }
 
-    val clayGolem = dev.komu.kraken.definitions.Creatures.golem("clay golem", level = 10) {
+    val clayGolem = golem("clay golem", level = 10) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,8)"))
         hitPoints = randomInt(30, 80)
         color = Color.BROWN
@@ -676,7 +660,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 120000
     }
 
-    val ironGolem = dev.komu.kraken.definitions.Creatures.golem("iron golem", level = 15) {
+    val ironGolem = golem("iron golem", level = 15) {
         naturalWeapon = NaturalWeapon("hit", exp("5"), exp("randint(2,9)"))
         hitPoints = randomInt(100, 150)
         color = Color.GRAY
@@ -688,7 +672,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 350000
     }
 
-    val steelGolem = dev.komu.kraken.definitions.Creatures.golem("steel golem", level = 20) {
+    val steelGolem = golem("steel golem", level = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("9"), exp("randint(2,13)"))
         hitPoints = randomInt(150, 220)
         color = Color.CYAN
@@ -704,7 +688,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (G) Ghosts
 
     fun baseGhost(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -716,7 +700,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val spook = dev.komu.kraken.definitions.Creatures.baseGhost("spook", level = 7) {
+    val spook = baseGhost("spook", level = 7) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,6)"))
         hitPoints = randomInt(8, 13)
         color = Color.WHITE
@@ -728,7 +712,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 0
     }
 
-    val ghost = dev.komu.kraken.definitions.Creatures.baseGhost("ghost", level = 13) {
+    val ghost = baseGhost("ghost", level = 13) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(2,9)"))
         hitPoints = randomInt(23, 33)
         color = Color.WHITEISH
@@ -740,7 +724,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 0
     }
 
-    val banshee = dev.komu.kraken.definitions.Creatures.baseGhost("banshee", level = 19) {
+    val banshee = baseGhost("banshee", level = 19) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(4,6)"))
         hitPoints = randomInt(33, 53)
         color = Color.CYAN
@@ -752,7 +736,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 0
     }
 
-    val bunshee = dev.komu.kraken.definitions.Creatures.baseGhost("bunshee", level = 23, probability = 30) {
+    val bunshee = baseGhost("bunshee", level = 23, probability = 30) {
         naturalWeapon = NaturalWeapon("hit", exp("5"), exp("randint(6,13)"))
         hitPoints = randomInt(53, 73)
         color = Color.BROWNISH
@@ -769,7 +753,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (H) Hybrid Monsters
 
     fun hybrid(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -783,7 +767,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
     // (i) Icky Things
     fun ickyThing(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -794,7 +778,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val whiteIckyThing = dev.komu.kraken.definitions.Creatures.ickyThing("white icky thing", level = 1) {
+    val whiteIckyThing = ickyThing("white icky thing", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,3)"))
         hitPoints = randomInt(2, 5)
         color = Color.WHITE
@@ -806,7 +790,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 21000
     }
 
-    val redIckyThing = dev.komu.kraken.definitions.Creatures.ickyThing("red icky thing", level = 8) {
+    val redIckyThing = ickyThing("red icky thing", level = 8) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(2,7)"))
         hitPoints = randomInt(21, 35)
         color = Color.RED
@@ -822,7 +806,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (I) Insects
 
     fun insect(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -834,7 +818,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val giantWasp =
-        dev.komu.kraken.definitions.Creatures.insect("giant wasp", level = 3, swarmSize = exp("randint(1, 7)")) {
+        insect("giant wasp", level = 3, swarmSize = exp("randint(1, 7)")) {
             naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(1,4)"))
             hitPoints = randomInt(4, 6)
             color = Color.YELLOW
@@ -846,7 +830,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             weight = 750
         }
 
-    val inarianMosquito = dev.komu.kraken.definitions.Creatures.insect(
+    val inarianMosquito = insect(
         "inarian mosquito",
         level = 15,
         swarmSize = exp("randint(4, 14)")
@@ -866,7 +850,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (j) Jellies
 
     fun jelly(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -878,7 +862,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val whiteJelly = dev.komu.kraken.definitions.Creatures.jelly("white jelly", level = 3) {
+    val whiteJelly = jelly("white jelly", level = 3) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(2,5)"))
         hitPoints = randomInt(6, 15)
         color = Color.WHITE
@@ -890,7 +874,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 7000
     }
 
-    val greenJelly = dev.komu.kraken.definitions.Creatures.jelly("green jelly", level = 8) {
+    val greenJelly = jelly("green jelly", level = 8) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(3,6)"))
         hitPoints = randomInt(26, 35)
         color = Color.GREEN
@@ -906,7 +890,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (J) Snakes
 
     fun baseSnake(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -917,7 +901,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val gardenSnake = dev.komu.kraken.definitions.Creatures.baseSnake("garden snake", level = 1) {
+    val gardenSnake = baseSnake("garden snake", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(1,4)"))
         hitPoints = randomInt(3, 5)
         color = Color.GREEN
@@ -929,7 +913,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 400
     }
 
-    val rattlesnake = dev.komu.kraken.definitions.Creatures.baseSnake("rattlesnake", level = 10) {
+    val rattlesnake = baseSnake("rattlesnake", level = 10) {
         naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(3,8)"))
         hitPoints = randomInt(15, 25)
         color = Color.BROWNISH
@@ -941,7 +925,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 1200
     }
 
-    val kingCobra = dev.komu.kraken.definitions.Creatures.baseSnake("king cobra", level = 18) {
+    val kingCobra = baseSnake("king cobra", level = 18) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(3,13)"))
         hitPoints = randomInt(45, 65)
         color = Color.BLACK
@@ -955,7 +939,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
     // (k) Kobolds
     fun baseKobold(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -968,7 +952,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val kobold =
-        dev.komu.kraken.definitions.Creatures.baseKobold("kobold", level = 3, swarmSize = exp("randint(1, 4)")) {
+        baseKobold("kobold", level = 3, swarmSize = exp("randint(1, 4)")) {
             naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
             hitPoints = randomInt(3, 7)
             color = Color.RED
@@ -980,7 +964,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             weight = 35000
         }
 
-    val largeKobold = dev.komu.kraken.definitions.Creatures.baseKobold("large kobold", level = 14) {
+    val largeKobold = baseKobold("large kobold", level = 14) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(2,7)"))
         hitPoints = randomInt(40, 65)
         color = Color.BLUE
@@ -998,7 +982,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (m) Molds
 
     fun mold(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1010,7 +994,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val greenMold = dev.komu.kraken.definitions.Creatures.mold("green mold", level = 2) {
+    val greenMold = mold("green mold", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randomInt(4, 8)
         color = Color.GREEN
@@ -1022,7 +1006,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 4000
     }
 
-    val brownMold = dev.komu.kraken.definitions.Creatures.mold("brown mold", level = 3) {
+    val brownMold = mold("brown mold", level = 3) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(2,6)"))
         hitPoints = randomInt(5, 9)
         color = Color.BROWN
@@ -1034,7 +1018,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 4500
     }
 
-    val blackMold = dev.komu.kraken.definitions.Creatures.mold("black mold", level = 20) {
+    val blackMold = mold("black mold", level = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("6"), exp("randint(3,14)"))
         hitPoints = randomInt(70, 100)
         color = Color.BLACK
@@ -1052,7 +1036,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (o) Orcs
 
     fun baseOrc(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1065,7 +1049,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val orc = dev.komu.kraken.definitions.Creatures.baseOrc("orc", level = 8, swarmSize = exp("randint(1, 10)")) {
+    val orc = baseOrc("orc", level = 8, swarmSize = exp("randint(1, 10)")) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(1,7)"))
         hitPoints = randomInt(10, 20)
         level = 8
@@ -1077,7 +1061,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     }
 
     val largeOrc =
-        dev.komu.kraken.definitions.Creatures.baseOrc("large orc", level = 14, swarmSize = exp("randint(1, 4)")) {
+        baseOrc("large orc", level = 14, swarmSize = exp("randint(1, 4)")) {
             naturalWeapon = NaturalWeapon("hit", exp("6"), exp("randint(3,10)"))
             hitPoints = randomInt(30, 50)
             level = 14
@@ -1092,7 +1076,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (O) Ogres
 
     fun baseOgre(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1105,7 +1089,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val ogre = dev.komu.kraken.definitions.Creatures.baseOgre("ogre", level = 25, swarmSize = exp("randint(1, 4)")) {
+    val ogre = baseOgre("ogre", level = 25, swarmSize = exp("randint(1, 4)")) {
         naturalWeapon = NaturalWeapon("hit", exp("7"), exp("randint(1,10)"))
         hitPoints = randomInt(150, 250)
         level = 25
@@ -1128,7 +1112,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             p
         }
 
-    val knightOfNi = dev.komu.kraken.definitions.Creatures.person(
+    val knightOfNi = person(
         "knight of ni",
         swarmSize = exp("randint(1, 5)"),
         create = { KnightOfNi(it) },
@@ -1138,14 +1122,14 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         level = 8
         color = Color.BLACKISH
         luck = 2
-        wieldedWeapon = dev.komu.kraken.definitions.Weapons.scimitar.create()
+        wieldedWeapon = Weapons.scimitar.create()
         killExperience = 25
         armorClass = 10
         tickRate = 100
         weight = 75000
     }
 
-    val poorKnightOfQueenMargareta = dev.komu.kraken.definitions.Creatures.person(
+    val poorKnightOfQueenMargareta = person(
         "poor knight of Queen Margareta",
         create = { Monster(it) },
         level = 15
@@ -1154,19 +1138,19 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         level = 15
         color = Color.RED
         luck = 0
-        wieldedWeapon = dev.komu.kraken.definitions.Weapons.dagger.create()
+        wieldedWeapon = Weapons.dagger.create()
         killExperience = 18
         armorClass = 14
         tickRate = 90
         weight = 85000
 
-        inventory.add(dev.komu.kraken.definitions.Items.oldRags.create())
+        inventory.add(Items.oldRags.create())
     }
 
     // (P) Giants
 
     fun giant(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1179,7 +1163,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val hillGiant = dev.komu.kraken.definitions.Creatures.giant("hill giant", level = 31) {
+    val hillGiant = giant("hill giant", level = 31) {
         naturalWeapon = NaturalWeapon("hit", exp("10"), exp("randint(2,9)"))
         hitPoints = randomInt(200, 300)
         level = 31
@@ -1195,7 +1179,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (r) Rodents
 
     fun rodent(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1208,7 +1192,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         }
 
     val caveRat =
-        dev.komu.kraken.definitions.Creatures.rodent("cave rat", level = 1, swarmSize = exp("randint(1, 8)")) {
+        rodent("cave rat", level = 1, swarmSize = exp("randint(1, 8)")) {
             naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
             hitPoints = randomInt(1, 3)
             level = 1
@@ -1222,7 +1206,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (R) Reptiles and Amphibians
 
     fun baseLizard(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1234,7 +1218,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val newt = dev.komu.kraken.definitions.Creatures.baseLizard("newt", level = 1) {
+    val newt = baseLizard("newt", level = 1) {
         naturalWeapon = NaturalWeapon("hit", exp("-1"), exp("randint(1,3)"))
         hitPoints = randomInt(1, 3)
         color = Color.YELLOW
@@ -1246,7 +1230,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 300
     }
 
-    val lizard = dev.komu.kraken.definitions.Creatures.baseLizard("lizard", level = 2) {
+    val lizard = baseLizard("lizard", level = 2) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randomInt(2, 4)
         color = Color.GREEN
@@ -1258,7 +1242,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 670
     }
 
-    val crocodile = dev.komu.kraken.definitions.Creatures.baseLizard("crocodile", level = 20) {
+    val crocodile = baseLizard("crocodile", level = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("7"), exp("randint(4,7)"))
         hitPoints = randomInt(50, 80)
         color = Color.DARK_GREEN
@@ -1270,7 +1254,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 200000
     }
 
-    val crazyFrog = dev.komu.kraken.definitions.Creatures.baseLizard("crazy frog", level = 15) {
+    val crazyFrog = baseLizard("crazy frog", level = 15) {
         naturalWeapon = NaturalWeapon("hit", exp("5"), exp("randint(2,7)"))
         hitPoints = randomInt(50, 70)
         color = Color.BLACK
@@ -1286,7 +1270,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (S) Spiders
 
     fun baseSpider(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1298,7 +1282,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val caveSpider = dev.komu.kraken.definitions.Creatures.baseSpider("cave spider", level = 1, probability = 60) {
+    val caveSpider = baseSpider("cave spider", level = 1, probability = 60) {
         naturalWeapon = NaturalWeapon("hit", exp("0"), exp("randint(1,4)"))
         hitPoints = randomInt(3, 6)
         level = 1
@@ -1310,7 +1294,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     }
 
     val veryPoisonousSpider =
-        dev.komu.kraken.definitions.Creatures.baseSpider("very poisonous spider", level = 1, probability = 10) {
+        baseSpider("very poisonous spider", level = 1, probability = 10) {
             naturalWeapon = NaturalWeapon("hit", exp("1"), exp("randint(2,5)"))
             hitPoints = randomInt(3, 6)
             level = 1
@@ -1326,7 +1310,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (T) Trolls
 
     fun baseTroll(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1339,7 +1323,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val troll = dev.komu.kraken.definitions.Creatures.baseTroll("troll", level = 15) {
+    val troll = baseTroll("troll", level = 15) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(3,12)"))
         hitPoints = randomInt(150, 200)
         level = 15
@@ -1352,7 +1336,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (u) Minor Demons
 
     fun minorDemon(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1364,7 +1348,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val imp = dev.komu.kraken.definitions.Creatures.minorDemon("imp", level = 15) {
+    val imp = minorDemon("imp", level = 15) {
         naturalWeapon = NaturalWeapon("hit", exp("5"), exp("randint(1,7)"))
         hitPoints = randomInt(60, 90)
         level = 15
@@ -1380,7 +1364,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (U) Major Demons
 
     fun majorDemon(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1393,7 +1377,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val hornedDemon = dev.komu.kraken.definitions.Creatures.majorDemon("horned demon", level = 35) {
+    val hornedDemon = majorDemon("horned demon", level = 35) {
         naturalWeapon = NaturalWeapon("hit", exp("12"), exp("randint(4,17)"))
         hitPoints = randomInt(260, 330)
         level = 35
@@ -1410,7 +1394,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
     // (V) Vampires
 
     fun baseVampire(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1423,7 +1407,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val vampire = dev.komu.kraken.definitions.Creatures.baseVampire("vampire", level = 25) {
+    val vampire = baseVampire("vampire", level = 25) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(3,10)"))
         hitPoints = randomInt(50, 90)
         level = 25
@@ -1441,7 +1425,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         Wraith(name).apply { init() }
     }
 
-    val bogWraith = dev.komu.kraken.definitions.Creatures.baseWraith("bog wraith", level = 20) {
+    val bogWraith = baseWraith("bog wraith", level = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(2,6)"))
         hitPoints = randomInt(40, 60)
         level = 20
@@ -1452,7 +1436,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 15000
     }
 
-    val forestWraith = dev.komu.kraken.definitions.Creatures.baseWraith("forest wraith", level = 25) {
+    val forestWraith = baseWraith("forest wraith", level = 25) {
         naturalWeapon = NaturalWeapon("hit", exp("4"), exp("randint(2,8)"))
         hitPoints = randomInt(60, 90)
         level = 25
@@ -1471,7 +1455,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
     // (z) Zombies
     fun baseZombie(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-        dev.komu.kraken.definitions.Creatures.monster(
+        monster(
             name,
             level = level,
             swarmSize = swarmSize,
@@ -1483,7 +1467,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
             init()
         }
 
-    val koboldZombie = dev.komu.kraken.definitions.Creatures.baseZombie("kobold zombie", level = 8) {
+    val koboldZombie = baseZombie("kobold zombie", level = 8) {
         naturalWeapon = NaturalWeapon("hit", exp("2"), exp("randint(1,6)"))
         hitPoints = randomInt(20, 40)
         level = 8
@@ -1494,7 +1478,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 55000
     }
 
-    val orcZombie = dev.komu.kraken.definitions.Creatures.baseZombie("orc zombie", level = 14) {
+    val orcZombie = baseZombie("orc zombie", level = 14) {
         naturalWeapon = NaturalWeapon("hit", exp("3"), exp("randint(2,8)"))
         hitPoints = randomInt(35, 55)
         level = 14
@@ -1506,7 +1490,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         weight = 85000
     }
 
-    val trollZombie = dev.komu.kraken.definitions.Creatures.baseZombie("troll zombie", level = 20) {
+    val trollZombie = baseZombie("troll zombie", level = 20) {
         naturalWeapon = NaturalWeapon("hit", exp("6"), exp("randint(4,10)"))
         hitPoints = randomInt(100, 170)
         level = 20
@@ -1531,7 +1515,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
 
     val oracle = creature("The Oracle", level = 1000, probability = 0) { Oracle() }
 
-    val surstromming = dev.komu.kraken.definitions.Creatures.hybrid("the Surstromming", level = 50, probability = 0) {
+    val surstromming = hybrid("the Surstromming", level = 50, probability = 0) {
         naturalWeapon = NaturalWeapon("hit", exp("15"), exp("randint(6,20)"))
         hitPoints = randomInt(800, 850)
         color = Color.BLACK
@@ -1545,7 +1529,7 @@ object Creatures : dev.komu.kraken.definitions.Definitions() {
         corpsePoisonousness = exp("10")
     }
 
-    val melog = dev.komu.kraken.definitions.Creatures.golem("the Melog", level = 30, probability = 0) {
+    val melog = golem("the Melog", level = 30, probability = 0) {
         naturalWeapon = NaturalWeapon("hit", exp("8"), exp("randint(3,15)"))
         hitPoints = 550
         color = Color.BLUE

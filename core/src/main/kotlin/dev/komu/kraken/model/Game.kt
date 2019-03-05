@@ -1,21 +1,8 @@
-/*
- * Copyright 2013 The Releasers of Kraken
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dev.komu.kraken.model
 
+import dev.komu.kraken.common.Direction
+import dev.komu.kraken.definitions.Creatures
+import dev.komu.kraken.definitions.Items
 import dev.komu.kraken.definitions.Weapons
 import dev.komu.kraken.model.GameConfiguration.PetType
 import dev.komu.kraken.model.common.Attack
@@ -59,8 +46,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         player.sex = config.sex
 
         objectFactory.addDefinitions(Weapons)
-        objectFactory.addDefinitions(dev.komu.kraken.definitions.Items)
-        objectFactory.addDefinitions(dev.komu.kraken.definitions.Creatures)
+        objectFactory.addDefinitions(Items)
+        objectFactory.addDefinitions(Creatures)
     }
 
     override val inventoryItems: List<ItemInfo>
@@ -90,8 +77,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     fun start() {
         player.wieldedWeapon = Weapons.dagger.create()
-        player.inventory.add(dev.komu.kraken.definitions.Items.foodRation.create())
-        player.inventory.add(dev.komu.kraken.definitions.Items.cyanideCapsule.create())
+        player.inventory.add(Items.foodRation.create())
+        player.inventory.add(Items.cyanideCapsule.create())
         enterRegion("start", "from up")
 
         if (config.pet == PetType.DORIS)
@@ -364,7 +351,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     val currentRegion: Region
         get() = player.region
 
-    fun movePlayer(direction: dev.komu.kraken.common.Direction) = gameAction {
+    fun movePlayer(direction: Direction) = gameAction {
         val cell = player.cell.getCellTowards(direction)
         val creatureInCell = cell.creature
         if (creatureInCell != null) {
@@ -378,7 +365,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         }
     }
 
-    fun runTowards(direction: dev.komu.kraken.common.Direction) = gameAction {
+    fun runTowards(direction: Direction) = gameAction {
         val target = player.cell.getCellTowards(direction)
         if (isInCorridor(target))
             runInCorridor(direction)
@@ -410,7 +397,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     private fun isInCorridor(cell: Cell) =
         cell.countPassableMainNeighbours() == 2 && !cell.isRoomCorner()
 
-    private fun runInCorridor(initialDirection: dev.komu.kraken.common.Direction) {
+    private fun runInCorridor(initialDirection: Direction) {
         val first = player.cell.getCellTowards(initialDirection)
         if (first.canMoveInto(player.corporeal)) {
             var previous = player.cell
@@ -435,7 +422,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         }
     }
 
-    private fun runInRoom(direction: dev.komu.kraken.common.Direction) {
+    private fun runInRoom(direction: Direction) {
         val first = player.cell.getCellTowards(direction)
         if (first.canMoveInto(player.corporeal)) {
             first.enter(player)

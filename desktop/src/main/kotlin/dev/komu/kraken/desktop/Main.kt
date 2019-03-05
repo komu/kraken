@@ -1,21 +1,7 @@
-/*
- * Copyright 2013-2019 The Kraken Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dev.komu.kraken.desktop
 
+import dev.komu.kraken.common.Direction
+import dev.komu.kraken.common.Version
 import dev.komu.kraken.desktop.common.ErrorDialog
 import dev.komu.kraken.desktop.console.ConsoleView
 import dev.komu.kraken.desktop.extensions.makeAction
@@ -141,32 +127,32 @@ class Main(val wizardMode: Boolean) {
 
         // Movement with numlock off
 
-        inputMap["UP"]              = dev.komu.kraken.common.Direction.NORTH
-        inputMap["DOWN"]            = dev.komu.kraken.common.Direction.SOUTH
-        inputMap["LEFT"]            = dev.komu.kraken.common.Direction.WEST
-        inputMap["RIGHT"]           = dev.komu.kraken.common.Direction.EAST
-        inputMap["control UP"]      = "run " + dev.komu.kraken.common.Direction.NORTH
-        inputMap["control DOWN"]    = "run " + dev.komu.kraken.common.Direction.SOUTH
-        inputMap["control LEFT"]    = "run " + dev.komu.kraken.common.Direction.WEST
-        inputMap["control RIGHT"]   = "run " + dev.komu.kraken.common.Direction.EAST
+        inputMap["UP"]              = Direction.NORTH
+        inputMap["DOWN"]            = Direction.SOUTH
+        inputMap["LEFT"]            = Direction.WEST
+        inputMap["RIGHT"]           = Direction.EAST
+        inputMap["control UP"]      = "run " + Direction.NORTH
+        inputMap["control DOWN"]    = "run " + Direction.SOUTH
+        inputMap["control LEFT"]    = "run " + Direction.WEST
+        inputMap["control RIGHT"]   = "run " + Direction.EAST
 
         // Movement with numlock on
-        inputMap["NUMPAD1"] = dev.komu.kraken.common.Direction.SW
-        inputMap["NUMPAD2"] = dev.komu.kraken.common.Direction.SOUTH
-        inputMap["NUMPAD3"] = dev.komu.kraken.common.Direction.SE
-        inputMap["NUMPAD4"] = dev.komu.kraken.common.Direction.WEST
-        inputMap["NUMPAD6"] = dev.komu.kraken.common.Direction.EAST
-        inputMap["NUMPAD7"] = dev.komu.kraken.common.Direction.NW
-        inputMap["NUMPAD8"] = dev.komu.kraken.common.Direction.NORTH
-        inputMap["NUMPAD9"] = dev.komu.kraken.common.Direction.NE
-        inputMap["control NUMPAD1"] = "run " + dev.komu.kraken.common.Direction.SW
-        inputMap["control NUMPAD2"] = "run " + dev.komu.kraken.common.Direction.SOUTH
-        inputMap["control NUMPAD3"] = "run " + dev.komu.kraken.common.Direction.SE
-        inputMap["control NUMPAD4"] = "run " + dev.komu.kraken.common.Direction.WEST
-        inputMap["control NUMPAD6"] = "run " + dev.komu.kraken.common.Direction.EAST
-        inputMap["control NUMPAD7"] = "run " + dev.komu.kraken.common.Direction.NW
-        inputMap["control NUMPAD8"] = "run " + dev.komu.kraken.common.Direction.NORTH
-        inputMap["control NUMPAD9"] = "run " + dev.komu.kraken.common.Direction.NE
+        inputMap["NUMPAD1"] = Direction.SW
+        inputMap["NUMPAD2"] = Direction.SOUTH
+        inputMap["NUMPAD3"] = Direction.SE
+        inputMap["NUMPAD4"] = Direction.WEST
+        inputMap["NUMPAD6"] = Direction.EAST
+        inputMap["NUMPAD7"] = Direction.NW
+        inputMap["NUMPAD8"] = Direction.NORTH
+        inputMap["NUMPAD9"] = Direction.NE
+        inputMap["control NUMPAD1"] = "run " + Direction.SW
+        inputMap["control NUMPAD2"] = "run " + Direction.SOUTH
+        inputMap["control NUMPAD3"] = "run " + Direction.SE
+        inputMap["control NUMPAD4"] = "run " + Direction.WEST
+        inputMap["control NUMPAD6"] = "run " + Direction.EAST
+        inputMap["control NUMPAD7"] = "run " + Direction.NW
+        inputMap["control NUMPAD8"] = "run " + Direction.NORTH
+        inputMap["control NUMPAD9"] = "run " + Direction.NE
 
         // Up/down
         inputMap["typed >"]     = "down"
@@ -188,7 +174,7 @@ class Main(val wizardMode: Boolean) {
 
         val actionMap = regionView.actionMap
 
-        for (direction in dev.komu.kraken.common.Direction.values()) {
+        for (direction in Direction.values()) {
             actionMap[direction]        = makeAction { gameFacade?.movePlayer(direction) }
             actionMap["run $direction"] = makeAction { gameFacade?.runTowards(direction) }
         }
@@ -254,7 +240,7 @@ class Main(val wizardMode: Boolean) {
 
     fun showAbout() {
         val message =
-                "Kraken ${dev.komu.kraken.common.Version.fullVersion}\n" +
+                "Kraken ${Version.fullVersion}\n" +
                 "\n" +
                 "Copyright 2005-2019 The Releasers of Kraken\n" +
                 "\n" +

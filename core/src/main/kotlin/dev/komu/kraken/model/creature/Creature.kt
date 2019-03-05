@@ -1,21 +1,7 @@
-/*
- * Copyright 2013 The Releasers of Kraken
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dev.komu.kraken.model.creature
 
+import dev.komu.kraken.common.Direction
+import dev.komu.kraken.common.Directions
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.Inventory
 import dev.komu.kraken.model.common.Actor
@@ -38,7 +24,7 @@ import java.lang.Math.max
 abstract class Creature(var name: String): Actor, MessageTarget {
 
     var cellOrNull: Cell? = null
-        set(cell: Cell?) {
+        set(cell) {
             val oldValue = field
             if (oldValue != null)
                 oldValue.creature = null
@@ -135,7 +121,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         }
     }
 
-    protected fun move(direction: dev.komu.kraken.common.Direction): Boolean {
+    protected fun move(direction: Direction): Boolean {
         val target = cell.getCellTowards(direction)
         if (canMoveTo(target)) {
             target.enter(this)
@@ -154,7 +140,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     protected fun moveRandomly() {
         if (Probability.check(75))
-            move(dev.komu.kraken.common.Directions.randomDirection())
+            move(Directions.randomDirection())
     }
 
     protected abstract fun onTick(game: Game)

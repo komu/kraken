@@ -1,19 +1,3 @@
-/*
- * Copyright 2013 The Releasers of Kraken
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
@@ -24,7 +8,7 @@ import dev.komu.kraken.model.item.armor.BodyPart.*
 import dev.komu.kraken.model.item.food.*
 
 @Suppress("unused")
-object Items : dev.komu.kraken.definitions.Definitions() {
+object Items : Definitions() {
 
     // MISC ITEMS
 
@@ -36,15 +20,15 @@ object Items : dev.komu.kraken.definitions.Definitions() {
         }
     }
 
-    val rock = dev.komu.kraken.definitions.Items.rock("a rock").init {
+    val rock = rock("a rock").init {
         weight = 200
     }
 
-    val verySmallRock = dev.komu.kraken.definitions.Items.rock("a very small rock", probability = 10).init {
+    val verySmallRock = rock("a very small rock", probability = 10).init {
         weight = 0
     }
 
-    val boulder = dev.komu.kraken.definitions.Items.rock("a boulder", probability = 5).init {
+    val boulder = rock("a boulder", probability = 5).init {
         weight = 80000
     }
 
@@ -77,24 +61,24 @@ object Items : dev.komu.kraken.definitions.Definitions() {
         Food(name).apply { init() }
     }
 
-    val foodRation = dev.komu.kraken.definitions.Items.food("food ration") {
+    val foodRation = food("food ration") {
         effectiveness = 1000
         weight = 500
     }
 
-    val chunkOfCheese = dev.komu.kraken.definitions.Items.food("chunk of cheese") {
+    val chunkOfCheese = food("chunk of cheese") {
         color = Color.YELLOW
         effectiveness = 600
         weight = 350
     }
 
-    val bigChunkOfCheese = dev.komu.kraken.definitions.Items.food("big chunk of cheese") {
+    val bigChunkOfCheese = food("big chunk of cheese") {
         color = Color.YELLOW
         effectiveness = 1200
         weight = 1100
     }
 
-    val bun = dev.komu.kraken.definitions.Items.food("bun", probability = 60) {
+    val bun = food("bun", probability = 60) {
         letter = '%'
         color = Color.BROWNISH
         effectiveness = 80
@@ -194,35 +178,35 @@ object Items : dev.komu.kraken.definitions.Definitions() {
             }
         }
 
-    val oldRags = dev.komu.kraken.definitions.Items.lightArmor("old rags", level = 1, probability = 30) {
+    val oldRags = lightArmor("old rags", level = 1, probability = 30) {
         weight = 500
         color = Color.RED
         bodyPart = TORSO
         armorBonus = 0
     }
 
-    val clothes = dev.komu.kraken.definitions.Items.lightArmor("clothes", level = 1) {
+    val clothes = lightArmor("clothes", level = 1) {
         weight = 500
         color = Color.BLUE
         bodyPart = TORSO
         armorBonus = 1
     }
 
-    val softLeatherArmor = dev.komu.kraken.definitions.Items.lightArmor("a soft leather armor", level = 4) {
+    val softLeatherArmor = lightArmor("a soft leather armor", level = 4) {
         weight = 2300
         bodyPart = TORSO
         armorBonus = 2
     }
 
     val hardLeatherArmor =
-        dev.komu.kraken.definitions.Items.lightArmor("a hard leather armor", level = 4, probability = 70) {
+        lightArmor("a hard leather armor", level = 4, probability = 70) {
             weight = 3000
             bodyPart = TORSO
             armorBonus = 3
         }
 
     val studdedLeatherArmor =
-        dev.komu.kraken.definitions.Items.lightArmor("a studded leather armor", level = 9, probability = 60) {
+        lightArmor("a studded leather armor", level = 9, probability = 60) {
             weight = 3500
             bodyPart = TORSO
             armorBonus = 4
@@ -230,19 +214,19 @@ object Items : dev.komu.kraken.definitions.Definitions() {
 
     // Heavy armors
 
-    val ringMail = dev.komu.kraken.definitions.Items.heavyArmor("a ring mail", level = 15, probability = 40) {
+    val ringMail = heavyArmor("a ring mail", level = 15, probability = 40) {
         weight = 4600
         bodyPart = TORSO
         armorBonus = 5
     }
 
-    val chainMail = dev.komu.kraken.definitions.Items.heavyArmor("a chain mail", level = 30, probability = 30) {
+    val chainMail = heavyArmor("a chain mail", level = 30, probability = 30) {
         weight = 6000
         bodyPart = TORSO
         armorBonus = 6
     }
 
-    val plateMail = dev.komu.kraken.definitions.Items.heavyArmor("a plate mail", level = 50, probability = 20) {
+    val plateMail = heavyArmor("a plate mail", level = 50, probability = 20) {
         weight = 12000
         bodyPart = TORSO
         armorBonus = 7
@@ -250,31 +234,31 @@ object Items : dev.komu.kraken.definitions.Definitions() {
 
     // Helmets
 
-    val leatherCap = dev.komu.kraken.definitions.Items.lightArmor("a leather cap", level = 1) {
+    val leatherCap = lightArmor("a leather cap", level = 1) {
         weight = 200
         bodyPart = HEAD
         armorBonus = 1
     }
 
-    val metalCap = dev.komu.kraken.definitions.Items.heavyArmor("a metal cap", level = 5) {
+    val metalCap = heavyArmor("a metal cap", level = 5) {
         weight = 400
         bodyPart = HEAD
         armorBonus = 2
     }
 
-    val chainCoif = dev.komu.kraken.definitions.Items.heavyArmor("a chain coif", level = 10) {
+    val chainCoif = heavyArmor("a chain coif", level = 10) {
         weight = 2100
         bodyPart = HEAD
         armorBonus = 3
     }
 
-    val ironHelmet = dev.komu.kraken.definitions.Items.heavyArmor("an iron helmet", level = 20, probability = 60) {
+    val ironHelmet = heavyArmor("an iron helmet", level = 20, probability = 60) {
         weight = 3500
         bodyPart = HEAD
         armorBonus = 4
     }
 
-    val steelHelmet = dev.komu.kraken.definitions.Items.heavyArmor("a steel helmet", level = 30, probability = 25) {
+    val steelHelmet = heavyArmor("a steel helmet", level = 30, probability = 25) {
         weight = 3300
         bodyPart = HEAD
         armorBonus = 5
@@ -282,27 +266,27 @@ object Items : dev.komu.kraken.definitions.Definitions() {
 
     // Shields
 
-    val smallWoodenShield = dev.komu.kraken.definitions.Items.lightArmor("a small wooden shield", level = 1) {
+    val smallWoodenShield = lightArmor("a small wooden shield", level = 1) {
         weight = 700
         bodyPart = SHIELD
         armorBonus = 1
     }
 
-    val smallMetalShield = dev.komu.kraken.definitions.Items.lightArmor("a small metal shield", level = 4) {
+    val smallMetalShield = lightArmor("a small metal shield", level = 4) {
         weight = 1500
         bodyPart = SHIELD
         armorBonus = 2
     }
 
     val largeWoodenShield =
-        dev.komu.kraken.definitions.Items.lightArmor("a large wooden shield", level = 13, probability = 80) {
+        lightArmor("a large wooden shield", level = 13, probability = 80) {
             weight = 3200
             bodyPart = SHIELD
             armorBonus = 3
         }
 
     val largeMetalShield =
-        dev.komu.kraken.definitions.Items.heavyArmor("a large metal shield", level = 18, probability = 40) {
+        heavyArmor("a large metal shield", level = 18, probability = 40) {
             weight = 4500
             bodyPart = SHIELD
             armorBonus = 4
@@ -311,13 +295,13 @@ object Items : dev.komu.kraken.definitions.Definitions() {
 
     // Gloves, gauntlets
 
-    val leatherGloves = dev.komu.kraken.definitions.Items.lightArmor("a pair of leather gloves", level = 3) {
+    val leatherGloves = lightArmor("a pair of leather gloves", level = 3) {
         weight = 200
         bodyPart = HANDS
         armorBonus = 1
     }
 
-    val gauntlets = dev.komu.kraken.definitions.Items.lightArmor("a pair of gauntlets", level = 9, probability = 60) {
+    val gauntlets = lightArmor("a pair of gauntlets", level = 9, probability = 60) {
         weight = 450
         bodyPart = HANDS
         armorBonus = 2
@@ -326,20 +310,20 @@ object Items : dev.komu.kraken.definitions.Definitions() {
 
     // Boots, shoes
 
-    val leatherShoes = dev.komu.kraken.definitions.Items.lightArmor("a pair of leather shoes", level = 1) {
+    val leatherShoes = lightArmor("a pair of leather shoes", level = 1) {
         weight = 380
         bodyPart = FEET
         armorBonus = 1
     }
 
-    val leatherBoots = dev.komu.kraken.definitions.Items.lightArmor("a pair of leather boots", level = 8) {
+    val leatherBoots = lightArmor("a pair of leather boots", level = 8) {
         weight = 1200
         bodyPart = FEET
         armorBonus = 2
     }
 
     val steelBoots =
-        dev.komu.kraken.definitions.Items.heavyArmor("a pair of steel boots", level = 23, probability = 80) {
+        heavyArmor("a pair of steel boots", level = 23, probability = 80) {
             weight = 2700
             bodyPart = FEET
             armorBonus = 3

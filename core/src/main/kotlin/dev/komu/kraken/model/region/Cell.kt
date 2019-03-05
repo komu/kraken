@@ -1,21 +1,7 @@
-/*
- * Copyright 2013 The Releasers of Kraken
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dev.komu.kraken.model.region
 
+import dev.komu.kraken.common.Direction
+import dev.komu.kraken.common.Directions
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Item
@@ -69,7 +55,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
     fun isReachable(goal: Cell) = this == goal || region.findPath(this, goal) != null
 
-    fun getCellTowards(direction: dev.komu.kraken.common.Direction) =
+    fun getCellTowards(direction: Direction) =
         region[coordinate.x + direction.dx, coordinate.y + direction.dy]
 
     fun getJumpTarget(up: Boolean) = portal?.getTarget(up)
@@ -182,12 +168,12 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     val adjacentCells: List<Cell>
-        get() = adjacentCells(dev.komu.kraken.common.Directions.directions)
+        get() = adjacentCells(Directions.directions)
 
     val adjacentCellsInMainDirections: List<Cell>
-        get() = adjacentCells(dev.komu.kraken.common.Directions.mainDirections)
+        get() = adjacentCells(Directions.mainDirections)
 
-    private fun adjacentCells(directions: Collection<dev.komu.kraken.common.Direction>): List<Cell> {
+    private fun adjacentCells(directions: Collection<Direction>): List<Cell> {
         val adjacent = ArrayList<Cell>(directions.size)
         for (d in directions) {
             val xx = coordinate.x + d.dx
@@ -199,7 +185,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     fun countPassableMainNeighbours() =
-        dev.komu.kraken.common.Directions.mainDirections.count { getCellTowards(it).isPassable }
+        Directions.mainDirections.count { getCellTowards(it).isPassable }
 
     fun getDirection(cell: Cell) = coordinate.directionOf(cell.coordinate)
 
