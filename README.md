@@ -1,1 +1,1 @@
-# Wanhack - a silly roguelike
+# Kraken - a silly roguelike

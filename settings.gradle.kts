@@ -1,3 +1,3 @@
-rootProject.name = "wanhack"
+rootProject.name = "kraken"
 include(":core")
 include(":desktop")
