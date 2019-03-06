@@ -91,7 +91,7 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
     }
 
     fun fling() = gameAction {
-        game.fling()
+        game.throwItem()
     }
 
     fun search() = gameAction {
@@ -113,7 +113,7 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
         }
     }
 
-    class LockRelinquishingConsole(val console: Console, val lock: Lock) : Console {
+    class LockRelinquishingConsole(private val console: Console, private val lock: Lock) : Console {
         override fun message(message: String) =
             console.message(message)
 
@@ -125,8 +125,5 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
 
         override fun <T: Item> selectItem(message: String, items: Collection<T>) =
             lock.relinquish { console.selectItem(message, items) }
-
-        override fun <T: Item> selectItems(message: String, items: Collection<T>) =
-            lock.relinquish { console.selectItems(message, items) }
     }
 }

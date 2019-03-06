@@ -7,6 +7,5 @@ interface Console {
     fun message(message: String)
     fun ask(question: String): Boolean
     fun <T: Item> selectItem(message: String, items: Collection<T>): T?
-    fun <T : Item> selectItems(message: String, items: Collection<T>): Set<T>
     fun selectDirection(): Direction?
 }

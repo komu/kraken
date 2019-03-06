@@ -35,21 +35,6 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         (state as? Door)?.open(opener)
     }
 
-    fun closeDoor(closer: Creature): Boolean {
-        val door = state as? Door
-        if (door != null && door.isOpen) {
-            if (creature != null || !items.isEmpty()) {
-                closer.message("Something blocks the door.")
-                return false
-            }
-
-            door.close(closer)
-            return true
-        }
-
-        return false
-    }
-
     val largestItem: Item?
         get() = items.maxBy(Item::weight)
 
@@ -81,9 +66,6 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
         return false
     }
-
-    fun search(player: Player) =
-        state.search(player)
 
     val cellType: CellType
         get() = state.cellType

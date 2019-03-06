@@ -97,9 +97,6 @@ class ConsoleView : JComponent(), Console {
     override fun <T: Item> selectItem(message: String, items: Collection<T>) =
         SelectItemsDialog.selectItem(frame, message, items)
 
-    override fun <T : Item> selectItems(message: String, items: Collection<T>) =
-        SelectItemsDialog.selectItems(frame, message, items)
-
     fun clear() {
         buffer.clear()
         hasOutputOnThisTurn = false

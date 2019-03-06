@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 class MazeRegionGeneratorTest {
 
-    val world = World(Game(GameConfiguration(), MyConsole, {} ))
+    private val world = World(Game(GameConfiguration(), MyConsole) {})
 
     @Test
     fun generateRandomRegions() {
@@ -28,9 +28,7 @@ class MazeRegionGeneratorTest {
 
         override fun ask(question: String) = true
 
-        override fun <T: Item> selectItem(message: String, items: Collection<T>) = null
-
-        override fun <T: Item> selectItems(message: String, items: Collection<T>) = setOf<T>()
+        override fun <T: Item> selectItem(message: String, items: Collection<T>): Nothing? = null
 
         override fun selectDirection(): Direction? = null
     }

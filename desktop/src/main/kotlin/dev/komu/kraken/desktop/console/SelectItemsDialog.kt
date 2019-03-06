@@ -58,12 +58,6 @@ class SelectItemsDialog<T: Item>(owner: Frame, message: String, items: Collectio
     }
 
     companion object {
-        fun <T : Item> selectItems(frame: Frame, message: String, items: Collection<T>): Set<T> {
-            val dlg = SelectItemsDialog(frame, message, items)
-            dlg.setAllowMultipleSelections(true)
-            dlg.isVisible = true
-            return dlg.selectedItems
-        }
 
         fun <T : Item> selectItem(frame: Frame, message: String, items: Collection<T>): T? {
             val dlg = SelectItemsDialog(frame, message, items)

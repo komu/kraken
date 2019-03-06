@@ -5,7 +5,7 @@ import dev.komu.kraken.definitions.Creatures
 import dev.komu.kraken.definitions.Items
 import dev.komu.kraken.definitions.Weapons
 import dev.komu.kraken.model.GameConfiguration.PetType
-import dev.komu.kraken.model.common.Attack
+import dev.komu.kraken.model.actions.*
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Player
@@ -25,11 +25,10 @@ import dev.komu.kraken.service.config.ObjectFactory
 import dev.komu.kraken.utils.MaximumCounter
 import dev.komu.kraken.utils.isFestivus
 import dev.komu.kraken.utils.logger
-import dev.komu.kraken.utils.rollDie
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-class Game(val config: GameConfiguration, val console: Console, val listener: () -> Unit) : ReadOnlyGame {
+class Game(val config: GameConfiguration, private val console: Console, val listener: () -> Unit) : ReadOnlyGame {
     private val globalClock = Clock()
     private val regionClock = Clock()
     val player = Player(config.name)
@@ -119,20 +118,14 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         globalClock.schedule(event.rate, event)
     }
 
-    fun addRegionEvent(event: GameEvent) {
+    private fun addRegionEvent(event: GameEvent) {
         regionClock.schedule(event.rate, event)
     }
-
-    val maxDungeonLevel: Int
-        get() = maximumDungeonLevel.value
-
-    val dungeonLevel: Int
-        get() = currentRegion.level
 
     override val cellInFocus: Coordinate
         get() = player.cell.coordinate
 
-    fun enterRegion(name: String, location: String) {
+    private fun enterRegion(name: String, location: String) {
         val region = world.getRegion(name)
         val oldCell = player.cellOrNull
         val oldRegion = oldCell?.region
@@ -156,9 +149,9 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
 
     private fun Cell.findAdjacentPet(): Pet? {
         return adjacentCells
-                .asSequence()
-                .mapNotNull { it.creature as? Pet }
-                .firstOrNull()
+            .asSequence()
+            .mapNotNull { it.creature as? Pet }
+            .firstOrNull()
     }
 
     fun addCreature(creature: Creature, target: Cell) {
@@ -171,9 +164,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     fun talk() = gameAction {
         val adjacent = player.adjacentCreatures
         if (adjacent.size == 1) {
-            val creature = adjacent.iterator().next()
-            creature.talk(player)
-            tick()
+            perform(TalkAction(adjacent.first(), player))
         } else if (adjacent.isEmpty()) {
             player.message("There's no-one to talk to.")
         } else {
@@ -181,8 +172,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             if (dir != null) {
                 val creature = player.cell.getCellTowards(dir).creature
                 if (creature != null) {
-                    creature.talk(player)
-                    tick()
+                    perform(TalkAction(adjacent.first(), player))
                 } else {
                     player.message("There's nobody in selected direction.")
                 }
@@ -192,19 +182,17 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
     }
 
     fun openDoor() = gameAction {
-        val closedDoors  = player.cell.adjacentCells.filter { it.cellType == CellType.CLOSED_DOOR }
+        val closedDoors = player.cell.adjacentCells.filter { it.cellType == CellType.CLOSED_DOOR }
         if (closedDoors.isEmpty()) {
             player.message("There are no closed doors around you.")
         } else if (closedDoors.size == 1) {
-            closedDoors[0].openDoor(player)
-            tick()
+            perform(OpenDoorAction(closedDoors[0], player))
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val cell = player.cell.getCellTowards(dir)
                 if (cell.cellType == CellType.CLOSED_DOOR) {
-                    cell.openDoor(player)
-                    tick()
+                    perform(OpenDoorAction(cell, player))
                 } else {
                     player.message("No closed door in selected direction.")
                 }
@@ -217,142 +205,94 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         if (openDoors.isEmpty()) {
             player.message("There are no open doors around you.")
         } else if (openDoors.size == 1) {
-            closeDoor(openDoors[0])
+            perform(CloseDoorAction(openDoors[0], player))
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val cell = player.cell.getCellTowards(dir)
                 if (cell.cellType == CellType.OPEN_DOOR)
-                    closeDoor(cell)
+                    perform(CloseDoorAction(cell, player))
                 else
                     player.message("No open door in selected direction.")
             }
         }
     }
 
-    private fun closeDoor(door: Cell) {
-        if (door.closeDoor(player))
-            tick()
+    private tailrec fun perform(action: Action, actor: Creature = player) {
+        val result = action.perform()
+        when (result) {
+            ActionResult.Success ->
+                if (actor == player)
+                    tick()
+            ActionResult.Failure -> {
+            }
+            is ActionResult.Alternate ->
+                perform(result.action)
+        }
     }
 
     fun pickup() = gameAction {
         val cell = player.cell
         val items = cell.items
-        if (items.isEmpty()) {
-            player.message("There's nothing to pick up.")
-        } else if (items.size == 1) {
-            val item = items.iterator().next()
-            player.inventory.add(item)
-            cell.items.remove(item)
-            player.message("Picked up %s.", item.title)
-            tick()
-        } else {
-            for (item in console.selectItems("Select items to pick up", items)) {
-                player.inventory.add(item)
-                cell.items.remove(item)
-                player.message("Picked up %s.", item.title)
+        when {
+            items.isEmpty() -> player.message("There's nothing to pick up.")
+            items.size == 1 -> perform(PickupAction(items.first(), player))
+            else -> {
+                val item = console.selectItem("Select item to pick up", items)
+                if (item != null)
+                    perform(PickupAction(item, player))
             }
-            tick()
         }
     }
 
     fun equip() = gameAction {
         val item = console.selectItem("Select item to equip", player.inventory.byType<Equipable>())
-        if (item != null) {
-            if (item.equip(player))
-                tick()
-        }
+        if (item != null)
+            perform(EquipAction(item, player))
     }
 
     fun drop() = gameAction {
-        for (item in console.selectItems("Select items to drop", player.inventory.items))
-            doDrop(item)
+        val item = console.selectItem("Select item to drop", player.inventory.items)
+        if (item != null)
+            perform(DropAction(item, player))
     }
 
     fun drop(item: Item) = gameAction {
-        doDrop(item)
-        tick()
-    }
-
-    private fun doDrop(item: Item) {
-        player.inventory.remove(item)
-        player.cell.items.add(item)
-        message("Dropped %s.", item.title)
+        perform(DropAction(item, player))
     }
 
     fun eat() = gameAction {
         val food = console.selectItem("Select food to eat", player.inventory.byType<Food>())
-        if (food != null) {
-            player.inventory.remove(food)
-            food.onEatenBy(player)
-            tick()
-        }
+        if (food != null)
+            perform(EatAction(food, player))
     }
 
     fun search() = gameAction {
-        for (cell in player.cell.adjacentCells)
-            if (cell.search(player))
-                break
-
-        tick()
+        perform(SearchAction(player))
     }
 
-    fun fling() = gameAction {
+    fun throwItem() = gameAction {
         val projectile = console.selectItem("Select item to throw", player.inventory.byType<Item>())
         if (projectile != null) {
             val dir = console.selectDirection()
-            if (dir != null) {
-                player.inventory.remove(projectile)
-                var currentCell = player.cell
-                var nextCell = currentCell.getCellTowards(dir)
-                val range = player.getThrowRange(projectile.weight)
-
-                var distance = 0
-                while (distance < range && nextCell.isPassable) {
-                    currentCell = nextCell
-                    nextCell = currentCell.getCellTowards(dir)
-                    val creature = currentCell.creature
-                    if (creature != null)
-                        if (throwAttack(player, projectile, creature))
-                            break
-
-                    distance++
-                }
-                currentCell.items.add(projectile)
-                tick()
-            }
-        }
-    }
-
-    private fun throwAttack(attacker: Creature, projectile: Item, target: Creature): Boolean {
-        target.onAttackedBy(attacker)
-        val rollToHit = findRollToHit(attacker, projectile, target)
-        if (rollDie(20) <= rollToHit) {
-            message("%s %s %s at %s.", attacker.You(), attacker.verb("throw"), projectile.title, target.you())
-            assignDamage(attacker, projectile, target)
-            attacker.onSuccessfulHit(target, projectile)
-            if (!target.alive)
-                attacker.onKilledCreature(target)
-
-            return true
-        } else {
-            message("%s flies past %s.", projectile.title, target.name)
-            return false
+            if (dir != null)
+                perform(ThrowAction(projectile, dir, player))
         }
     }
 
     override val currentRegionOrNull: Region?
         get() = player.cellOrNull?.region
 
-    val currentRegion: Region
+    private val currentRegion: Region
         get() = player.region
 
     fun movePlayer(direction: Direction) = gameAction {
         val cell = player.cell.getCellTowards(direction)
         val creatureInCell = cell.creature
         if (creatureInCell != null) {
-            if (attack(player, creatureInCell))
-                tick()
+            if (creatureInCell.alive && (!creatureInCell.friendly || ask("Really attack %s?", creatureInCell.name)))
+                perform(AttackAction(creatureInCell, player))
+
         } else if (cell.canMoveInto(player.corporeal)) {
             cell.enter(player)
             tick()
@@ -376,7 +316,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         if (path != null) {
             val cells = path.drop(1)
 
-            for(cell in cells) {
+            for (cell in cells) {
                 //selectedCell = cell.coordinate
                 if (!cell.canMoveInto(player.corporeal))
                     break
@@ -402,8 +342,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
             tick()
 
             while (!player.cell.isInteresting(true)) {
-                val nextCandidates = player.cell.adjacentCellsInMainDirections.filter {
-                    c -> c != previous && c.canMoveInto(player.corporeal)
+                val nextCandidates = player.cell.adjacentCellsInMainDirections.filter { c ->
+                    c != previous && c.canMoveInto(player.corporeal)
                 }
 
                 if (nextCandidates.size == 1) {
@@ -471,7 +411,7 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         } else {
 
             player.message("Resting...")
-            loop@while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
+            loop@ while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
                 when {
                     player.hitPoints == player.maximumHitPoints -> {
                         player.message("You feel rested!")
@@ -492,54 +432,8 @@ class Game(val config: GameConfiguration, val console: Console, val listener: ()
         }
     }
 
-    fun attack(attacker: Creature, target: Creature): Boolean {
-        if (!target.alive)
-            return false
-
-        if (attacker.isPlayer && target.friendly)
-            if (!ask("Really attack %s?", target.name))
-                return false
-
-        target.onAttackedBy(attacker)
-        val weapon = attacker.attack
-        val rollToHit = findRollToHit(attacker, weapon, target)
-        if (rollDie(20) <= rollToHit) {
-            message("%s %s %s.", attacker.You(), attacker.verb(weapon.attackVerb), target.you())
-            assignDamage(attacker, weapon, target)
-            attacker.onSuccessfulHit(target, weapon)
-            if (!target.alive)
-                attacker.onKilledCreature(target)
-        } else {
-            message("%s %s.", attacker.You(), attacker.verb("miss"))
-        }
-        return true
-    }
-
-    private fun findRollToHit(attacker: Creature, weapon: Attack, target: Creature): Int {
-        val attackerLuck = attacker.luck
-        val hitBonus = attacker.hitBonus
-        val weaponToHit = weapon.getToHit(target)
-        val proficiency = attacker.getProficiency(weapon.weaponClass)
-        val armorClass = target.armorClass
-        val targetLuck = target.luck
-        val roll = 1 + attackerLuck + hitBonus + weaponToHit + proficiency + armorClass - targetLuck
-
-        log.fine("hit roll: $roll = 1 + %d + %d + %d + %d + %d - %d".format(attackerLuck, hitBonus, weaponToHit, proficiency, armorClass, targetLuck))
-
-        return roll
-    }
-
-    private fun assignDamage(attacker: Creature, weapon: Attack, target: Creature) {
-        val damage = weapon.getDamage(target)
-
-        log.fine("rolled $damage hp damage from $weapon")
-
-        target.takeDamage(damage, attacker)
-        if (target.hitPoints <= 0) {
-            attacker.message("%s %s.", target.You(), target.verb("die"))
-            target.message("%s %s.", target.You(), target.verb("die"))
-            target.die(attacker.name)
-        }
+    fun attack(attacker: Creature, target: Creature) {
+        perform(AttackAction(target, attacker), actor = attacker)
     }
 
     private fun tick() {
