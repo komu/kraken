@@ -1,6 +1,8 @@
 package dev.komu.kraken.model.creature.pets
 
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.actions.Action
+import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
@@ -16,29 +18,26 @@ abstract class Pet(name: String): Creature(name) {
         friendly = true
     }
 
-    override fun onTick(game: Game) {
+    override fun getAction(game: Game): Action? {
         val player = game.player
 
         val enemy = adjacentCreatures.find { !it.isPlayer }
-        if (enemy != null) {
-            game.attack(this, enemy)
+        return when {
+            enemy != null ->
+                AttackAction(enemy, this)
+            seesCreature(player) -> {
+                lastKnownPlayerPosition = player.cell
+                if (isAdjacentToCreature(player) || Probability.check(50))
+                    moveRandomly()
+                else
+                    moveTowards(player.cell)
+            }
+            else -> {
+                if (cell == lastKnownPlayerPosition)
+                    lastKnownPlayerPosition = null
 
-        } else if (seesCreature(player)) {
-            lastKnownPlayerPosition = player.cell
-            if (isAdjacentToCreature(player) || Probability.check(50))
-                moveRandomly()
-            else
-                moveTowards(player.cell)
-
-        } else {
-            if (cell == lastKnownPlayerPosition)
-                lastKnownPlayerPosition = null
-
-            val known = lastKnownPlayerPosition
-            if (known != null)
-                moveTowards(known)
-            else
-                moveRandomly()
+                lastKnownPlayerPosition?.let(this::moveTowards) ?: moveRandomly()
+            }
         }
     }
 

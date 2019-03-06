@@ -1,6 +1,8 @@
 package dev.komu.kraken.model.creature.pets
 
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.actions.Action
+import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.randomItem
@@ -17,11 +19,11 @@ class Doris(name: String): Pet(name) {
         target.message("%s %s.", name, verb)
     }
 
-    override fun onTick(game: Game) {
+    override fun getAction(game: Game): Action? {
         val player = game.player
-        if (isAdjacentToCreature(player) && Probability.check(1))
-            game.attack(this, player)
+        return if (isAdjacentToCreature(player) && Probability.check(percentage = 1))
+            AttackAction(player, this)
         else
-            super.onTick(game)
+            super.getAction(game)
     }
 }

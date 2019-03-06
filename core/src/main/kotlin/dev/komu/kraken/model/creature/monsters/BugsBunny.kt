@@ -2,11 +2,12 @@ package dev.komu.kraken.model.creature.monsters
 
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.actions.Action
+import dev.komu.kraken.model.actions.RandomMoveAction
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
-import dev.komu.kraken.utils.randomEnum
 import dev.komu.kraken.utils.randomInt
 
 class BugsBunny: Monster("Bugs Bunny") {
@@ -28,12 +29,10 @@ class BugsBunny: Monster("Bugs Bunny") {
         target.say(this, "What's up, Doc?")
     }
 
-    override fun onTick(game: Game) {
-        moveRandomly()
+    override fun getAction(game: Game): Action? {
+        if (seesCreature(game.player))
+            game.movePlayer(Direction.randomDirection())
 
-        if (seesCreature(game.player)) {
-            val direction = randomEnum<Direction>()
-            game.movePlayer(direction)
-        }
+        return RandomMoveAction(this)
     }
 }

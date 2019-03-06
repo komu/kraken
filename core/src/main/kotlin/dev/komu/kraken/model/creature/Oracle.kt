@@ -1,6 +1,7 @@
 package dev.komu.kraken.model.creature
 
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.randomElement
@@ -21,8 +22,7 @@ class Oracle : Creature("The Oracle") {
         target.say(this, wisdoms.randomElement())
     }
 
-    override fun onTick(game: Game) {
-    }
+    override fun getAction(game: Game): Action? = null
 
     override val naturalAttack = curse
 

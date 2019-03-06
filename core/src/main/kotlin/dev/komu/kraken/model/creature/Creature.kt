@@ -1,8 +1,11 @@
 package dev.komu.kraken.model.creature
 
-import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.Inventory
+import dev.komu.kraken.model.actions.Action
+import dev.komu.kraken.model.actions.ActionResult
+import dev.komu.kraken.model.actions.MoveAction
+import dev.komu.kraken.model.actions.RandomMoveAction
 import dev.komu.kraken.model.common.Actor
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
@@ -15,7 +18,6 @@ import dev.komu.kraken.model.item.weapon.Weapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.Region
-import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.rollDie
 import java.lang.Math.max
@@ -105,44 +107,43 @@ abstract class Creature(var name: String): Actor, MessageTarget {
             paralyzedTicks -= tickRate
             return tickRate
         }
-        onTick(game)
+
+        val action = getAction(game)
+        if (action != null)
+            perform(action)
+
         return tickRate
     }
 
-    protected fun moveTowards(targetCell: Cell): Boolean {
+    fun perform(action: Action): Boolean {
+        val result = action.perform()
+        return when (result) {
+            ActionResult.Success ->
+                true
+            ActionResult.Failure ->
+                false
+            is ActionResult.Alternate ->
+                perform(result.action)
+        }
+    }
+
+    protected abstract fun getAction(game: Game): Action?
+
+    protected fun moveTowards(targetCell: Cell): Action? {
         val searcher = CreatureShortestPathSearcher(this)
         val first = searcher.findFirstCellOnShortestPath(cell, targetCell)
-        if (first != null && canMoveTo(first)) {
-            cell = first
-            return true
-        } else {
-            return false
-        }
+
+        return if (first != null)
+            MoveAction(this, cell.getDirection(targetCell))
+        else
+            null
     }
 
-    private fun move(direction: Direction): Boolean {
-        val target = cell.getCellTowards(direction)
-        if (canMoveTo(target)) {
-            target.enter(this)
-            return true
-
-        } else if (target.isClosedDoor && canUseDoors) {
-            target.openDoor(this)
-            return true
-        } else {
-            return false
-        }
-    }
-
-    private fun canMoveTo(cell: Cell): Boolean =
+    fun canMoveTo(cell: Cell): Boolean =
         cell.canMoveInto(corporeal)
 
-    protected fun moveRandomly() {
-        if (Probability.check(75))
-            move(Direction.randomDirection())
-    }
-
-    protected abstract fun onTick(game: Game)
+    protected fun moveRandomly(): Action =
+        RandomMoveAction(this)
 
     open fun canSee(target: Cell): Boolean {
         if (omniscient)
@@ -237,7 +238,6 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     open fun say(talker: Creature, message: String, vararg args: Any?) {
     }
 
-    open fun ask(defaultValue: Boolean, question: String, vararg args: Any?): Boolean {
-        return defaultValue
-    }
+    open fun ask(defaultValue: Boolean, question: String, vararg args: Any?) =
+        defaultValue
 }

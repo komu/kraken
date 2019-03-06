@@ -1,6 +1,7 @@
 package dev.komu.kraken.model.creature
 
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.events.OneTimeEvent
@@ -12,7 +13,6 @@ import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.CellSet
 import dev.komu.kraken.model.skill.Proficiency
 import dev.komu.kraken.model.skill.SkillSet
-import dev.komu.kraken.utils.randomEnum
 import dev.komu.kraken.utils.randomInt
 import dev.komu.kraken.utils.rollDie
 import kotlin.properties.Delegates
@@ -40,6 +40,7 @@ class Player(name: String): Creature(name) {
         color = Color.BLUE
         maximumHitPoints = 8 + rollDie(5)
         hitPoints = maximumHitPoints
+        canUseDoors = true
         skills.setWeaponProficiency(WeaponClass.SWORD, Proficiency.BASIC)
     }
 
@@ -171,9 +172,7 @@ class Player(name: String): Creature(name) {
             creature != null && creature != this && !creature.friendly
         }
 
-    override fun onTick(game: Game) {
-        updateVisiblePoints()
-    }
+    override fun getAction(game: Game): Action? = null
 
     fun regainHitPoint() {
         hitPoints = Math.min(maximumHitPoints, hitPoints + 1)
@@ -182,7 +181,7 @@ class Player(name: String): Creature(name) {
     override fun canSee(target: Cell) =
         target in visibleCells
 
-    private fun updateVisiblePoints() {
+    fun updateVisiblePoints() {
         visibleCells = cell.getVisibleCells(sight)
     }
 

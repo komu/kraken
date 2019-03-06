@@ -2,6 +2,8 @@ package dev.komu.kraken.model.creature.monsters
 
 import dev.komu.kraken.definitions.Weapons
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.actions.Action
+import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Monster
@@ -58,7 +60,7 @@ class BlackKnight : Monster("The Black Knight") {
     private val fullyCrippled: Boolean
         get() = hitPointPercentage < 20
 
-    override fun onTick(game: Game) {
+    override fun getAction(game: Game): Action? {
         val player = game.player
 
         val isAdjacent = isAdjacentToCreature(player)
@@ -71,21 +73,23 @@ class BlackKnight : Monster("The Black Knight") {
             talk(player)
         }
 
-        if (isAdjacent) {
-            game.attack(this, player)
-            hasBeenFighting = true
-        } else if (!fullyCrippled) {
-            if (seesCreature(player)) {
-                lastKnownPlayerPosition = player.cell
-                moveTowards(player.cell)
-            } else {
-                if (cell == lastKnownPlayerPosition)
-                    lastKnownPlayerPosition = null
+        val seesPlayer = seesCreature(player)
+        if (seesPlayer)
+            lastKnownPlayerPosition = player.cell
+        else if (cell == lastKnownPlayerPosition)
+            lastKnownPlayerPosition = null
 
-                val knownPosition = lastKnownPlayerPosition
-                if (knownPosition != null)
-                    moveTowards(knownPosition)
+        return when {
+            isAdjacent -> {
+                hasBeenFighting = true
+                AttackAction(player, this)
             }
+            fullyCrippled ->
+                null
+            seesPlayer ->
+                moveTowards(player.cell)
+            else ->
+                lastKnownPlayerPosition?.let(this::moveTowards)
         }
     }
 

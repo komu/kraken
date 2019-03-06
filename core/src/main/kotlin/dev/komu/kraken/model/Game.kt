@@ -50,11 +50,11 @@ class Game(val config: GameConfiguration, private val console: Console, val list
             val infos = mutableListOf<ItemInfo>()
 
             player.activatedItems.mapTo(infos) {
-                ItemInfo(it.title, it.description, it.letter, true)
+                ItemInfo(it.title, it.description, it.letter, inUse = true)
             }
 
             player.inventory.items.mapTo(infos) {
-                ItemInfo(it.title, it.description, it.letter, false)
+                ItemInfo(it.title, it.description, it.letter, inUse = false)
             }
 
             return infos
@@ -83,6 +83,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
 
         currentRegion.updateLighting()
         player.act(this)
+        player.updateVisiblePoints()
         currentRegion.updateSeenCells(player.visibleCells)
         player.message("Hello %s, welcome to Kraken!", player.name)
 
@@ -164,20 +165,23 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     fun talk() = gameAction {
         val adjacent = player.adjacentCreatures
         if (adjacent.size == 1) {
-            perform(TalkAction(adjacent.first(), player))
+            TalkAction(adjacent.first(), player)
         } else if (adjacent.isEmpty()) {
             player.message("There's no-one to talk to.")
+            null
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val creature = player.cell.getCellTowards(dir).creature
                 if (creature != null) {
-                    perform(TalkAction(adjacent.first(), player))
+                    TalkAction(adjacent.first(), player)
                 } else {
                     player.message("There's nobody in selected direction.")
+                    null
                 }
+            } else {
+                null
             }
-
         }
     }
 
@@ -185,17 +189,21 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         val closedDoors = player.cell.adjacentCells.filter { it.cellType == CellType.CLOSED_DOOR }
         if (closedDoors.isEmpty()) {
             player.message("There are no closed doors around you.")
+            null
         } else if (closedDoors.size == 1) {
-            perform(OpenDoorAction(closedDoors[0], player))
+            OpenDoorAction(closedDoors[0], player)
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val cell = player.cell.getCellTowards(dir)
                 if (cell.cellType == CellType.CLOSED_DOOR) {
-                    perform(OpenDoorAction(cell, player))
+                    OpenDoorAction(cell, player)
                 } else {
                     player.message("No closed door in selected direction.")
+                    null
                 }
+            } else {
+                null
             }
         }
     }
@@ -204,30 +212,22 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         val openDoors = player.cell.adjacentCells.filter { it.cellType == CellType.OPEN_DOOR }
         if (openDoors.isEmpty()) {
             player.message("There are no open doors around you.")
+            null
         } else if (openDoors.size == 1) {
-            perform(CloseDoorAction(openDoors[0], player))
+            CloseDoorAction(openDoors[0], player)
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val cell = player.cell.getCellTowards(dir)
                 if (cell.cellType == CellType.OPEN_DOOR)
-                    perform(CloseDoorAction(cell, player))
-                else
+                    CloseDoorAction(cell, player)
+                else {
                     player.message("No open door in selected direction.")
+                    null
+                }
+            } else {
+                null
             }
-        }
-    }
-
-    private tailrec fun perform(action: Action, actor: Creature = player) {
-        val result = action.perform()
-        when (result) {
-            ActionResult.Success ->
-                if (actor == player)
-                    tick()
-            ActionResult.Failure -> {
-            }
-            is ActionResult.Alternate ->
-                perform(result.action)
         }
     }
 
@@ -235,48 +235,39 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         val cell = player.cell
         val items = cell.items
         when {
-            items.isEmpty() -> player.message("There's nothing to pick up.")
-            items.size == 1 -> perform(PickupAction(items.first(), player))
-            else -> {
-                val item = console.selectItem("Select item to pick up", items)
-                if (item != null)
-                    perform(PickupAction(item, player))
-            }
+            items.isEmpty() -> { player.message("There's nothing to pick up."); null }
+            items.size == 1 -> PickupAction(items.first(), player)
+            else ->
+                console.selectItem("Select item to pick up", items)?.let { PickupAction(it, player) }
         }
     }
 
     fun equip() = gameAction {
-        val item = console.selectItem("Select item to equip", player.inventory.byType<Equipable>())
-        if (item != null)
-            perform(EquipAction(item, player))
+        console.selectItem("Select item to equip", player.inventory.byType<Equipable>())?.let { EquipAction(it, player) }
     }
 
     fun drop() = gameAction {
-        val item = console.selectItem("Select item to drop", player.inventory.items)
-        if (item != null)
-            perform(DropAction(item, player))
+        console.selectItem("Select item to drop", player.inventory.items)?.let { DropAction(it, player) }
     }
 
     fun drop(item: Item) = gameAction {
-        perform(DropAction(item, player))
+        DropAction(item, player)
     }
 
     fun eat() = gameAction {
-        val food = console.selectItem("Select food to eat", player.inventory.byType<Food>())
-        if (food != null)
-            perform(EatAction(food, player))
+        console.selectItem("Select food to eat", player.inventory.byType<Food>())?.let { EatAction(it, player) }
     }
 
     fun search() = gameAction {
-        perform(SearchAction(player))
+        SearchAction(player)
     }
 
     fun throwItem() = gameAction {
         val projectile = console.selectItem("Select item to throw", player.inventory.byType<Item>())
         if (projectile != null) {
-            val dir = console.selectDirection()
-            if (dir != null)
-                perform(ThrowAction(projectile, dir, player))
+            console.selectDirection()?.let { ThrowAction(projectile, it, player) }
+        } else {
+            null
         }
     }
 
@@ -287,17 +278,15 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         get() = player.region
 
     fun movePlayer(direction: Direction) = gameAction {
-        val cell = player.cell.getCellTowards(direction)
-        val creatureInCell = cell.creature
+        val creatureInCell = player.cell.getCellTowards(direction).creature
         if (creatureInCell != null) {
             if (creatureInCell.alive && (!creatureInCell.friendly || ask("Really attack %s?", creatureInCell.name)))
-                perform(AttackAction(creatureInCell, player))
+                AttackAction(creatureInCell, player)
+            else
+                null
 
-        } else if (cell.canMoveInto(player.corporeal)) {
-            cell.enter(player)
-            tick()
         } else {
-            log.finer("Can't move towards: $direction")
+            MoveAction(player, direction)
         }
     }
 
@@ -307,6 +296,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
             runInCorridor(direction)
         else
             runInRoom(direction)
+        null // TODO: implement running properly
     }
 
     fun runTowards(end: Coordinate) = gameAction {
@@ -317,7 +307,6 @@ class Game(val config: GameConfiguration, private val console: Console, val list
             val cells = path.drop(1)
 
             for (cell in cells) {
-                //selectedCell = cell.coordinate
                 if (!cell.canMoveInto(player.corporeal))
                     break
 
@@ -328,6 +317,8 @@ class Game(val config: GameConfiguration, private val console: Console, val list
                     break
             }
         }
+
+        null // TODO: implement running properly
     }
 
     private fun isInCorridor(cell: Cell) =
@@ -397,6 +388,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         } else {
             log.fine("No matching portal at current location")
         }
+        null // TODO: proper action
     }
 
     fun skipTurn() {
@@ -408,8 +400,8 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         val startTime = globalClock.time
         if (maxTurns == -1 && player.hitPoints == player.maximumHitPoints) {
             player.message("You don't feel like you need to rest.")
+            null
         } else {
-
             player.message("Resting...")
             loop@ while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
                 when {
@@ -429,11 +421,8 @@ class Game(val config: GameConfiguration, private val console: Console, val list
                         tick()
                 }
             }
+            null // TODO: proper behavior
         }
-    }
-
-    fun attack(attacker: Creature, target: Creature) {
-        perform(AttackAction(target, attacker), actor = attacker)
     }
 
     private fun tick() {
@@ -446,6 +435,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
             } while (player.alive && player.fainted)
 
             currentRegion.updateLighting()
+            player.updateVisiblePoints()
             currentRegion.updateSeenCells(player.visibleCells)
 
             listener()
@@ -463,10 +453,12 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         over = true
     }
 
-    private fun gameAction(callback: () -> Unit) {
+    private fun gameAction(callback: () -> Action?) {
         if (!over) {
             if (!player.paralyzed) {
-                callback()
+                val action = callback()
+                if (action != null && player.perform(action))
+                    tick()
             } else {
                 message("You are paralyzed.")
             }
