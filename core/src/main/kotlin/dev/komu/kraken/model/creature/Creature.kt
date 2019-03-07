@@ -70,12 +70,6 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     val armoring = Armoring()
     val inventory = Inventory()
 
-    /** Numbers of ticks that this creature is paralyzed for */
-    var paralyzedTicks = 0
-        set(ticks) {
-            field = max(0, ticks)
-        }
-
     val weightOfCarriedItems: Int
         get() = (wieldedWeapon?.weight ?: 0) + armoring.weight + inventory.weight
 
@@ -99,15 +93,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     val alive: Boolean
         get() = hitPoints > 0 && cellOrNull != null
 
-    val paralyzed: Boolean
-        get() = paralyzedTicks > 0
-
     override fun act(game: Game): Int {
-        if (paralyzed) {
-            paralyzedTicks -= tickRate
-            return tickRate
-        }
-
         val action = getAction(game)
         if (action != null)
             perform(action)
@@ -127,7 +113,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         }
     }
 
-    protected abstract fun getAction(game: Game): Action?
+    abstract fun getAction(game: Game): Action?
 
     protected fun moveTowards(targetCell: Cell): Action? {
         val searcher = CreatureShortestPathSearcher(this)

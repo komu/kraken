@@ -38,10 +38,6 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
         game.runTowards(direction)
     }
 
-    fun runTowards(c: Coordinate) = gameAction {
-        game.runTowards(c)
-    }
-
     fun movePlayerVertically(up: Boolean) = gameAction {
         game.movePlayerVertically(up)
     }
@@ -62,8 +58,8 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
         game.equip()
     }
 
-    fun rest(maxTurns: Int) = gameAction {
-        game.rest(maxTurns)
+    fun rest() = gameAction {
+        game.rest()
     }
 
     fun talk() = gameAction {

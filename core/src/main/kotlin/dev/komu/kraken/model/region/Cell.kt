@@ -2,7 +2,6 @@ package dev.komu.kraken.model.region
 
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.creature.Creature
-import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Item
 import java.util.*
 import kotlin.math.abs
@@ -47,7 +46,10 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
     fun isAdjacent(cell: Cell) = coordinate.isAdjacent(cell.coordinate)
 
-    fun isRoomCorner(): Boolean {
+    val isInCorridor: Boolean
+        get() = countPassableMainNeighbours() == 2 && !isRoomCorner()
+
+    private fun isRoomCorner(): Boolean {
         if (countPassableMainNeighbours() != 2)
             return false
 

@@ -3,16 +3,16 @@ package dev.komu.kraken.desktop.game
 import dev.komu.kraken.desktop.game.tile.TileProvider
 import dev.komu.kraken.model.GameFacade
 import dev.komu.kraken.model.region.*
-import java.awt.*
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import javax.swing.JComponent
 
 class RegionView: JComponent() {
 
     var gameFacade: GameFacade? = null
-        get() = field
         set(gameFacade) {
             field = gameFacade
             repaint()
@@ -24,19 +24,7 @@ class RegionView: JComponent() {
 
     init {
         background = Color.BLACK
-        addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                gameFacade?.runTowards(toCoordinate(e.point))
-            }
-        })
     }
-
-    private fun toCoordinate(p: Point):Coordinate {
-        val p2 = Point()
-        transform?.inverseTransform(p, p2)
-        return Coordinate(p2.x / tileProvider.tileWidth, p2.y / tileProvider.tileHeight)
-    }
-
 
     override fun paint(g: Graphics) {
         val g2 = g as Graphics2D

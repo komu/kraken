@@ -21,7 +21,7 @@ class GameActionSet {
 
     init {
         add("Equip", VK_W, "shift E")       { it.equip() }
-        add("Rest", VK_R, "R")              { it.rest(-1) }
+        add("Rest", VK_R, "R")              { it.rest() }
         add("Talk", VK_T, "T")              { it.talk() }
         add("Open Door", VK_O, "O")         { it.openDoor() }
         add("Close Door", VK_C, "C")        { it.closeDoor() }

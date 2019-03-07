@@ -24,7 +24,6 @@ import dev.komu.kraken.model.region.*
 import dev.komu.kraken.service.config.ObjectFactory
 import dev.komu.kraken.utils.MaximumCounter
 import dev.komu.kraken.utils.isFestivus
-import dev.komu.kraken.utils.logger
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -126,7 +125,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     override val cellInFocus: Coordinate
         get() = player.cell.coordinate
 
-    private fun enterRegion(name: String, location: String) {
+    fun enterRegion(name: String, location: String) {
         val region = world.getRegion(name)
         val oldCell = player.cellOrNull
         val oldRegion = oldCell?.region
@@ -290,88 +289,13 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         }
     }
 
-    fun runTowards(direction: Direction) = gameAction {
+    fun runTowards(direction: Direction) = behave {
         val target = player.cell.getCellTowards(direction)
-        if (isInCorridor(target))
-            runInCorridor(direction)
+        if (target.isInCorridor)
+            RunInCorridorBehavior(direction)
         else
-            runInRoom(direction)
-        null // TODO: implement running properly
+            RunInRoomBehavior(direction)
     }
-
-    fun runTowards(end: Coordinate) = gameAction {
-        val endCell = currentRegion[end]
-        val path = currentRegion.findPath(player.cell, endCell)
-
-        if (path != null) {
-            val cells = path.drop(1)
-
-            for (cell in cells) {
-                if (!cell.canMoveInto(player.corporeal))
-                    break
-
-                cell.enter(player)
-                tick()
-
-                if (cell.isInteresting)
-                    break
-            }
-        }
-
-        null // TODO: implement running properly
-    }
-
-    private fun isInCorridor(cell: Cell) =
-        cell.countPassableMainNeighbours() == 2 && !cell.isRoomCorner()
-
-    private fun runInCorridor(initialDirection: Direction) {
-        val first = player.cell.getCellTowards(initialDirection)
-        if (first.canMoveInto(player.corporeal)) {
-            var previous = player.cell
-
-            first.enter(player)
-            tick()
-
-            while (!player.cell.isInteresting(true)) {
-                val nextCandidates = player.cell.adjacentCellsInMainDirections.filter { c ->
-                    c != previous && c.canMoveInto(player.corporeal)
-                }
-
-                if (nextCandidates.size == 1) {
-                    previous = player.cell
-                    nextCandidates.first().enter(player)
-                    tick()
-
-                } else {
-                    return
-                }
-            }
-        }
-    }
-
-    private fun runInRoom(direction: Direction) {
-        val first = player.cell.getCellTowards(direction)
-        if (first.canMoveInto(player.corporeal)) {
-            first.enter(player)
-            tick()
-
-            while (!player.cell.isInteresting(false)) {
-                val target = player.cell.getCellTowards(direction)
-                if (target.canMoveInto(player.corporeal)) {
-                    val previous = player.cell
-                    target.enter(player)
-                    tick()
-
-                    if (previous.countPassableMainNeighbours() != target.countPassableMainNeighbours())
-                        break
-                } else
-                    break
-            }
-        }
-    }
-
-    private fun Cell.isInteresting(corridor: Boolean) =
-        isInteresting || player.seesNonFriendlyCreatures() || (corridor && countPassableMainNeighbours() > 2)
 
     fun movePlayerVertically(up: Boolean) = gameAction {
         val target = player.cell.getJumpTarget(up)
@@ -379,66 +303,27 @@ class Game(val config: GameConfiguration, private val console: Console, val list
             if (target.isExit) {
                 if (ask("Really escape from the dungeon?"))
                     gameOver("Escaped the dungeon.")
-
+                null
             } else {
-                log.fine("Found portal to target $target")
-                enterRegion(target.region, target.location)
-                tick()
+                EnterRegionAction(this, target.region, target.location)
             }
         } else {
-            log.fine("No matching portal at current location")
+            null
         }
-        null // TODO: proper action
     }
 
     fun skipTurn() {
-        if (!over)
-            tick()
-    }
-
-    fun rest(maxTurns: Int) = gameAction {
-        val startTime = globalClock.time
-        if (maxTurns == -1 && player.hitPoints == player.maximumHitPoints) {
-            player.message("You don't feel like you need to rest.")
-            null
-        } else {
-            player.message("Resting...")
-            loop@ while (maxTurns == -1 || maxTurns < startTime - globalClock.time) {
-                when {
-                    player.hitPoints == player.maximumHitPoints -> {
-                        player.message("You feel rested!")
-                        break@loop
-                    }
-                    player.hungerLevel.hungry -> {
-                        player.message("You wake up feeling hungry.")
-                        break@loop
-                    }
-                    player.seesNonFriendlyCreatures() -> {
-                        player.message("Your rest is interrupted.")
-                        break@loop
-                    }
-                    else ->
-                        tick()
-                }
-            }
-            null // TODO: proper behavior
+        gameAction {
+            SkipAction
         }
     }
 
-    private fun tick() {
-        if (player.alive) {
-            do {
-                val ticks = player.tickRate
-
-                globalClock.tick(ticks, this)
-                regionClock.tick(ticks, this)
-            } while (player.alive && player.fainted)
-
-            currentRegion.updateLighting()
-            player.updateVisiblePoints()
-            currentRegion.updateSeenCells(player.visibleCells)
-
-            listener()
+    fun rest() = behave {
+        if (player.hitPoints == player.maximumHitPoints) {
+            player.message("You don't feel like you need to rest.")
+            null
+        } else {
+            RestBehavior
         }
     }
 
@@ -454,18 +339,27 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     }
 
     private fun gameAction(callback: () -> Action?) {
-        if (!over) {
-            if (!player.paralyzed) {
-                val action = callback()
-                if (action != null && player.perform(action))
-                    tick()
-            } else {
-                message("You are paralyzed.")
-            }
-        }
+        behave { callback()?.let { ActionBehavior(it) } }
     }
 
-    companion object {
-        private val log = Game::class.java.logger()
+    private fun behave(callback: () -> Behavior?) {
+        if (!over) {
+            player.behavior = callback()
+
+            while (!player.needsInput && player.alive) {
+                do {
+                    val ticks = player.tickRate
+
+                    globalClock.tick(ticks, this)
+                    regionClock.tick(ticks, this)
+                } while (player.alive && player.fainted)
+
+                currentRegion.updateLighting()
+                player.updateVisiblePoints()
+                currentRegion.updateSeenCells(player.visibleCells)
+
+                listener()
+            }
+        }
     }
 }

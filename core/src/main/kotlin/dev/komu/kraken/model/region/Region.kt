@@ -48,13 +48,12 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     operator fun get(c: Coordinate) =
         get(c.x, c.y)
 
-    operator fun get(x: Int, y: Int): Cell =
-        if (containsPoint(x, y))
-            cells[x + y * width]
-        else
-            throw IllegalArgumentException("out of bounds: $x/$width, $y/$height")
+    operator fun get(x: Int, y: Int): Cell {
+        require(containsPoint(x, y)) { "out of bounds: $x/$width, $y/$height" }
+        return cells[x + y * width]
+    }
 
-    fun containsPoint(x: Int, y: Int) = x >= 0 && x < width && y >= 0 && y < height
+    fun containsPoint(x: Int, y: Int) = x in 0..(width - 1) && y >= 0 && y < height
 
     fun updateSeenCells(seen: Set<Cell>) {
         for (cell in seen)

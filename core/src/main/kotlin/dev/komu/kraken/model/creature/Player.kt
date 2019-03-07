@@ -2,6 +2,7 @@ package dev.komu.kraken.model.creature
 
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
+import dev.komu.kraken.model.actions.Behavior
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.events.OneTimeEvent
@@ -28,6 +29,7 @@ class Player(name: String): Creature(name) {
     var fainted = false
     var regenerated = false
     var sight = 20
+    var behavior: Behavior? = null
 
     private val game: Game
         get() = region.world.game
@@ -172,7 +174,20 @@ class Player(name: String): Creature(name) {
             creature != null && creature != this && !creature.friendly
         }
 
-    override fun getAction(game: Game): Action? = null
+    val needsInput: Boolean
+        get() {
+            if (behavior?.canPerform(this) != true) {
+                waitForInput()
+            }
+
+            return behavior == null
+        }
+
+    fun waitForInput() {
+        behavior = null
+    }
+
+    override fun getAction(game: Game): Action? = behavior?.getAction(this)
 
     fun regainHitPoint() {
         hitPoints = Math.min(maximumHitPoints, hitPoints + 1)
