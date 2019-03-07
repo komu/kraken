@@ -24,7 +24,7 @@ class InventoryView : JPanel(BorderLayout()) {
     fun update(items: List<ItemInfo>) {
         val infos = Vector<ItemInfo>(items)
 
-        Collections.sort(infos)
+        infos.sort()
 
         SwingUtilities.invokeLater {
             list.setListData(infos)

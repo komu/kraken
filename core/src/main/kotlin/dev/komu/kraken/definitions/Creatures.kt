@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
@@ -13,11 +15,11 @@ import dev.komu.kraken.utils.randomInt
 object Creatures : Definitions() {
 
     fun monster(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
-            creature(name, level = level, swarmSize = swarmSize, probability = probability) {
-                val monster = Monster(name)
-                monster.init()
-                monster
-            }
+        creature(name, level = level, swarmSize = swarmSize, probability = probability) {
+            val monster = Monster(name)
+            monster.init()
+            monster
+        }
 
     // Note about probability: default is 100. Defining this attribute
     // with a value of 200 would thus mean that the creature is twice is likely

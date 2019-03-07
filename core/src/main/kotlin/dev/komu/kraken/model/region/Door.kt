@@ -4,19 +4,18 @@ import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.utils.Probability
 
-class Door(hidden: Boolean): CellState {
+class Door(hidden: Boolean) : CellState {
     private var state = if (hidden) State.HIDDEN else State.CLOSED
     private val searchProbability = Probability(10)
 
-    override fun search(searcher: Player): Boolean {
+    override fun search(searcher: Player): Boolean =
         if (state == State.HIDDEN && searchProbability.check()) {
             state = State.CLOSED
             searcher.message("%s %s a hidden door.", searcher.You(), searcher.verb("find"))
-            return true
+            true
         } else {
-            return false
+            false
         }
-    }
 
     val isOpen: Boolean
         get() = state == State.OPEN
@@ -24,7 +23,7 @@ class Door(hidden: Boolean): CellState {
     override val cellType: CellType
         get() = state.cellType
 
-    fun open(opener: Creature)  {
+    fun open(opener: Creature) {
         if (state == State.CLOSED) {
             if (Probability.check(opener.strength)) {
                 state = State.OPEN
@@ -48,7 +47,7 @@ class Door(hidden: Boolean): CellState {
 
     enum class State(val cellType: CellType) {
         HIDDEN(CellType.ROOM_WALL),
-        OPEN (CellType.OPEN_DOOR),
+        OPEN(CellType.OPEN_DOOR),
         CLOSED(CellType.CLOSED_DOOR)
     }
 }

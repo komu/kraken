@@ -14,7 +14,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     val items = HashSet<Item>()
     var creature: Creature? = null
     var portal: Portal? = null
-    var defaultLighting = 100
+    private var defaultLighting = 100
     var lighting = defaultLighting
     var lightPower = 0
 
@@ -88,7 +88,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     val canDropItemToCell: Boolean
         get() = state.cellType.canDropItem
 
-    val canSeeThrough: Boolean
+    private val canSeeThrough: Boolean
         get() = state.cellType.canSeeThrough
 
     val isPassable: Boolean

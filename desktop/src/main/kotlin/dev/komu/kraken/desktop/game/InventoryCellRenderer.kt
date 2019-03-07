@@ -21,41 +21,41 @@ class InventoryCellRenderer: JComponent(), ListCellRenderer<ItemInfo> {
         val fm2 = getFontMetrics(descriptionFont)!!
         val left = Math.max(fm1.stringWidth(" % "), fm1.stringWidth(" M "))
         val width = left + (Math.max(fm1.stringWidth(title), fm2.stringWidth(description)))
-        return Dimension(width, fm1.getHeight() + fm2.getHeight())
+        return Dimension(width, fm1.height + fm2.height)
     }
 
     override fun getListCellRendererComponent(list: JList<out ItemInfo>, value: ItemInfo?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-        this.item = value;
-        this.title = item!!.title;
-        this.description = item!!.description;
+        this.item = value
+        this.title = item!!.title
+        this.description = item!!.description
 
         if (isSelected) {
-            setBackground(list.getSelectionBackground())
-            setForeground(list.getSelectionForeground())
+            background = list.selectionBackground
+            foreground = list.selectionForeground
         } else {
-            setBackground(list.getBackground())
-            setForeground(list.getForeground())
+            background = list.background
+            foreground = list.foreground
         }
 
         if (cellHasFocus)
-            setBorder(UIManager.getBorder("List.focusCellHighlightBorder"))
+            border = UIManager.getBorder("List.focusCellHighlightBorder")
         else
-            setBorder(EmptyBorder(1, 1, 1, 1))
+            border = EmptyBorder(1, 1, 1, 1)
 
         return this
     }
 
     override fun paint(g: Graphics) {
-        g.setColor(getBackground())
-        g.fillRect(0, 0, getWidth(), getHeight())
-        g.setColor((if (item!!.inUse) Color.WHITE else Color.LIGHT_GRAY))
+        g.color = background
+        g.fillRect(0, 0, width, height)
+        g.color = (if (item!!.inUse) Color.WHITE else Color.LIGHT_GRAY)
         val fm1 = getFontMetrics(titleFont)!!
         val fm2 = getFontMetrics(descriptionFont)!!
         val left = Math.max(fm1.stringWidth(" % "), fm1.stringWidth(" M "))
-        g.setFont(titleFont)
-        g.drawString(item!!.letter.toString(), 2, (fm1.getAscent()))
-        g.drawString(title, left, fm1.getAscent())
-        g.setFont(descriptionFont)
-        g.drawString(description, left, fm1.getHeight() + fm2.getAscent())
+        g.font = titleFont
+        g.drawString(item!!.letter.toString(), 2, (fm1.ascent))
+        g.drawString(title, left, fm1.ascent)
+        g.font = descriptionFont
+        g.drawString(description, left, fm1.height + fm2.ascent)
     }
 }

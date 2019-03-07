@@ -172,6 +172,7 @@ abstract class Creature(var name: String): Actor, MessageTarget {
 
     open fun you(): String = name
 
+    @Suppress("FunctionName")
     open fun You(): String = you().capitalize()
 
     open fun verb(verb: String): String =

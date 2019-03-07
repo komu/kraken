@@ -30,12 +30,12 @@ class ExpressionLexer(val str: String) {
             pos++
 
         val tok = str.substring(start, pos)
-        if (tok.allDigits()) {
-            currentValue = Integer(tok)
-            return TokenType.NUMBER
+        return if (tok.allDigits()) {
+            currentValue = tok.toInt()
+            TokenType.NUMBER
         } else {
             currentValue = tok
-            return TokenType.IDENTIFIER
+            TokenType.IDENTIFIER
         }
     }
 

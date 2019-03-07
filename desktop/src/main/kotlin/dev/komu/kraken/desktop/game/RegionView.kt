@@ -63,17 +63,17 @@ class RegionView: JComponent() {
         if (width >= requiredWidth && height >= requiredHeight)
             return null
 
-        if (translate) {
+        return if (translate) {
             val x = tileWidth * coordinate.x
             val y = tileHeight * coordinate.y
             val dx = Math.max(0, Math.min(x - width / 2, requiredWidth - width))
             val dy = Math.max(0, Math.min(y - height / 2, requiredHeight - height))
-            return AffineTransform.getTranslateInstance((-dx).toDouble(), (-dy).toDouble())
+            AffineTransform.getTranslateInstance((-dx).toDouble(), (-dy).toDouble())
         } else {
             val heightRatio = height.toFloat() / requiredHeight
             val widthRatio = width.toFloat() / requiredWidth
             val scale = Math.min(widthRatio, heightRatio)
-            return AffineTransform.getScaleInstance(scale.toDouble(), scale.toDouble())
+            AffineTransform.getScaleInstance(scale.toDouble(), scale.toDouble())
         }
     }
 

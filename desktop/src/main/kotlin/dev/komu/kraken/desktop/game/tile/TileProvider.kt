@@ -32,7 +32,7 @@ class TileProvider {
     }
 
     fun drawCreature(g: Graphics2D, cell: Cell, creature: Creature) {
-        drawFloor(g, cell, true, true)
+        drawFloor(g, cell, true, shadow = true)
         drawLetter(g, cell.coordinate.x, cell.coordinate.y, creature.letter, creature.color.toPaint())
     }
     
@@ -42,7 +42,7 @@ class TileProvider {
     }
 
     fun drawItem(g: Graphics2D, cell: Cell, item: Item) {
-        drawFloor(g, cell, true, true)
+        drawFloor(g, cell, true, shadow = true)
         drawLetter(g, cell.coordinate.x, cell.coordinate.y, item.letter, item.color.toPaint())
     }
 

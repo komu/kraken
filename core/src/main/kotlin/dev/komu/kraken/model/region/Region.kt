@@ -9,20 +9,20 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
 
     val size = Size(width, height)
 
-    private val cells = Array<Cell>(width * height) { index ->
+    private val cells = Array(width * height) { index ->
         val x = index % width
         val y = index / width
         Cell(this, Coordinate(x, y), DefaultCellState(CellType.WALL))
     }
 
-    private val startCells = HashMap<String, Cell>();
+    private val startCells = HashMap<String, Cell>()
 
     init {
-        for (x in 0..width - 1) {
+        for (x in 0 until width) {
             this[x, 0].setType(CellType.UNDIGGABLE_WALL)
             this[x, height - 1].setType(CellType.UNDIGGABLE_WALL)
         }
-        for (y in 0..height - 1) {
+        for (y in 0 until height) {
             this[0, y].setType(CellType.UNDIGGABLE_WALL)
             this[width - 1, y].setType(CellType.UNDIGGABLE_WALL)
         }
@@ -109,13 +109,13 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
 
     // This should always be true, but is here for assertions
     fun isSurroundedByUndiggableWalls(): Boolean {
-        for (x in 0..width - 1) {
+        for (x in 0 until width) {
             if (this[x, 0].cellType != CellType.UNDIGGABLE_WALL)
                 return false
             if (this[x, height - 1].cellType != CellType.UNDIGGABLE_WALL)
                 return false
         }
-        for (y in 0..height - 1) {
+        for (y in 0 until height) {
             if (this[0, y].cellType != CellType.UNDIGGABLE_WALL)
                 return false
             if (this[width - 1, y].cellType != CellType.UNDIGGABLE_WALL)
@@ -126,7 +126,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     }
 
     companion object {
-        val DEFAULT_REGION_WIDTH = 80
-        val DEFAULT_REGION_HEIGHT = 25
+        const val DEFAULT_REGION_WIDTH = 80
+        const val DEFAULT_REGION_HEIGHT = 25
     }
 }

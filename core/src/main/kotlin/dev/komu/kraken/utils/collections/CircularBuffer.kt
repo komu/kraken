@@ -54,7 +54,7 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
 
         val n = count.coerceAtMost(_size)
         val result = ArrayList<E>(n)
-        for (i in 0..n - 1)
+        for (i in 0 until n)
             result.add(get(_size - n + i))
 
         return result
@@ -91,10 +91,10 @@ class CircularBuffer<E : Any>(capacity: Int): AbstractCollection<E>() {
             return true
 
         if (other is CircularBuffer<*>) {
-            if (_size == other._size && buffer.size == other.buffer.size) {
-                return indices.none { this[it] != other[it] }
+            return if (_size == other._size && buffer.size == other.buffer.size) {
+                indices.none { this[it] != other[it] }
             } else
-                return false
+                false
         }
 
         return false

@@ -48,11 +48,11 @@ class Clock {
 
             fun tick(game: Game, time: Int): Boolean {
                 val rate = actor.act(game)
-                if (rate > 0) {
+                return if (rate > 0) {
                     nextTick = time + rate
-                    return true
+                    true
                 } else
-                    return false
+                    false
             }
 
             val destroyed: Boolean

@@ -222,5 +222,5 @@ class Player(name: String): Creature(name) {
     override fun ask(defaultValue: Boolean, question: String, vararg args: Any?) =
         game.ask(question, *args)
 
-    override fun createCorpse() = null
+    override fun createCorpse(): Item? = null
 }

@@ -13,7 +13,7 @@ class ConsoleView : JComponent(), Console {
     private val buffer = CircularBuffer<String>(100)
     private var hasOutputOnThisTurn = false
     private var currentRow = 0
-    private val rowsToShow = 3;
+    private val rowsToShow = 3
 
     init {
         background = Color.BLACK
@@ -21,7 +21,7 @@ class ConsoleView : JComponent(), Console {
         font = Font("Monospaced", Font.PLAIN, 14)
     }
 
-    val frame: Frame
+    private val frame: Frame
         get() = JOptionPane.getFrameForComponent(this)!!
 
     override fun ask(question: String) =

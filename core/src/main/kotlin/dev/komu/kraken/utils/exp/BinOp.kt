@@ -1,6 +1,6 @@
 package dev.komu.kraken.utils.exp
 
-enum class BinOp(val op: String) {
+enum class BinOp(private val op: String) {
     ADD("+") {
         override fun evaluate(lhs: Int, rhs: Int) = lhs + rhs
     },

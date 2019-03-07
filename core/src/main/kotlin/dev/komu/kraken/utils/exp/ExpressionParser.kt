@@ -20,9 +20,9 @@ open class ExpressionParser(val expression: String) {
         var exp = parseFactor()
         while (true) {
             val next = nextToken()
-            when (next) {
-                PLUS  -> exp = BinaryExpression(BinOp.ADD, exp, parseFactor())
-                MINUS -> exp = BinaryExpression(BinOp.SUB, exp, parseFactor())
+            exp = when (next) {
+                PLUS  -> BinaryExpression(BinOp.ADD, exp, parseFactor())
+                MINUS -> BinaryExpression(BinOp.SUB, exp, parseFactor())
                 else -> {
                     lexer.pushBack()
                     return exp
@@ -41,10 +41,10 @@ open class ExpressionParser(val expression: String) {
         var factor = parseTerm()
         while (true) {
             val next = nextToken()
-            when (next) {
-                MUL -> factor = BinaryExpression(BinOp.MUL, factor, parseTerm())
-                DIV -> factor = BinaryExpression(BinOp.DIV, factor, parseTerm())
-                MOD -> factor = BinaryExpression(BinOp.MOD, factor, parseTerm())
+            factor = when (next) {
+                MUL -> BinaryExpression(BinOp.MUL, factor, parseTerm())
+                DIV -> BinaryExpression(BinOp.DIV, factor, parseTerm())
+                MOD -> BinaryExpression(BinOp.MOD, factor, parseTerm())
                 else -> {
                     lexer.pushBack()
                     return factor
@@ -61,23 +61,27 @@ open class ExpressionParser(val expression: String) {
      */
     private fun parseTerm(): Expression {
         val token = nextToken()
-        if (token == TokenType.IDENTIFIER) {
-            val name = lexer.currentValue as String
-            if (nextToken() == TokenType.LPAR) {
-                lexer.pushBack()
-                val args = parseArgumentList()
-                return ApplyExpression(name, args)
-            } else {
-                lexer.pushBack()
-                return parseVariableOrDie(name)
+        when (token) {
+            TokenType.IDENTIFIER -> {
+                val name = lexer.currentValue as String
+                return if (nextToken() == TokenType.LPAR) {
+                    lexer.pushBack()
+                    val args = parseArgumentList()
+                    ApplyExpression(name, args)
+                } else {
+                    lexer.pushBack()
+                    parseVariableOrDie(name)
+                }
             }
-        } else if (token == TokenType.LPAR) {
-            val term = parseExpression()
-            assertToken(TokenType.RPAR)
-            return term
-        } else {
-            lexer.pushBack()
-            return ConstantExpression(getNumber())
+            TokenType.LPAR -> {
+                val term = parseExpression()
+                assertToken(TokenType.RPAR)
+                return term
+            }
+            else -> {
+                lexer.pushBack()
+                return ConstantExpression(getNumber())
+            }
         }
     }
 
@@ -87,13 +91,13 @@ open class ExpressionParser(val expression: String) {
      */
     private fun parseArgumentList(): List<Expression> {
         assertToken(TokenType.LPAR)
-        if (nextToken() == TokenType.RPAR) {
-            return Collections.emptyList()
+        return if (nextToken() == TokenType.RPAR) {
+            Collections.emptyList()
         } else {
             lexer.pushBack()
             val exps = parseNonEmptyExpList()
             assertToken(TokenType.RPAR)
-            return exps
+            exps
         }
     }
 
@@ -140,13 +144,13 @@ open class ExpressionParser(val expression: String) {
 
         private fun parseVariableOrDie(token: String): Expression {
             val m = DIE_PATTERN.matcher(token)
-            if (m.matches()) {
+            return if (m.matches()) {
                 val dieCount = m.group(1)
                 val multiplier = if (dieCount != null && dieCount != "") dieCount.toInt() else 1
                 val sides = m.group(2)!!.toInt()
-                return DieExpression(multiplier, sides)
+                DieExpression(multiplier, sides)
             } else {
-                return VariableExpression(token)
+                VariableExpression(token)
             }
         }
     }

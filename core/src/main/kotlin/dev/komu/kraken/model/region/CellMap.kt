@@ -59,10 +59,10 @@ class CellMap<V : Any>(private val region: Region): AbstractMap<Cell, V>() {
             if (element is Map.Entry<Any?, Any?>) {
                 val key = element.key
                 val value = map[key]
-                if (value == element.value)
-                    return map.remove(key) != null
+                return if (value == element.value)
+                    map.remove(key) != null
                 else
-                    return false
+                    false
             }
 
             return false

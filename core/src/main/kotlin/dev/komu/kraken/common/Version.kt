@@ -5,9 +5,7 @@ import dev.komu.kraken.service.resources.ResourceLoader
 class Version(val version: String) {
 
     companion object {
-        private val instance = ResourceLoader.readProperties("/version.properties").let { properties ->
-            Version(properties.getProperty("version", "unknown"))
-        }
+        private val instance = Version(ResourceLoader.readProperties("/version.properties").getProperty("version", "unknown"))
 
         val fullVersion: String
             get() = instance.version

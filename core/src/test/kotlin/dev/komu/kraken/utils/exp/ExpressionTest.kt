@@ -50,7 +50,7 @@ class ExpressionTest {
         assertExpression(4, "3d1 + 1")
 
         val result = Expression.evaluate("d4")
-        assertTrue(result >= 1 && result <= 4)
+        assertTrue(result in 1..4)
     }
 
     companion object {

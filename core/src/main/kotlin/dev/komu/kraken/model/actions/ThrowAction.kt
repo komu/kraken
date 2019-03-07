@@ -35,7 +35,7 @@ class ThrowAction(private val projectile: Item, private val direction: Direction
     private fun throwAttack(attacker: Creature, projectile: Item, target: Creature): Boolean {
         target.onAttackedBy(attacker)
         val rollToHit = findRollToHit(attacker, projectile, target)
-        if (rollDie(20) <= rollToHit) {
+        return if (rollDie(20) <= rollToHit) {
             attacker.message("%s %s %s at %s.", attacker.You(), attacker.verb("throw"), projectile.title, target.you())
             target.message("%s %s %s at %s.", attacker.You(), attacker.verb("throw"), projectile.title, target.you())
             assignDamage(attacker, projectile, target)
@@ -43,11 +43,11 @@ class ThrowAction(private val projectile: Item, private val direction: Direction
             if (!target.alive)
                 attacker.onKilledCreature(target)
 
-            return true
+            true
         } else {
             attacker.message("%s flies past %s.", projectile.title, target.name)
             target.message("%s flies past %s.", projectile.title, target.name)
-            return false
+            false
         }
     }
 }
