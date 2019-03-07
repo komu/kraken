@@ -6,7 +6,7 @@ import dev.komu.kraken.utils.exp.Expression
 class CreatureDefinition<out T : Creature>(val name: String, override val level: Int, val createCreature: () -> T) :
     ObjectDefinition<T>() {
 
-    var swarmSize = Expression.constant(1)
+    var swarmSize: Expression = Expression.Constant(1)
 
     var instantiable = true
 

@@ -5,7 +5,6 @@ import dev.komu.kraken.model.region.*
 import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.logger
 import dev.komu.kraken.utils.randomInt
-import dev.komu.kraken.utils.shuffled
 
 class MazeRegionGenerator(world: World, val name: String, val level: Int, val up: String?, val down: String?) {
     private val region = Region(world, name, level, 80, 25)

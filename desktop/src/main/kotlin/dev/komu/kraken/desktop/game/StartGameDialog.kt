@@ -7,7 +7,6 @@ import com.jgoodies.forms.layout.FormLayout
 import dev.komu.kraken.desktop.extensions.makeAction
 import dev.komu.kraken.model.GameConfiguration
 import dev.komu.kraken.model.GameConfiguration.PetType
-import dev.komu.kraken.utils.SystemAccess
 import javax.swing.*
 
 class StartGameDialog(owner: JFrame): JDialog() {
@@ -25,7 +24,7 @@ class StartGameDialog(owner: JFrame): JDialog() {
 
     fun showDialog(): GameConfiguration? {
         configuration = null
-        nameField.text = SystemAccess.getSystemProperty("name", "")
+        nameField.text = System.getProperty("name", "")
         nameField.selectionStart = 0
         nameField.selectionEnd = nameField.text.length
         isVisible = true

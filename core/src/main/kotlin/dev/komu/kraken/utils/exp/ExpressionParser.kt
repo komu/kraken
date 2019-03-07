@@ -21,8 +21,8 @@ open class ExpressionParser(val expression: String) {
         while (true) {
             val next = nextToken()
             exp = when (next) {
-                PLUS  -> BinaryExpression(BinOp.ADD, exp, parseFactor())
-                MINUS -> BinaryExpression(BinOp.SUB, exp, parseFactor())
+                PLUS  -> Expression.Binary(BinOp.ADD, exp, parseFactor())
+                MINUS -> Expression.Binary(BinOp.SUB, exp, parseFactor())
                 else -> {
                     lexer.pushBack()
                     return exp
@@ -42,9 +42,9 @@ open class ExpressionParser(val expression: String) {
         while (true) {
             val next = nextToken()
             factor = when (next) {
-                MUL -> BinaryExpression(BinOp.MUL, factor, parseTerm())
-                DIV -> BinaryExpression(BinOp.DIV, factor, parseTerm())
-                MOD -> BinaryExpression(BinOp.MOD, factor, parseTerm())
+                MUL -> Expression.Binary(BinOp.MUL, factor, parseTerm())
+                DIV -> Expression.Binary(BinOp.DIV, factor, parseTerm())
+                MOD -> Expression.Binary(BinOp.MOD, factor, parseTerm())
                 else -> {
                     lexer.pushBack()
                     return factor
@@ -67,7 +67,7 @@ open class ExpressionParser(val expression: String) {
                 return if (nextToken() == TokenType.LPAR) {
                     lexer.pushBack()
                     val args = parseArgumentList()
-                    ApplyExpression(name, args)
+                    Expression.Apply(name, args)
                 } else {
                     lexer.pushBack()
                     parseVariableOrDie(name)
@@ -80,7 +80,7 @@ open class ExpressionParser(val expression: String) {
             }
             else -> {
                 lexer.pushBack()
-                return ConstantExpression(getNumber())
+                return Expression.Constant(getNumber())
             }
         }
     }
@@ -148,10 +148,12 @@ open class ExpressionParser(val expression: String) {
                 val dieCount = m.group(1)
                 val multiplier = if (dieCount != null && dieCount != "") dieCount.toInt() else 1
                 val sides = m.group(2)!!.toInt()
-                DieExpression(multiplier, sides)
+                Expression.Die(multiplier, sides)
             } else {
-                VariableExpression(token)
+                Expression.Variable(token)
             }
         }
     }
 }
+
+class ParseException(message: String): RuntimeException(message)

@@ -1,6 +1,6 @@
 package dev.komu.kraken.utils.exp
 
-class ExpressionLexer(val str: String) {
+class ExpressionLexer(private val str: String) {
 
     private var pos = 0
     var currentValue: Any? = null
@@ -26,11 +26,11 @@ class ExpressionLexer(val str: String) {
         }
 
         val start = pos++
-        while (pos < str.length && str[pos].isIdentifierChar())
+        while (pos < str.length && str[pos].isLetterOrDigit())
             pos++
 
         val tok = str.substring(start, pos)
-        return if (tok.allDigits()) {
+        return if (tok.all { it.isDigit() }) {
             currentValue = tok.toInt()
             TokenType.NUMBER
         } else {
@@ -40,8 +40,7 @@ class ExpressionLexer(val str: String) {
     }
 
     fun pushBack() {
-        if (oldPos == -1)
-            throw IllegalStateException("no tokens read: can't pushback")
+        check(oldPos != -1) { "no tokens read: can't pushback" }
 
         pos = oldPos
     }
@@ -52,15 +51,7 @@ class ExpressionLexer(val str: String) {
     }
 
     private fun skipWhitespace() {
-        while (pos < str.length && Character.isWhitespace(str[pos]))
+        while (pos < str.length && str[pos].isWhitespace())
             pos++
-    }
-
-    companion object {
-        private fun String.allDigits() =
-            this.all { Character.isDigit(it) }
-
-        private fun Char.isIdentifierChar() =
-            Character.isLetter(this) || Character.isDigit(this)
     }
 }

@@ -12,7 +12,6 @@ import dev.komu.kraken.desktop.game.StartGameDialog
 import dev.komu.kraken.desktop.game.StatisticsView
 import dev.komu.kraken.desktop.game.action.GameActionSet
 import dev.komu.kraken.model.GameFacade
-import dev.komu.kraken.utils.SystemAccess
 import dev.komu.kraken.utils.logger
 import java.awt.BorderLayout
 import java.awt.event.KeyEvent.*
@@ -257,7 +256,7 @@ fun main() {
     try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-        val wizardMode = SystemAccess.getSystemProperty("wizard") != null
+        val wizardMode = System.getProperty("wizard") != null
 
         Main(wizardMode)
 

@@ -11,7 +11,6 @@ import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.utils.randomElement
-import dev.komu.kraken.utils.shuffled
 
 class BlackKnight : Monster("The Black Knight") {
 
