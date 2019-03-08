@@ -12,5 +12,4 @@ interface ReadOnlyGame {
     val visibleCells: CellSet
     val cellInFocus: Coordinate
     val currentRegionOrNull: Region?
-    val selectedCell: Coordinate?
 }

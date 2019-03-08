@@ -46,13 +46,13 @@ class RoomFirstRegionGenerator private constructor(
     }
 
     private fun isDoorCandidate(cell: Cell): Boolean {
-        if (cell.cellType != CellType.HALLWAY_FLOOR)
+        if (cell.type != CellType.HALLWAY_FLOOR)
             return false
 
         val neighbors = cell.adjacentCellsInMainDirections
-        val roomNeighbour = neighbors.find { it.cellType == CellType.ROOM_FLOOR }
-        val hallwayNeighbour = neighbors.find { it.cellType == CellType.HALLWAY_FLOOR }
-        val walls = neighbors.count { it.cellType == CellType.ROOM_WALL }
+        val roomNeighbour = neighbors.find { it.type == CellType.ROOM_FLOOR }
+        val hallwayNeighbour = neighbors.find { it.type == CellType.HALLWAY_FLOOR }
+        val walls = neighbors.count { it.type == CellType.ROOM_WALL }
 
         if (roomNeighbour != null && hallwayNeighbour != null && walls == 2) {
             val room = cell.getDirection(roomNeighbour)
@@ -93,8 +93,8 @@ class RoomFirstRegionGenerator private constructor(
         val path = CorridorPathSearcher(region).findShortestPath(startCell, goalCell)!!
         var previous: Cell? = null
         for (cell in path) {
-            if (cell.cellType != CellType.ROOM_FLOOR)
-                cell.setType(CellType.HALLWAY_FLOOR)
+            if (cell.type != CellType.ROOM_FLOOR)
+                cell.type = CellType.HALLWAY_FLOOR
 
             if (cell.coordinate !in start)
                 for (adjacent in cell.adjacentCellsInMainDirections)
@@ -123,7 +123,7 @@ class RoomFirstRegionGenerator private constructor(
         check(empty.size >= 2) { "not enough empty cells to place stairs" }
 
         val stairsUp = stairsUpRoom.randomCell()
-        stairsUp.setType(CellType.STAIRS_UP)
+        stairsUp.type = CellType.STAIRS_UP
         if (up != null)
             region.addPortal(stairsUp.coordinate, up, "from down", true)
 
@@ -134,7 +134,7 @@ class RoomFirstRegionGenerator private constructor(
                 val stairsDownRoom = random(rooms, stairsUpRoom)
                 val stairsDown = stairsDownRoom.randomCell()
                 if (stairsDown != stairsUp && region.findPath(stairsUp, stairsDown) != null) {
-                    stairsDown.setType(CellType.STAIRS_DOWN)
+                    stairsDown.type = CellType.STAIRS_DOWN
                     region.addPortal(stairsDown.coordinate, down, "from up", false)
                     region.addStartPoint(stairsDown.coordinate, "from down")
                     return
@@ -167,22 +167,22 @@ class RoomFirstRegionGenerator private constructor(
         fun addToRegion() {
             for (yy in 1 until h - 1)
                 for (xx in 1 until w - 1)
-                    region[x + xx, y + yy].setType(CellType.ROOM_FLOOR)
+                    region[x + xx, y + yy].type = CellType.ROOM_FLOOR
 
             for (xx in 0 until w) {
-                region[x + xx, y].setType(CellType.ROOM_WALL)
-                region[x + xx, y + h - 1].setType(CellType.ROOM_WALL)
+                region[x + xx, y].type = CellType.ROOM_WALL
+                region[x + xx, y + h - 1].type = CellType.ROOM_WALL
             }
             for (yy in 0 until h) {
-                region[x, y + yy].setType(CellType.ROOM_WALL)
-                region[x + w - 1, y + yy].setType(CellType.ROOM_WALL)
+                region[x, y + yy].type = CellType.ROOM_WALL
+                region[x + w - 1, y + yy].type = CellType.ROOM_WALL
             }
         }
 
         fun overlapsExisting(): Boolean {
             for (yy in y until y + h)
                 for (xx in x until x + w)
-                    if (region[xx, yy].cellType != CellType.WALL)
+                    if (region[xx, yy].type != CellType.WALL)
                         return true
 
             return false

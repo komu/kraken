@@ -4,7 +4,6 @@ import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.CellType.*
-import dev.komu.kraken.model.region.Coordinate
 import java.awt.*
 import java.lang.Math.max
 import java.lang.Math.min
@@ -20,7 +19,7 @@ class TileProvider {
     val tileHeight = 13
 
     fun drawCell(g: Graphics2D, cell: Cell, visible: Boolean) {
-        when (cell.cellType) {
+        when (cell.type) {
             HALLWAY_FLOOR, ROOM_FLOOR           -> drawFloor(g, cell, visible, false)
             UNDIGGABLE_WALL, ROOM_WALL, WALL    -> drawWall(g, cell.coordinate.x, cell.coordinate.y, visible)
             STAIRS_UP                           -> drawStairs(g, cell, true, visible)
@@ -36,11 +35,6 @@ class TileProvider {
         drawLetter(g, cell.coordinate.x, cell.coordinate.y, creature.letter, creature.color.toPaint())
     }
     
-    fun drawSelection(g: Graphics2D, coordinate: Coordinate) {
-        g.paint = Color(0.8f, 0.3f, 0.3f, 0.5f)
-        g.fillRect(coordinate.x * tileWidth, coordinate.y * tileHeight, tileWidth, tileHeight)
-    }
-
     fun drawItem(g: Graphics2D, cell: Cell, item: Item) {
         drawFloor(g, cell, true, shadow = true)
         drawLetter(g, cell.coordinate.x, cell.coordinate.y, item.letter, item.color.toPaint())
@@ -97,5 +91,5 @@ class TileProvider {
         private val DOOR_INVISIBLE = DOOR_VISIBLE.darker()
     }
 
-    fun dev.komu.kraken.model.common.Color.toPaint() = Color(r, g, b)
+    private fun dev.komu.kraken.model.common.Color.toPaint() = Color(r, g, b)
 }

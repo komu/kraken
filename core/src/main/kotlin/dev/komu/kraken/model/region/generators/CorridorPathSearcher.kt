@@ -9,10 +9,10 @@ class CorridorPathSearcher(region: Region): ShortestPathSearcher(region) {
 
     override val allowSubDirections = false
 
-    override fun canEnter(cell: Cell) = cell.cellType != UNDIGGABLE_WALL
+    override fun canEnter(cell: Cell) = cell.type != UNDIGGABLE_WALL
 
     override fun costToEnter(cell: Cell): Int =
-        when (cell.cellType) {
+        when (cell.type) {
             UNDIGGABLE_WALL -> 100000
             ROOM_FLOOR      -> 100
             HALLWAY_FLOOR   -> 50

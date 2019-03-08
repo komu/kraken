@@ -9,6 +9,8 @@ import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import javax.swing.JComponent
+import kotlin.math.max
+import kotlin.math.min
 
 class RegionView: JComponent() {
 
@@ -20,7 +22,6 @@ class RegionView: JComponent() {
 
     var translate = true
     private val tileProvider = TileProvider()
-    private var transform: AffineTransform? = null
 
     init {
         background = Color.BLACK
@@ -36,16 +37,12 @@ class RegionView: JComponent() {
         gameFacade?.query { game ->
             val region = game.currentRegionOrNull
             if (region != null) {
-                transform = getTransform(game.cellInFocus, region.size)
+                val transform = getTransform(game.cellInFocus, region.size)
                 if (transform != null)
                     g2.transform(transform)
 
                 for (cell in region)
                     paintCell(g2, cell, game.visibleCells)
-
-                val selectedCell = game.selectedCell
-                if (selectedCell != null)
-                    tileProvider.drawSelection(g2, selectedCell)
             }
         }
     }
@@ -54,11 +51,10 @@ class RegionView: JComponent() {
         val width = this.width
         val height = this.height
         val regionWidth = regionSize.width
-        val regionHeight = regionSize.width
         val tileWidth = tileProvider.tileWidth
         val tileHeight = tileProvider.tileHeight
         val requiredWidth = tileWidth * regionWidth
-        val requiredHeight = tileHeight * regionHeight
+        val requiredHeight = tileHeight * regionSize.width
 
         if (width >= requiredWidth && height >= requiredHeight)
             return null
@@ -66,14 +62,14 @@ class RegionView: JComponent() {
         return if (translate) {
             val x = tileWidth * coordinate.x
             val y = tileHeight * coordinate.y
-            val dx = Math.max(0, Math.min(x - width / 2, requiredWidth - width))
-            val dy = Math.max(0, Math.min(y - height / 2, requiredHeight - height))
+            val dx = max(0, min(x - width / 2, requiredWidth - width))
+            val dy = max(0, min(y - height / 2, requiredHeight - height))
             AffineTransform.getTranslateInstance((-dx).toDouble(), (-dy).toDouble())
         } else {
-            val heightRatio = height.toFloat() / requiredHeight
-            val widthRatio = width.toFloat() / requiredWidth
-            val scale = Math.min(widthRatio, heightRatio)
-            AffineTransform.getScaleInstance(scale.toDouble(), scale.toDouble())
+            val heightRatio = height.toDouble() / requiredHeight
+            val widthRatio = width.toDouble() / requiredWidth
+            val scale = min(widthRatio, heightRatio)
+            AffineTransform.getScaleInstance(scale, scale)
         }
     }
 
@@ -92,10 +88,10 @@ class RegionView: JComponent() {
                 if (item != null)
                     tileProvider.drawItem(g2, cell, item)
                 else
-                    tileProvider.drawCell(g2, cell, true)
+                    tileProvider.drawCell(g2, cell, visible = true)
             }
-        } else if (cell.hasBeenSeen)
-            tileProvider.drawCell(g2, cell, false)
+        } else if (cell.seen)
+            tileProvider.drawCell(g2, cell, visible = false)
     }
 
     override fun getPreferredSize() =

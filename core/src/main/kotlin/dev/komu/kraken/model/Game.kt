@@ -41,8 +41,6 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     private val maximumDungeonLevel = MaximumCounter(0)
     var over = false
 
-    override var selectedCell: Coordinate? = null
-
     override val inventoryItems: List<ItemInfo>
         get() {
             val infos = mutableListOf<ItemInfo>()
@@ -140,8 +138,6 @@ class Game(val config: GameConfiguration, private val console: Console, val list
             }
 
             creatures += region.creatures
-
-            selectedCell = null
         }
     }
 
@@ -159,115 +155,101 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         }
     }
 
-    fun talk() = gameAction {
+    fun talk() {
         val adjacent = player.adjacentCreatures
         if (adjacent.size == 1) {
-            TalkAction(adjacent.first(), player)
+            act(TalkAction(adjacent.first(), player))
         } else if (adjacent.isEmpty()) {
             player.message("There's no-one to talk to.")
-            null
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val creature = player.cell.getCellTowards(dir).creature
                 if (creature != null) {
-                    TalkAction(adjacent.first(), player)
+                    act(TalkAction(adjacent.first(), player))
                 } else {
                     player.message("There's nobody in selected direction.")
-                    null
                 }
-            } else {
-                null
             }
         }
     }
 
-    fun openDoor() = gameAction {
-        val closedDoors = player.cell.adjacentCells.filter { it.cellType == CellType.CLOSED_DOOR }
+    fun openDoor() {
+        val closedDoors = player.cell.adjacentCells.filter { it.type == CellType.CLOSED_DOOR }
         if (closedDoors.isEmpty()) {
             player.message("There are no closed doors around you.")
-            null
         } else if (closedDoors.size == 1) {
-            OpenDoorAction(closedDoors[0], player)
+            act(OpenDoorAction(closedDoors[0], player))
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val cell = player.cell.getCellTowards(dir)
-                if (cell.cellType == CellType.CLOSED_DOOR) {
-                    OpenDoorAction(cell, player)
+                if (cell.type == CellType.CLOSED_DOOR) {
+                    act(OpenDoorAction(cell, player))
                 } else {
                     player.message("No closed door in selected direction.")
-                    null
                 }
-            } else {
-                null
             }
         }
     }
 
-    fun closeDoor() = gameAction {
-        val openDoors = player.cell.adjacentCells.filter { it.cellType == CellType.OPEN_DOOR }
+    fun closeDoor() {
+        val openDoors = player.cell.adjacentCells.filter { it.type == CellType.OPEN_DOOR }
         if (openDoors.isEmpty()) {
             player.message("There are no open doors around you.")
-            null
         } else if (openDoors.size == 1) {
-            CloseDoorAction(openDoors[0], player)
+            act(CloseDoorAction(openDoors[0], player))
         } else {
             val dir = console.selectDirection()
             if (dir != null) {
                 val cell = player.cell.getCellTowards(dir)
-                if (cell.cellType == CellType.OPEN_DOOR)
-                    CloseDoorAction(cell, player)
+                if (cell.type == CellType.OPEN_DOOR)
+                    act(CloseDoorAction(cell, player))
                 else {
                     player.message("No open door in selected direction.")
-                    null
                 }
-            } else {
-                null
             }
         }
     }
 
-    fun pickup() = gameAction {
+    fun pickup() {
         val cell = player.cell
         val items = cell.items
         when {
-            items.isEmpty() -> {
-                player.message("There's nothing to pick up."); null
-            }
-            items.size == 1 -> PickupAction(items.first(), player)
+            items.isEmpty() ->
+                player.message("There's nothing to pick up.")
+            items.size == 1 ->
+                act(PickupAction(items.first(), player))
             else ->
-                console.selectItem("Select item to pick up", items)?.let { PickupAction(it, player) }
+                console.selectItem("Select item to pick up", items)?.let { act(PickupAction(it, player)) }
         }
     }
 
-    fun equip() = gameAction {
+    fun equip() {
         console.selectItem("Select item to equip", player.inventory.byType<Equipable>())
-            ?.let { EquipAction(it, player) }
+            ?.let { act(EquipAction(it, player)) }
     }
 
-    fun drop() = gameAction {
-        console.selectItem("Select item to drop", player.inventory.items)?.let { DropAction(it, player) }
+    fun drop() {
+        console.selectItem("Select item to drop", player.inventory.items)?.let { act(DropAction(it, player)) }
     }
 
-    fun drop(item: Item) = gameAction {
-        DropAction(item, player)
+    fun drop(item: Item) {
+        act(DropAction(item, player))
     }
 
-    fun eat() = gameAction {
-        console.selectItem("Select food to eat", player.inventory.byType<Food>())?.let { EatAction(it, player) }
+    fun eat() {
+        console.selectItem("Select food to eat", player.inventory.byType<Food>())?.let { act(EatAction(it, player)) }
     }
 
-    fun search() = gameAction {
-        SearchAction(player)
+    fun search() {
+        act(SearchAction(player))
     }
 
-    fun throwItem() = gameAction {
+    fun throwItem() {
         val projectile = console.selectItem("Select item to throw", player.inventory.byType<Item>())
         if (projectile != null) {
-            console.selectDirection()?.let { ThrowAction(projectile, it, player) }
-        } else {
-            null
+            console.selectDirection()?.let { act(ThrowAction(projectile, it, player)) }
         }
     }
 
@@ -277,54 +259,46 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     private val currentRegion: Region
         get() = player.region
 
-    fun movePlayer(direction: Direction) = gameAction {
+    fun movePlayer(direction: Direction) {
         val creatureInCell = player.cell.getCellTowards(direction).creature
         if (creatureInCell != null) {
             if (creatureInCell.isAlive && (!creatureInCell.friendly || ask("Really attack %s?", creatureInCell.name)))
-                AttackAction(creatureInCell, player)
-            else
-                null
+                act(AttackAction(creatureInCell, player))
 
         } else {
-            MoveAction(player, direction)
+            act(MoveAction(player, direction))
         }
     }
 
-    fun runTowards(direction: Direction) = behave {
+    fun runTowards(direction: Direction) {
         val target = player.cell.getCellTowards(direction)
         if (target.isInCorridor)
-            RunInCorridorBehavior(direction)
+            behave(RunInCorridorBehavior(direction))
         else
-            RunInRoomBehavior(direction)
+            behave(RunInRoomBehavior(direction))
     }
 
-    fun movePlayerVertically(up: Boolean) = gameAction {
+    fun movePlayerVertically(up: Boolean) {
         val target = player.cell.getJumpTarget(up)
         if (target != null) {
             if (target.isExit) {
                 if (ask("Really escape from the dungeon?"))
                     gameOver("Escaped the dungeon.")
-                null
             } else {
-                EnterRegionAction(this, target.region, target.location)
+                act(EnterRegionAction(this, target.region, target.location))
             }
-        } else {
-            null
         }
     }
 
     fun skipTurn() {
-        gameAction {
-            SkipAction
-        }
+        act(SkipAction)
     }
 
-    fun rest() = behave {
+    fun rest() {
         if (player.hitPoints == player.maximumHitPoints) {
             player.message("You don't feel like you need to rest.")
-            null
         } else {
-            RestBehavior
+            behave(RestBehavior)
         }
     }
 
@@ -339,49 +313,47 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         over = true
     }
 
-    private fun gameAction(callback: () -> Action?) {
-        behave { callback()?.let { ActionBehavior(it) } }
+    private fun act(action: Action) {
+        behave(ActionBehavior(action))
     }
 
-    private fun behave(callback: () -> Behavior?) {
-        if (!over) {
-            player.behavior = callback()
+    private fun behave(behavior: Behavior?) {
+        player.behavior = behavior
 
-            while (player.isAlive && creatures.isNotEmpty()) {
-                val creature = creatures[currentCreature]
-                if (!creature.isAlive) {
-                    creatures.removeAt(currentCreature)
-                    currentCreature -= 1
-                    continue
-                }
+        while (player.isAlive && creatures.isNotEmpty()) {
+            val creature = creatures[currentCreature]
+            if (!creature.isAlive) {
+                creatures.removeAt(currentCreature)
+                currentCreature -= 1
+                continue
+            }
 
-                if (creature.energy.canTakeTurn) {
-                    if (creature == player && player.needsInput)
+            if (creature.energy.canTakeTurn) {
+                if (creature == player && player.needsInput)
+                    break
+
+                creature.energy.spend()
+                val action = creature.getAction(this)
+                if (action != null) {
+                    val success = perform(action)
+                    if (!success && creature == player)
                         break
-
-                    creature.energy.spend()
-                    val action = creature.getAction(this)
-                    if (action != null) {
-                        val success = perform(action)
-                        if (!success && creature == player)
-                            break
-                    }
                 }
+            }
 
-                creature.energy.gain(creature.speed)
+            creature.energy.gain(creature.speed)
 
-                currentRegion.updateLighting()
-                player.updateVisiblePoints()
-                currentRegion.updateSeenCells(player.visibleCells)
+            currentRegion.updateLighting()
+            player.updateVisiblePoints()
+            currentRegion.updateSeenCells(player.visibleCells)
 
-                listener()
+            listener()
 
-                currentCreature = (currentCreature + 1) % creatures.size
+            currentCreature = (currentCreature + 1) % creatures.size
 
-                if (currentCreature == 0) {
-                    globalClock.tick()
-                    regionClock.tick()
-                }
+            if (currentCreature == 0) {
+                globalClock.tick()
+                regionClock.tick()
             }
         }
     }

@@ -17,6 +17,11 @@ class Door(hidden: Boolean) : CellState {
             false
         }
 
+    override fun reveal() {
+        if (state == State.HIDDEN)
+            state = State.CLOSED
+    }
+
     val isOpen: Boolean
         get() = state == State.OPEN
 

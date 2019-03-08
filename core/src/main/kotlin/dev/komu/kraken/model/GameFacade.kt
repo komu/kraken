@@ -3,7 +3,6 @@ package dev.komu.kraken.model
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.item.Item
-import dev.komu.kraken.model.region.Coordinate
 import dev.komu.kraken.utils.relinquish
 import dev.komu.kraken.utils.yieldLock
 import java.util.concurrent.Executors
@@ -92,10 +91,6 @@ class GameFacade(config: GameConfiguration, console: Console, val listener: (Boo
 
     fun search() = gameAction {
         game.search()
-    }
-
-    fun focus(coordinate: Coordinate) = gameAction {
-        game.selectedCell = coordinate
     }
 
     private fun gameAction(body: () -> Unit) {

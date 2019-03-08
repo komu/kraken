@@ -3,14 +3,14 @@ package dev.komu.kraken.model.region
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.Item
+import matchAllBetween
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 class Cell(val region: Region, val coordinate: Coordinate, var state: CellState) {
 
-    var hasBeenSeen = false
+    var seen = false
     val items = HashSet<Item>()
     var creature: Creature? = null
     var portal: Portal? = null
@@ -21,7 +21,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     fun enter(creature: Creature) {
         creature.cell = this
 
-        if (state.cellType.isStairs)
+        if (type.isStairs)
             creature.message("You see stairs here.")
 
         if (items.size == 1)
@@ -69,38 +69,31 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
         return false
     }
 
-    val cellType: CellType
+    var type: CellType
         get() = state.cellType
-
-    fun setType(cellType: CellType) {
-        state = DefaultCellState(cellType)
-    }
+        set(type) {
+            state = DefaultCellState(type)
+        }
 
     val isFloor: Boolean
-        get() = state.cellType.isFloor
-
-    val isInRoom: Boolean
-        get() = state.cellType.isRoomFloor
+        get() = type.isFloor
 
     val isClosedDoor: Boolean
-        get() = state.cellType == CellType.CLOSED_DOOR
+        get() = type == CellType.CLOSED_DOOR
 
     val canDropItemToCell: Boolean
-        get() = state.cellType.canDropItem
-
-    private val canSeeThrough: Boolean
-        get() = state.cellType.canSeeThrough
+        get() = type.canDropItem
 
     val isPassable: Boolean
-        get() = state.cellType.passable
+        get() = type.passable
 
     val isInteresting: Boolean
-        get() = !state.cellType.isFloor || !items.isEmpty()
+        get() = !type.isFloor || !items.isEmpty()
 
     val isDeadEnd: Boolean
         get() = isPassable && countPassableMainNeighbours() == 1
 
-    fun canMoveInto(corporeal: Boolean) = creature == null && state.cellType.canMoveInto(corporeal)
+    fun canMoveInto(corporeal: Boolean) = creature == null && type.canMoveInto(corporeal)
 
     fun distance(cell: Cell) = coordinate.distance(cell.coordinate)
 
@@ -157,47 +150,9 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
 
     fun getDirection(cell: Cell) = coordinate.directionOf(cell.coordinate)
 
-    fun hasLineOfSight(target: Cell) =
-        cellsBetween(target).all { it == target || it == this || it.canSeeThrough }
-
-    private fun cellsBetween(target: Cell): List<Cell> {
-        // see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
-        val cells = ArrayList<Cell>(distance(target))
-
-        var x0 = coordinate.x
-        var y0 = coordinate.y
-        val x1 = target.coordinate.x
-        val y1 = target.coordinate.y
-
-        val dx = abs(x1 - x0)
-        val dy = abs(y1 - y0)
-
-        val sx = if (x0 < x1) 1 else -1
-        val sy = if (y0 < y1) 1 else -1
-        var err = dx - dy
-
-        while (true) {
-            cells.add(region[x0, y0])
-
-            if (x0 == x1 && y0 == y1)
-                break
-
-            val e2 = 2 * err
-            if (e2 > -dy) {
-                err -= dy
-                x0 += sx
-            }
-            if (x0 == x1 && y0 == y1) {
-                cells.add(region[x0, y0])
-                break
-            }
-            if (e2 < dx) {
-                err += dx
-                y0 += sy
-            }
-        }
-
-        return cells
+    fun hasLineOfSight(target: Cell): Boolean = matchAllBetween(coordinate, target.coordinate) { x, y ->
+        val cell = region[x, y]
+        cell == target || cell == this || cell.type.canSeeThrough
     }
 
     fun resetLighting() {
@@ -212,4 +167,9 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     override fun toString() = coordinate.toString()
+
+    fun reveal() {
+        seen = true
+        state.reveal()
+    }
 }

@@ -28,9 +28,9 @@ class RegionLoader(val world: World) {
             line.forEachIndexed { x, ch ->
                 val cell = region[x, y]
                 when (ch) {
-                    '#'  -> cell.setType(CellType.HALLWAY_FLOOR)
-                    '<'  -> cell.setType(CellType.STAIRS_UP)
-                    '>'  -> cell.setType(CellType.STAIRS_DOWN)
+                    '#'  -> cell.type = CellType.HALLWAY_FLOOR
+                    '<'  -> cell.type = CellType.STAIRS_UP
+                    '>'  -> cell.type = CellType.STAIRS_DOWN
                     ' '  -> { }
                     else -> log.severe("unknown tile: $ch")
                 }

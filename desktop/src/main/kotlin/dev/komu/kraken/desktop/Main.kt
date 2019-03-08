@@ -217,7 +217,7 @@ class Main(val wizardMode: Boolean) {
         }
     }
 
-    fun initUncaughtExceptionHandler() {
+    private fun initUncaughtExceptionHandler() {
         setAWTUncaughtExceptionHandler(object : Thread.UncaughtExceptionHandler {
             override fun uncaughtException(t: Thread, e: Throwable) {
                 log.log(Level.SEVERE, "Uncaught exception", e)

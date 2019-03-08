@@ -34,7 +34,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
             throw IllegalStateException("not enough empty cells to place stairs")
 
         val stairsUp = empty.randomElement()
-        stairsUp.setType(CellType.STAIRS_UP)
+        stairsUp.type = CellType.STAIRS_UP
 
         if (up != null) {
             region.addPortal(stairsUp.coordinate, up, "from down", true)
@@ -45,7 +45,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
         if (down != null) {
             val stairsDown = empty.findCellConnectedTo(stairsUp)
             if (stairsDown != null) {
-                stairsDown.setType(CellType.STAIRS_DOWN)
+                stairsDown.type = CellType.STAIRS_DOWN
                 region.addPortal(stairsDown.coordinate, down, "from up", false)
                 region.addStartPoint(stairsDown.coordinate, "from down")
                 return
@@ -57,7 +57,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
     private fun generateMaze() {
         val first = region[randomInt(1, region.width - 2), randomInt(1, region.height - 2)]
-        first.setType(CellType.HALLWAY_FLOOR)
+        first.type = CellType.HALLWAY_FLOOR
 
         val candidates = MutableCellSet(region)
         var current = first
@@ -81,18 +81,18 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
             if (isCandidateForPath(xx, yy) && (visited == null || !visited.contains(xx, yy))) {
                 val cell = region[xx, yy]
-                if (!cell.isPassable && cell.cellType != CellType.UNDIGGABLE_WALL) {
+                if (!cell.isPassable && cell.type != CellType.UNDIGGABLE_WALL) {
                     for (i in 1 until gridSize)
-                        region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
+                        region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].type = CellType.HALLWAY_FLOOR
 
-                    cell.setType(CellType.HALLWAY_FLOOR)
+                    cell.type = CellType.HALLWAY_FLOOR
 
                     candidates?.add(cell)
 
                     return cell
                 } else if (stopOnEmpty) {
                     for (i in 1 until gridSize)
-                        region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].setType(CellType.HALLWAY_FLOOR)
+                        region[currentCoordinate.x + i * dir.dx, currentCoordinate.y + i * dir.dy].type = CellType.HALLWAY_FLOOR
 
                     return null
                 }
@@ -114,7 +114,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
         repeat(sparseness) {
             val deadEnds = region.getMatchingCells(Cell::isDeadEnd)
             for (cell in deadEnds)
-                cell.setType(CellType.WALL)
+                cell.type = CellType.WALL
         }
     }
 
@@ -148,7 +148,7 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
         for (yy in y..y + height)
             for (xx in x..x + width)
-                region[xx, yy].setType(CellType.ROOM_FLOOR)
+                region[xx, yy].type = CellType.ROOM_FLOOR
     }
 
     private fun CellSet.findCellConnectedTo(start: Cell): Cell? {
