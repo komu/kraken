@@ -21,7 +21,7 @@ class BugsBunny: Monster("Bugs Bunny") {
         naturalWeapon = NaturalWeapon("hit", "10", "randint(4,10)")
         killExperience = 450
         armorClass = 0
-        tickRate = 50
+        speed = 9
         weight = 4500
     }
 

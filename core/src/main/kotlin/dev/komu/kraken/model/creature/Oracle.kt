@@ -15,7 +15,7 @@ class Oracle : Creature("The Oracle") {
         letter = '@'
         color = Color.WHITE
         friendly = true
-        tickRate = 10000000
+        speed = 500000
     }
 
     override fun talk(target: Creature) {

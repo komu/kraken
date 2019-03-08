@@ -1,11 +1,11 @@
 package dev.komu.kraken.model.creature
 
+import dev.komu.kraken.model.Energy
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.Behavior
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
-import dev.komu.kraken.model.events.OneTimeEvent
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.armor.Armor
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
@@ -22,7 +22,7 @@ class Player(name: String): Creature(name) {
 
     var maximumHitPoints = 0
     var experience = 0
-    val hit: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
+    private val hit: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
     val skills = SkillSet()
     var visibleCells: CellSet by Delegates.notNull()
     var hunger = 2000
@@ -34,8 +34,8 @@ class Player(name: String): Creature(name) {
     private val game: Game
         get() = region.world.game
 
-    override var tickRate: Int = 90
-        get() = Math.max(1, super.tickRate + weightPenalty)
+    override var speed: Int = Energy.NORMAL_SPEED
+        get() = (super.speed - weightPenalty).coerceAtLeast(Energy.MIN_SPEED)
 
     init {
         letter = '@'
@@ -60,11 +60,10 @@ class Player(name: String): Creature(name) {
             else           -> 0
         }
 
-    val weightPenalty: Int
+    private val weightPenalty: Int
         get() {
-            val carriedWeightInKilograms = weightOfCarriedItems / 1000
-            val factor = 30
-            return factor * carriedWeightInKilograms / strength
+            val carriedKilos = weightOfCarriedItems / 1000
+            return carriedKilos / (strength * 2)
         }
 
     fun replaceArmor(armor: Armor): Armor? =
@@ -125,22 +124,19 @@ class Player(name: String): Creature(name) {
             message("You faint.")
             hitPoints = 1
             fainted = true
-            val ticks = 100 * randomInt(5, 50)
-            game.addGlobalEvent(OneTimeEvent(ticks) {
+            game.globalClock.scheduleOnce(randomInt(5, 50)) {
                 if (fainted) {
                     message("You wake up.")
-                    if (hunger <= 0)
-                        hunger = 10
+                    hunger = hunger.coerceAtLeast(10)
 
                     fainted = false
                 }
-            })
+            }
         }
-
     }
 
     val hungerLevel: HungerLevel
-        get() = hunger.toHungerLevel()
+        get() = HungerLevel(hunger)
 
     private fun addExperience(exp: Int) {
         experience += exp

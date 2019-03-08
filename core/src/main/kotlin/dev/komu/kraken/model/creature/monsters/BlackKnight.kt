@@ -1,6 +1,7 @@
 package dev.komu.kraken.model.creature.monsters
 
 import dev.komu.kraken.definitions.Weapons
+import dev.komu.kraken.model.Energy
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.AttackAction
@@ -37,7 +38,7 @@ class BlackKnight : Monster("The Black Knight") {
         canUseDoors = true
         killExperience = 4000
         armorClass = -6
-        tickRate = 60
+        speed = 8
         wieldedWeapon = Weapons.blackSword.create()
     }
 
@@ -100,7 +101,7 @@ class BlackKnight : Monster("The Black Knight") {
         if (fullyCrippled)
             return
 
-        tickRate *= 2
+        speed = (speed - 1).coerceAtLeast(Energy.MIN_SPEED)
         if (fullyCrippled) {
             attacker.message("The Black Knight is crippled!")
             val weapon = wieldedWeapon

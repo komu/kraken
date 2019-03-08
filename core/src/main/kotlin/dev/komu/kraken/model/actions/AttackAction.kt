@@ -7,7 +7,7 @@ import dev.komu.kraken.utils.rollDie
 
 class AttackAction(private val target: Creature, private val attacker: Creature) : Action {
     override fun perform(): ActionResult {
-        if (!target.alive)
+        if (!target.isAlive)
             return ActionResult.Failure
 
         target.onAttackedBy(attacker)
@@ -18,7 +18,7 @@ class AttackAction(private val target: Creature, private val attacker: Creature)
             target.message("%s %s %s.", attacker.You(), attacker.verb(weapon.attackVerb), target.you())
             assignDamage(attacker, weapon, target)
             attacker.onSuccessfulHit(target, weapon)
-            if (!target.alive)
+            if (!target.isAlive)
                 attacker.onKilledCreature(target)
         } else {
             attacker.message("%s %s.", attacker.You(), attacker.verb("miss"))

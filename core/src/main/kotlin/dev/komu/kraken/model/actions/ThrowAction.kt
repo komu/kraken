@@ -40,7 +40,7 @@ class ThrowAction(private val projectile: Item, private val direction: Direction
             target.message("%s %s %s at %s.", attacker.You(), attacker.verb("throw"), projectile.title, target.you())
             assignDamage(attacker, projectile, target)
             attacker.onSuccessfulHit(target, projectile)
-            if (!target.alive)
+            if (!target.isAlive)
                 attacker.onKilledCreature(target)
 
             true

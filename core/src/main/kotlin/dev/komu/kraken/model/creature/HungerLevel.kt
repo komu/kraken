@@ -15,7 +15,10 @@ enum class HungerLevel(val min: Int) {
             ""
         else
             name.toLowerCase()
-}
 
-fun Int.toHungerLevel(): HungerLevel =
-    HungerLevel.values().firstOrNull { this >= it.min } ?: HungerLevel.FAINTING
+    companion object {
+
+        operator fun invoke(hunger: Int) =
+            values().find { hunger >= it.min } ?: FAINTING
+    }
+}

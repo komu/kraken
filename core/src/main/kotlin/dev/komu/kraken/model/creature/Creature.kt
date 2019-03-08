@@ -1,12 +1,11 @@
 package dev.komu.kraken.model.creature
 
+import dev.komu.kraken.model.Energy
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.Inventory
 import dev.komu.kraken.model.actions.Action
-import dev.komu.kraken.model.actions.ActionResult
 import dev.komu.kraken.model.actions.MoveAction
 import dev.komu.kraken.model.actions.RandomMoveAction
-import dev.komu.kraken.model.common.Actor
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.common.MessageTarget
@@ -22,7 +21,7 @@ import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.rollDie
 import java.lang.Math.max
 
-abstract class Creature(var name: String): Actor, MessageTarget {
+abstract class Creature(var name: String): MessageTarget {
 
     var cellOrNull: Cell? = null
         set(cell) {
@@ -59,7 +58,8 @@ abstract class Creature(var name: String): Actor, MessageTarget {
         get() = field - armoring.totalArmorBonus
 
     var luck: Int = 0
-    open var tickRate = 100
+    val energy = Energy()
+    open var speed = Energy.NORMAL_SPEED
     var weight = 50 * 1000
     var canUseDoors: Boolean = false
     var corpsePoisonousness = Expression.parse("randint(1, 3)")
@@ -87,31 +87,8 @@ abstract class Creature(var name: String): Actor, MessageTarget {
     fun isAdjacentToCreature(creature: Creature) =
         cell.isAdjacent(creature.cell)
 
-    override val destroyed: Boolean
-        get() = !alive
-
-    val alive: Boolean
+    val isAlive: Boolean
         get() = hitPoints > 0 && cellOrNull != null
-
-    override fun act(game: Game): Int {
-        val action = getAction(game)
-        if (action != null)
-            perform(action)
-
-        return tickRate
-    }
-
-    fun perform(action: Action): Boolean {
-        val result = action.perform()
-        return when (result) {
-            ActionResult.Success ->
-                true
-            ActionResult.Failure ->
-                false
-            is ActionResult.Alternate ->
-                perform(result.action)
-        }
-    }
 
     abstract fun getAction(game: Game): Action?
 

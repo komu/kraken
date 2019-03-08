@@ -3,19 +3,17 @@ package dev.komu.kraken.model.events.region
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Player
-import dev.komu.kraken.model.events.PersistentEvent
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.CellSet
-import dev.komu.kraken.model.region.Region
 import dev.komu.kraken.utils.logger
 
-class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
+object CreateMonstersEvent {
 
     private val log = javaClass.logger()
 
-    override fun fire(game: Game) {
+    fun createMonsters(game: Game) {
         val player = game.player
-        val creatures = game.objectFactory.randomSwarm(region.level, player.level)
+        val creatures = game.objectFactory.randomSwarm(player.region.level, player.level)
         log.fine("Created new random creatures: $creatures")
 
         for (creature in creatures) {
@@ -28,7 +26,7 @@ class CreateMonstersEvent(val region: Region): PersistentEvent(500 * 100) {
     }
 
     private fun findTargetCell(player: Player, creature: Creature) =
-        selectRandomTargetCell(player.getInvisibleCells(), creature) ?: selectRandomTargetCell(region.getCells(), creature)
+        selectRandomTargetCell(player.getInvisibleCells(), creature) ?: selectRandomTargetCell(player.region.getCells(), creature)
 
     private fun selectRandomTargetCell(candidates: CellSet, creature: Creature): Cell? {
         var tries = 0

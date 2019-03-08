@@ -42,7 +42,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 5
         armorClass = 15
-        tickRate = 140
+        speed = 4
         weight = 800
     }
 
@@ -54,7 +54,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 8
         armorClass = 13
-        tickRate = 130
+        speed = 4
         weight = 850
     }
 
@@ -66,7 +66,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 9
         armorClass = 13
-        tickRate = 100
+        speed = 5
         weight = 1100
     }
 
@@ -78,7 +78,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 14
         armorClass = 12
-        tickRate = 90
+        speed = 6
         weight = 1000
     }
 
@@ -91,7 +91,7 @@ object Creatures : Definitions() {
             luck = 0
             killExperience = 22
             armorClass = 12
-            tickRate = 90
+            speed = 6
             weight = 1300
         }
 
@@ -104,7 +104,7 @@ object Creatures : Definitions() {
             luck = 2
             killExperience = 28
             armorClass = 11
-            tickRate = 80
+            speed = 7
             weight = 1300
         }
 
@@ -116,7 +116,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 35
         armorClass = 10
-        tickRate = 70
+        speed = 7
         weight = 1200
     }
 
@@ -138,7 +138,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 310
         armorClass = 5
-        tickRate = 80
+        speed = 7
         weight = 45000
     }
 
@@ -149,7 +149,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 860
         armorClass = -5
-        tickRate = 50
+        speed = 9
         weight = 52000
     }
 
@@ -170,7 +170,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 2
         armorClass = 15
-        tickRate = 50
+        speed = 9
         weight = 2300
     }
 
@@ -182,7 +182,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 4
         armorClass = 14
-        tickRate = 50
+        speed = 9
         weight = 2500
     }
 
@@ -195,7 +195,7 @@ object Creatures : Definitions() {
             luck = -1
             killExperience = 6
             armorClass = 14
-            tickRate = 50
+            speed = 9
             weight = 2600
         }
 
@@ -208,7 +208,7 @@ object Creatures : Definitions() {
             luck = 2
             killExperience = 9
             armorClass = 14
-            tickRate = 50
+            speed = 9
             weight = 3000
         }
 
@@ -222,7 +222,7 @@ object Creatures : Definitions() {
             luck = 2
             killExperience = 13
             armorClass = 13
-            tickRate = 50
+            speed = 9
             weight = 3000
         }
 
@@ -248,7 +248,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 1
         armorClass = 20
-        tickRate = 60
+        speed = 8
         weight = 1700
     }
 
@@ -260,7 +260,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 1
         armorClass = 18
-        tickRate = 40
+        speed = 10
         weight = 100
     }
 
@@ -272,7 +272,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 2
         armorClass = 18
-        tickRate = 40
+        speed = 10
         weight = 200
     }
 
@@ -284,7 +284,7 @@ object Creatures : Definitions() {
         luck = -1
         killExperience = 4
         armorClass = 16
-        tickRate = 70
+        speed = 7
         weight = 500
     }
 
@@ -305,7 +305,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 2
         armorClass = 18
-        tickRate = 120
+        speed = 4
         weight = 800
     }
 
@@ -317,7 +317,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 3
         armorClass = 17
-        tickRate = 120
+        speed = 4
         weight = 800
     }
 
@@ -329,7 +329,7 @@ object Creatures : Definitions() {
         luck = 3
         killExperience = 5
         armorClass = 16
-        tickRate = 110
+        speed = 5
         weight = 900
     }
 
@@ -341,7 +341,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 7
         armorClass = 16
-        tickRate = 100
+        speed = 5
         weight = 900
     }
 
@@ -368,7 +368,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 1
         armorClass = 18
-        tickRate = 100
+        speed = 5
         weight = 6000
     }
 
@@ -380,7 +380,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 3
         armorClass = 17
-        tickRate = 100
+        speed = 5
         weight = 14000
     }
 
@@ -392,7 +392,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 10
         armorClass = 15
-        tickRate = 100
+        speed = 5
         weight = 35000
     }
 
@@ -420,7 +420,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 120
         armorClass = 10
-        tickRate = 110
+        speed = 5
         weight = 120000
     }
 
@@ -432,7 +432,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 140
         armorClass = 8
-        tickRate = 110
+        speed = 5
         weight = 145000
     }
 
@@ -444,7 +444,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 300
         armorClass = 5
-        tickRate = 100
+        speed = 5
         weight = 420000
     }
 
@@ -456,7 +456,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 340
         armorClass = 3
-        tickRate = 100
+        speed = 5
         weight = 445000
     }
 
@@ -483,7 +483,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 5000
         armorClass = -5
-        tickRate = 60
+        speed = 8
         weight = 800000
     }
 
@@ -495,7 +495,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 6000
         armorClass = -6
-        tickRate = 50
+        speed = 9
         weight = 845000
     }
 
@@ -522,7 +522,7 @@ object Creatures : Definitions() {
         luck = 3
         killExperience = 5
         armorClass = 15
-        tickRate = 100
+        speed = 5
         weight = 9000
     }
 
@@ -551,7 +551,7 @@ object Creatures : Definitions() {
             luck = -2
             killExperience = 16
             armorClass = 14
-            tickRate = 150
+            speed = 3
             weight = 200000
         }
 
@@ -564,7 +564,7 @@ object Creatures : Definitions() {
             luck = 0
             killExperience = 125
             armorClass = 7
-            tickRate = 100
+            speed = 5
             weight = 200
         }
 
@@ -577,7 +577,7 @@ object Creatures : Definitions() {
             luck = -1
             killExperience = 180
             armorClass = 14
-            tickRate = 120
+            speed = 4
             weight = 280000
         }
 
@@ -603,7 +603,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 1
         armorClass = 18
-        tickRate = 100
+        speed = 5
         weight = 2200
     }
 
@@ -615,7 +615,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 11
         armorClass = 14
-        tickRate = 100
+        speed = 5
         weight = 85000
     }
 
@@ -645,7 +645,7 @@ object Creatures : Definitions() {
         canUseDoors = false
         killExperience = 5
         armorClass = 14
-        tickRate = 200
+        speed = 2
         weight = 15000
     }
 
@@ -658,7 +658,7 @@ object Creatures : Definitions() {
         canUseDoors = false
         killExperience = 10
         armorClass = 12
-        tickRate = 180
+        speed = 3
         weight = 120000
     }
 
@@ -670,7 +670,7 @@ object Creatures : Definitions() {
         luck = -2
         killExperience = 15
         armorClass = 10
-        tickRate = 160
+        speed = 3
         weight = 350000
     }
 
@@ -682,7 +682,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 20
         armorClass = 8
-        tickRate = 140
+        speed = 4
         weight = 420000
     }
 
@@ -710,7 +710,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 9
         armorClass = 13
-        tickRate = 130
+        speed = 4
         weight = 0
     }
 
@@ -722,7 +722,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 19
         armorClass = 13
-        tickRate = 110
+        speed = 5
         weight = 0
     }
 
@@ -734,7 +734,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 22
         armorClass = 13
-        tickRate = 100
+        speed = 5
         weight = 0
     }
 
@@ -746,7 +746,7 @@ object Creatures : Definitions() {
         luck = 3
         killExperience = 25
         armorClass = 9
-        tickRate = 90
+        speed = 6
         weight = 0
     }
 
@@ -788,7 +788,7 @@ object Creatures : Definitions() {
         luck = -2
         killExperience = 2
         armorClass = 14
-        tickRate = 100
+        speed = 5
         weight = 21000
     }
 
@@ -800,7 +800,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 11
         armorClass = 11
-        tickRate = 100
+        speed = 5
         weight = 33500
     }
 
@@ -828,7 +828,7 @@ object Creatures : Definitions() {
             luck = 0
             killExperience = 4
             armorClass = 15
-            tickRate = 80
+            speed = 7
             weight = 750
         }
 
@@ -844,7 +844,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 17
         armorClass = 10
-        tickRate = 80
+        speed = 7
         weight = 1150
     }
 
@@ -872,7 +872,7 @@ object Creatures : Definitions() {
         luck = -1
         killExperience = 5
         armorClass = 13
-        tickRate = 120
+        speed = 4
         weight = 7000
     }
 
@@ -884,7 +884,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 7
         armorClass = 12
-        tickRate = 100
+        speed = 5
         weight = 7500
     }
 
@@ -911,7 +911,7 @@ object Creatures : Definitions() {
         luck = -1
         killExperience = 2
         armorClass = 15
-        tickRate = 130
+        speed = 4
         weight = 400
     }
 
@@ -923,7 +923,7 @@ object Creatures : Definitions() {
         luck = -1
         killExperience = 9
         armorClass = 13
-        tickRate = 100
+        speed = 5
         weight = 1200
     }
 
@@ -935,7 +935,7 @@ object Creatures : Definitions() {
         luck = 1
         killExperience = 20
         armorClass = 6
-        tickRate = 90
+        speed = 6
         weight = 3700
     }
 
@@ -962,7 +962,7 @@ object Creatures : Definitions() {
             luck = -2
             killExperience = 4
             armorClass = 15
-            tickRate = 110
+            speed = 5
             weight = 35000
         }
 
@@ -974,7 +974,7 @@ object Creatures : Definitions() {
         luck = -1
         killExperience = 20
         armorClass = 10
-        tickRate = 100
+        speed = 5
         weight = 60000
     }
 
@@ -1004,7 +1004,7 @@ object Creatures : Definitions() {
         luck = 3
         killExperience = 2
         armorClass = 15
-        tickRate = 150
+        speed = 3
         weight = 4000
     }
 
@@ -1016,7 +1016,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 3
         armorClass = 15
-        tickRate = 140
+        speed = 4
         weight = 4500
     }
 
@@ -1028,7 +1028,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 25
         armorClass = 6
-        tickRate = 100
+        speed = 5
         weight = 9500
     }
 
@@ -1058,7 +1058,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 10
         armorClass = 12
-        tickRate = 100
+        speed = 5
         weight = 65000
     }
 
@@ -1071,7 +1071,7 @@ object Creatures : Definitions() {
             color = Color.BROWN
             killExperience = 19
             armorClass = 8
-            tickRate = 100
+            speed = 5
             weight = 85000
         }
 
@@ -1098,7 +1098,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 31
         armorClass = 10
-        tickRate = 100
+        speed = 5
         weight = 135000
     }
 
@@ -1127,7 +1127,7 @@ object Creatures : Definitions() {
         wieldedWeapon = Weapons.scimitar.create()
         killExperience = 25
         armorClass = 10
-        tickRate = 100
+        speed = 5
         weight = 75000
     }
 
@@ -1143,7 +1143,7 @@ object Creatures : Definitions() {
         wieldedWeapon = Weapons.dagger.create()
         killExperience = 18
         armorClass = 14
-        tickRate = 90
+        speed = 6
         weight = 85000
 
         inventory.add(Items.oldRags.create())
@@ -1172,7 +1172,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 40
         armorClass = 6
-        tickRate = 100
+        speed = 5
         weight = 170000
     }
 
@@ -1201,7 +1201,7 @@ object Creatures : Definitions() {
             luck = 0
             killExperience = 1
             armorClass = 16
-            tickRate = 90
+            speed = 6
             weight = 500
         }
 
@@ -1228,7 +1228,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 1
         armorClass = 16
-        tickRate = 120
+        speed = 4
         weight = 300
     }
 
@@ -1240,7 +1240,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 2
         armorClass = 16
-        tickRate = 100
+        speed = 5
         weight = 670
     }
 
@@ -1252,7 +1252,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 15
         armorClass = 16
-        tickRate = 100
+        speed = 5
         weight = 200000
     }
 
@@ -1264,7 +1264,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 12
         armorClass = 14
-        tickRate = 100
+        speed = 5
         weight = 6400
     }
 
@@ -1291,7 +1291,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 3
         armorClass = 16
-        tickRate = 110
+        speed = 5
         weight = 1300
     }
 
@@ -1303,7 +1303,7 @@ object Creatures : Definitions() {
             luck = 2
             killExperience = 3
             armorClass = 16
-            tickRate = 110
+            speed = 5
             weight = 800
             corpsePoisonousness = exp("randint(20, 40)")
         }
@@ -1332,7 +1332,7 @@ object Creatures : Definitions() {
         luck = -2
         killExperience = 26
         armorClass = 14
-        tickRate = 110
+        speed = 5
         weight = 110000
     }
     // (u) Minor Demons
@@ -1358,7 +1358,7 @@ object Creatures : Definitions() {
         color = Color.GREEN
         killExperience = 21
         armorClass = 12
-        tickRate = 80
+        speed = 7
         weight = 59000
     }
 
@@ -1387,7 +1387,7 @@ object Creatures : Definitions() {
         color = Color.RED
         killExperience = 280
         armorClass = 6
-        tickRate = 80
+        speed = 7
         weight = 132000
     }
 
@@ -1416,7 +1416,7 @@ object Creatures : Definitions() {
         luck = 2
         killExperience = 24
         armorClass = 6
-        tickRate = 100
+        speed = 5
         weight = 63000
     }
 
@@ -1434,7 +1434,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 23
         armorClass = 7
-        tickRate = 100
+        speed = 5
         weight = 15000
     }
 
@@ -1446,7 +1446,7 @@ object Creatures : Definitions() {
         color = Color.GREEN
         killExperience = 29
         armorClass = 6
-        tickRate = 90
+        speed = 6
         weight = 15000
     }
 
@@ -1476,7 +1476,7 @@ object Creatures : Definitions() {
         luck = 0
         killExperience = 11
         armorClass = 10
-        tickRate = 100
+        speed = 5
         weight = 55000
     }
 
@@ -1488,7 +1488,7 @@ object Creatures : Definitions() {
         color = Color.DARK_GREEN
         killExperience = 16
         armorClass = 10
-        tickRate = 100
+        speed = 5
         weight = 85000
     }
 
@@ -1501,7 +1501,7 @@ object Creatures : Definitions() {
         canUseDoors = true
         killExperience = 31
         armorClass = 7
-        tickRate = 100
+        speed = 5
         weight = 155000
     }
 
@@ -1526,7 +1526,7 @@ object Creatures : Definitions() {
         canUseDoors = true
         killExperience = 5500
         armorClass = -6
-        tickRate = 50
+        speed = 9
         weight = 123000
         corpsePoisonousness = exp("10")
     }
@@ -1540,7 +1540,7 @@ object Creatures : Definitions() {
         canUseDoors = true
         killExperience = 2500
         armorClass = -6
-        tickRate = 100
+        speed = 5
         weight = 400000
     }
 }

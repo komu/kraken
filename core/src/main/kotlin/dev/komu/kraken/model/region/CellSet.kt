@@ -8,4 +8,14 @@ interface CellSet : Set<Cell> {
 
     fun randomElementOrNull(): Cell? =
         if (isEmpty()) null else randomElement()
+
+    fun randomCellMatching(predicate: (Cell) -> Boolean): Cell? {
+        var tries = 0
+        while (isNotEmpty() && tries++ < 100) {
+            val cell = randomElement()
+            if (predicate(cell))
+                return cell
+        }
+        return null
+    }
 }
