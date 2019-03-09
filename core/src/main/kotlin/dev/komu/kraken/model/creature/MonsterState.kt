@@ -4,6 +4,7 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.actions.RandomMoveAction
+import dev.komu.kraken.utils.Probability
 
 interface MonsterState {
     fun act(self: Monster, game: Game): Pair<Action?, MonsterState>
@@ -11,14 +12,30 @@ interface MonsterState {
         get() = false
 }
 
-object FriendlyState : MonsterState {
-    override fun act(self: Monster, game: Game): Pair<Action?, MonsterState> =
-        RandomMoveAction(self) to this
+object PetState : MonsterState {
+    override fun act(self: Monster, game: Game): Pair<Action?, MonsterState> {
+        val player = game.player
+
+        val enemy = self.adjacentCreatures.find { !it.isFriendly }
+        val lastKnownPlayerPosition = self.lastKnownPlayerPosition
+        return when {
+            enemy != null ->
+                AttackAction(enemy, self)
+            self.isAdjacentToCreature(player) ->
+                RandomMoveAction(self)
+            self.seesCreature(player) && Probability.check(50) ->
+                RandomMoveAction(self)
+            lastKnownPlayerPosition != null ->
+                self.moveTowardsAction(lastKnownPlayerPosition)
+            else ->
+                RandomMoveAction(self)
+        } to this
+    }
 
     override val isFriendly = true
 }
 
-class DefaultMonsterState : MonsterState {
+object DefaultMonsterState : MonsterState {
 
     override fun act(self: Monster, game: Game): Pair<Action?, MonsterState> {
         val player = game.player

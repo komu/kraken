@@ -11,7 +11,7 @@ open class Monster(name: String): Creature(name) {
 
     var lastKnownPlayerPosition: Cell? = null
 
-    private var state: MonsterState = DefaultMonsterState()
+    var state: MonsterState = DefaultMonsterState
     var naturalWeapon: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
 
     override var speed = Energy.NORMAL_SPEED
@@ -34,7 +34,7 @@ open class Monster(name: String): Creature(name) {
 
     override fun onAttackedBy(attacker: Creature) {
         if (attacker.isPlayer && state.isFriendly)
-            state = DefaultMonsterState()
+            state = DefaultMonsterState
     }
 
     override val naturalAttack: Attack

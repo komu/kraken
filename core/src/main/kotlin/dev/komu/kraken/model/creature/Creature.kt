@@ -41,6 +41,9 @@ abstract class Creature(var name: String): MessageTarget {
     var letter = '\u0000'
         get() = if (field == '\u0000') name[0] else field
 
+    open val isPet: Boolean
+        get() = false
+
     var color = Color.GRAY
     open var hitPoints = 1
     abstract val isFriendly: Boolean

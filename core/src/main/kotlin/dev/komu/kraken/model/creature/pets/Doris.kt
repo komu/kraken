@@ -4,15 +4,23 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.creature.Creature
+import dev.komu.kraken.model.creature.Monster
+import dev.komu.kraken.model.creature.PetState
+import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.randomItem
 
-class Doris(name: String): Pet(name) {
+class Doris(name: String): Monster(name) {
 
     init {
         weight = 10
         letter = 'f'
+        naturalWeapon = NaturalWeapon("bite", "1", "randint(3, 7)")
+        state = PetState
     }
+
+    override val isPet: Boolean
+        get() = true
 
     override fun talk(target: Creature) {
         val verb = randomItem("meows", "purrs")
