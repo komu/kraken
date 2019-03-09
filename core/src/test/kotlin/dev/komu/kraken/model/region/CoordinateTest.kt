@@ -1,6 +1,6 @@
 package dev.komu.kraken.model.region
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 

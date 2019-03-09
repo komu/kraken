@@ -7,19 +7,17 @@ import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.region.World
 import dev.komu.kraken.model.region.generators.MazeRegionGenerator
-import org.junit.Test
+import org.junit.jupiter.api.RepeatedTest
 import kotlin.test.assertTrue
 
 class MazeRegionGeneratorTest {
 
-    private val world = World(Game(GameConfiguration(), MyConsole) {})
+    private val world = World(Game(GameConfiguration.dummy(), MyConsole) {})
 
-    @Test
+    @RepeatedTest(100)
     fun generateRandomRegions() {
-        repeat(1000) {
-            val region = MazeRegionGenerator.generate(world, "foo", 20, "bar", "baz")
-            assertTrue(region.isSurroundedByUndiggableWalls())
-        }
+        val region = MazeRegionGenerator.generate(world, "foo", 20, "bar", "baz")
+        assertTrue(region.isSurroundedByUndiggableWalls())
     }
 
     object MyConsole : Console {

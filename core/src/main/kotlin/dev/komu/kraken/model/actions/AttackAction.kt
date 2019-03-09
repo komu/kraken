@@ -1,8 +1,8 @@
 package dev.komu.kraken.model.actions
 
-import dev.komu.kraken.model.assignDamage
+import dev.komu.kraken.model.common.assignDamage
+import dev.komu.kraken.model.common.findRollToHit
 import dev.komu.kraken.model.creature.Creature
-import dev.komu.kraken.model.findRollToHit
 import dev.komu.kraken.utils.rollDie
 
 class AttackAction(private val target: Creature, private val attacker: Creature) : Action {

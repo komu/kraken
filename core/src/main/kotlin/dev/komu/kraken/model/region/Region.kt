@@ -36,7 +36,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     override fun iterator() = cells.iterator()
 
     fun setPlayerLocation(player: Player, location: String) {
-        player.cell = startCells[location] ?: throw IllegalStateException("Region '$name' has no start point named '$location'.")
+        player.cell = startCells[location] ?: error("Region '$name' has no start point named '$location'.")
     }
 
     val creatures: Sequence<Creature>
@@ -67,7 +67,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
     fun addStartPoint(c: Coordinate, pointName: String) {
         val old = startCells.put(pointName, this[c])
         if (old != null)
-            throw IllegalStateException("Tried to define start point '$pointName' multiple tiles for region '$name'.")
+            error("Tried to define start point '$pointName' multiple tiles for region '$name'.")
     }
 
     fun addCreature(c: Coordinate, creature: Creature) {

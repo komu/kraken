@@ -41,7 +41,7 @@ class MutableCellSet(val region: Region): AbstractSet<Cell>(), CellSet {
         throw IllegalArgumentException("no such index: $index")
     }
 
-    override fun add(e: Cell) = add(e.coordinate)
+    override fun add(element: Cell) = add(element.coordinate)
 
     fun add(c: Coordinate) = add(c.x, c.y)
 

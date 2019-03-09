@@ -11,12 +11,9 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
     private val randomness = Probability(40)
     private val sparseness = 5
     private val deadEndsRemoved = Probability(90)
-    private val minRooms = 2
-    private val maxRooms = 8
-    private val roomMinWidth = 3
-    private val roomMaxWidth = 10
-    private val roomMinHeight = 3
-    private val roomMaxHeight = 7
+    private val roomCountRange = 2..8
+    private val roomWidth = 3..10
+    private val roomHeight = 3..7
     private val log = javaClass.logger()
 
     fun generate(): Region {
@@ -30,15 +27,13 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
     private fun addStairsUpAndDown() {
         val empty = region.getRoomFloorCells()
-        if (empty.size < 2)
-            throw IllegalStateException("not enough empty cells to place stairs")
+        check(empty.size >= 2) { "not enough empty cells to place stairs" }
 
         val stairsUp = empty.randomElement()
         stairsUp.type = CellType.STAIRS_UP
 
-        if (up != null) {
+        if (up != null)
             region.addPortal(stairsUp.coordinate, up, "from down", true)
-        }
 
         region.addStartPoint(stairsUp.coordinate, "from up")
 
@@ -129,20 +124,20 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
 
         var current = start
         while (true) {
-            visited.add(current)
+            visited += current
             current = generatePathFrom(current, null, visited, 3, true) ?: break
         }
     }
 
     private fun addRooms() {
-        repeat(randomInt(minRooms, maxRooms)) {
+        repeat(randomInt(roomCountRange)) {
             addRoom()
         }
     }
 
     private fun addRoom() {
-        val width = randomInt(roomMinWidth, roomMaxWidth)
-        val height = randomInt(roomMinHeight, roomMaxHeight)
+        val width = randomInt(roomWidth)
+        val height = randomInt(roomHeight)
         val x = 2 + randomInt(region.width - width - 4)
         val y = 2 + randomInt(region.height - height - 4)
 
@@ -152,9 +147,8 @@ class MazeRegionGenerator(world: World, val name: String, val level: Int, val up
     }
 
     private fun CellSet.findCellConnectedTo(start: Cell): Cell? {
-        var tries = 0
-        while (tries++ < 1000) {
-            val cell = this.randomElement()
+        repeat(1000) {
+            val cell = randomElement()
             if (cell != start && region.findPath(start, cell) != null)
                 return cell
         }

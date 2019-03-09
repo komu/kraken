@@ -26,11 +26,10 @@ open class ShortestPathSearcher(val region: Region) {
             for (successor in current.successors(allowSubDirections)) {
                 val closedNode = closedMap[successor.cell]
                 if (closedNode != null) {
-                    if (closedNode.cost <= successor.cost) {
+                    if (closedNode.cost <= successor.cost)
                         continue
-                    } else {
+                    else
                         closedMap.remove(successor.cell)
-                    }
                 }
 
                 successor.parent = current
@@ -58,25 +57,21 @@ open class ShortestPathSearcher(val region: Region) {
     private inner class Node(val cell: Cell, var parent: Node?, val cost: Int): Comparable<Node>, Iterable<Cell> {
         var heuristic = 0
 
-        override fun iterator() = object : AbstractIterator<Cell>() {
-            var next: Node? = this@Node
+        override fun iterator() = iterator {
+            var node: Node? = this@Node
 
-            override fun computeNext() {
-                val node = next
-                if (node != null) {
-                    setNext(node.cell)
-                    next = node.parent
-                } else {
-                    done()
-                }
+            while (node != null) {
+                yield(node.cell)
+                node = node.parent
             }
         }
 
         fun successors(allowSubDirections: Boolean): Sequence<Node> {
             val adjacentCells = if (allowSubDirections) cell.adjacentCells else cell.adjacentCellsInMainDirections
-            val enterable = adjacentCells.asSequence().filter { it != parent?.cell && canEnter(it) }
 
-            return enterable.map { Node(it, this, cost + costToEnter(it)) }
+            return adjacentCells.asSequence()
+                .filter { it != parent?.cell && canEnter(it) }
+                .map { Node(it, this, cost + costToEnter(it)) }
         }
 
         override fun compareTo(other: Node) = heuristic - other.heuristic

@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    testCompile("junit:junit:4.12")
-    testCompile(kotlin("test"))
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.0")
 }

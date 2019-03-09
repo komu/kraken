@@ -9,7 +9,7 @@ import dev.komu.kraken.model.GameConfiguration
 import dev.komu.kraken.model.GameConfiguration.PetType
 import javax.swing.*
 
-class StartGameDialog(owner: JFrame): JDialog() {
+class StartGameDialog(owner: JFrame) : JDialog() {
 
     private var configuration: GameConfiguration? = null
     private val nameField = JTextField(20)
@@ -31,12 +31,10 @@ class StartGameDialog(owner: JFrame): JDialog() {
         return configuration
     }
 
-    private fun createConfiguration(): GameConfiguration {
-        val config = GameConfiguration()
-        config.name = nameField.text
-        config.pet = petCombo.selectedItem as PetType
-        return config
-    }
+    private fun createConfiguration(): GameConfiguration =
+        GameConfiguration(
+            name = nameField.text.takeUnless { it.isEmpty() } ?: "Anonymous Coward",
+            pet = petCombo.selectedItem as PetType)
 
     private fun initContent() {
         val cc = CellConstraints()

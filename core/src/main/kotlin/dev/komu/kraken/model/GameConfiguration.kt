@@ -1,17 +1,23 @@
 package dev.komu.kraken.model
 
-class GameConfiguration {
+import org.jetbrains.annotations.TestOnly
 
-    var name = ""
-        get() = if (field.isEmpty()) "Anonymous Coward" else field
+class GameConfiguration(
+    val name: String,
+    val pet: PetType = PetType.LASSIE
+){
 
-    var pet = PetType.DORIS
     var wizardMode = false
 
-    enum class PetType(val petName: String) {
+    enum class PetType(private val petName: String) {
         DORIS("Doris"),
         LASSIE("Lassie");
 
         override fun toString() = petName
+    }
+
+    companion object {
+        @TestOnly
+        fun dummy() = GameConfiguration("Bilbo Baggings")
     }
 }
