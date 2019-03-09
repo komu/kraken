@@ -262,7 +262,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     fun movePlayer(direction: Direction) {
         val creatureInCell = player.cell.getCellTowards(direction).creature
         if (creatureInCell != null) {
-            if (creatureInCell.isAlive && (!creatureInCell.friendly || ask("Really attack %s?", creatureInCell.name)))
+            if (creatureInCell.isAlive && (!creatureInCell.isFriendly || ask("Really attack %s?", creatureInCell.name)))
                 act(AttackAction(creatureInCell, player))
 
         } else {

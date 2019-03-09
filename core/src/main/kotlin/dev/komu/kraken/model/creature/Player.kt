@@ -34,8 +34,8 @@ class Player(name: String): Creature(name) {
     private val game: Game
         get() = region.world.game
 
-    override var speed: Int = Energy.NORMAL_SPEED
-        get() = (super.speed - weightPenalty).coerceAtLeast(Energy.MIN_SPEED)
+    override val speed: Int
+        get() = (Energy.NORMAL_SPEED - weightPenalty).coerceAtLeast(Energy.MIN_SPEED)
 
     init {
         letter = '@'
@@ -102,6 +102,7 @@ class Player(name: String): Creature(name) {
         skills.getWeaponProficiency(weaponClass).bonus
 
     override val isPlayer = true
+    override val isFriendly = true
 
     override fun onSuccessfulHit(target: Creature, weapon: Attack) {
         skills.exerciseSkill(weapon.weaponClass, this)
@@ -167,7 +168,7 @@ class Player(name: String): Creature(name) {
     fun seesNonFriendlyCreatures() =
         visibleCells.any { cell ->
             val creature = cell.creature
-            creature != null && creature != this && !creature.friendly
+            creature != null && creature != this && !creature.isFriendly
         }
 
     val needsInput: Boolean

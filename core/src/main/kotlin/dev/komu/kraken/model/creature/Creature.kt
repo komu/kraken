@@ -5,7 +5,6 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.Inventory
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.MoveAction
-import dev.komu.kraken.model.actions.RandomMoveAction
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.common.MessageTarget
@@ -44,7 +43,7 @@ abstract class Creature(var name: String): MessageTarget {
 
     var color = Color.GRAY
     open var hitPoints = 1
-    var friendly = false
+    abstract val isFriendly: Boolean
     var immobile = false
     var corporeal = true
     var omniscient = false
@@ -59,7 +58,7 @@ abstract class Creature(var name: String): MessageTarget {
 
     var luck: Int = 0
     val energy = Energy()
-    open var speed = Energy.NORMAL_SPEED
+    abstract val speed: Int
     var weight = 50 * 1000
     var canUseDoors: Boolean = false
     var corpsePoisonousness = Expression.parse("randint(1, 3)")
@@ -92,7 +91,7 @@ abstract class Creature(var name: String): MessageTarget {
 
     abstract fun getAction(game: Game): Action?
 
-    protected fun moveTowards(targetCell: Cell): Action? {
+    fun moveTowardsAction(targetCell: Cell): Action? {
         val searcher = CreatureShortestPathSearcher(this)
         val first = searcher.findFirstCellOnShortestPath(cell, targetCell)
 
@@ -104,9 +103,6 @@ abstract class Creature(var name: String): MessageTarget {
 
     fun canMoveTo(cell: Cell): Boolean =
         cell.canMoveInto(corporeal)
-
-    protected fun moveRandomly(): Action =
-        RandomMoveAction(this)
 
     open fun canSee(target: Cell): Boolean {
         if (omniscient)
@@ -124,8 +120,6 @@ abstract class Creature(var name: String): MessageTarget {
     override fun toString() = "$name [hp=$hitPoints]"
 
     open fun onAttackedBy(attacker: Creature) {
-        if (attacker.isPlayer)
-            friendly = false
     }
 
     open fun onSuccessfulHit(target: Creature, weapon: Attack) {

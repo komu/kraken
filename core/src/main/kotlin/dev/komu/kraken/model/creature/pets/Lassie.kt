@@ -26,7 +26,7 @@ class Lassie(name: String): Pet(name) {
                 null
             }
             escape != null ->
-                moveTowards(escape) ?: super.getAction(game)
+                moveTowardsAction(escape) ?: super.getAction(game)
             else ->
                 super.getAction(game)
         }

@@ -14,9 +14,10 @@ class Oracle : Creature("The Oracle") {
         hitPoints = 10000
         letter = '@'
         color = Color.WHITE
-        friendly = true
-        speed = 500000
     }
+
+    override val speed: Int = 500000
+    override val isFriendly = true
 
     override fun talk(target: Creature) {
         target.say(this, wisdoms.randomElement())

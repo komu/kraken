@@ -15,7 +15,6 @@ import dev.komu.kraken.utils.randomElement
 
 class BlackKnight : Monster("The Black Knight") {
 
-    private var lastKnownPlayerPosition: Cell? = null
     private val bite = NaturalWeapon("bite", "1", "randint(0, 1)")
     private var hasBeenFighting = false
     private var maxHitPoints = 1
@@ -87,9 +86,9 @@ class BlackKnight : Monster("The Black Knight") {
             fullyCrippled ->
                 null
             seesPlayer ->
-                moveTowards(player.cell)
+                moveTowardsAction(player.cell)
             else ->
-                lastKnownPlayerPosition?.let(this::moveTowards)
+                lastKnownPlayerPosition?.let(this::moveTowardsAction)
         }
     }
 

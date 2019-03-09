@@ -1,52 +1,40 @@
 package dev.komu.kraken.model.creature
 
+import dev.komu.kraken.model.Energy
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
-import dev.komu.kraken.model.actions.AttackAction
-import dev.komu.kraken.model.actions.RandomMoveAction
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.region.Cell
 
 open class Monster(name: String): Creature(name) {
 
-    private var lastKnownPlayerPosition: Cell? = null
+    var lastKnownPlayerPosition: Cell? = null
 
+    private var state: MonsterState = DefaultMonsterState()
     var naturalWeapon: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
 
+    override var speed = Energy.NORMAL_SPEED
+
+    override val isFriendly: Boolean
+        get() = state.isFriendly
+
     override fun getAction(game: Game): Action? {
-        val player = game.player
-        val seesPlayer = seesCreature(player)
+        val seesPlayer = seesCreature(game.player)
 
         if (seesPlayer)
-            lastKnownPlayerPosition = player.cell
+            lastKnownPlayerPosition = game.player.cell
+        else if (cell == lastKnownPlayerPosition)
+            lastKnownPlayerPosition = null
 
-        if (friendly) {
-            return RandomMoveAction(this)
-        }
+        val (action, nextState) = state.act(this, game)
+        state = nextState
+        return action
+    }
 
-        return if (seesPlayer) {
-            if (isAdjacentToCreature(player)) {
-                AttackAction(player, this)
-            } else if (!immobile)
-                moveTowards(player.cell)
-            else
-                null
-
-        } else {
-            if (cell == lastKnownPlayerPosition)
-                lastKnownPlayerPosition = null
-
-            if (!immobile) {
-                val playerPosition = lastKnownPlayerPosition
-                if (playerPosition != null)
-                    moveTowards(playerPosition)
-                else
-                    moveRandomly()
-            } else {
-                null
-            }
-        }
+    override fun onAttackedBy(attacker: Creature) {
+        if (attacker.isPlayer && state.isFriendly)
+            state = DefaultMonsterState()
     }
 
     override val naturalAttack: Attack
