@@ -24,9 +24,4 @@ fun assignDamage(attacker: Creature, weapon: Attack, target: Creature) {
     val damage = weapon.getDamage(target)
 
     target.takeDamage(damage, attacker)
-    if (target.hitPoints <= 0) {
-        attacker.message("%s %s.", target.You(), target.verb("die"))
-        target.message("%s %s.", target.You(), target.verb("die"))
-        target.die(attacker.name)
-    }
 }

@@ -131,8 +131,15 @@ abstract class Creature(var name: String): MessageTarget {
     open fun onKilledCreature(target: Creature) {
     }
 
-    open fun takeDamage(points: Int, attacker: Creature) {
+    open fun takeDamage(points: Int, attacker: Creature, cause: String = attacker.name) {
         hitPoints = max(0, hitPoints - points)
+
+        if (!isAlive) {
+            attacker.message("%s %s.", You(), verb("die"))
+            if (attacker != this)
+                message("%s %s.", You(), verb("die"))
+            die(cause)
+        }
     }
 
     open fun talk(target: Creature) {
