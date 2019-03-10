@@ -45,7 +45,7 @@ abstract class Creature(var name: String): MessageTarget {
         get() = false
 
     var color = Color.GRAY
-    open var hitPoints = 1
+    var hitPoints = 1
     abstract val isFriendly: Boolean
     var immobile = false
     var corporeal = true

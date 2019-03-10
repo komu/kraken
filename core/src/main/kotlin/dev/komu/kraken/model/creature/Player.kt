@@ -148,11 +148,11 @@ class Player(name: String): Creature(name) {
     private fun gainLevel() {
         val newHp = 3 + rollDie(3)
         maximumHitPoints += newHp
-        hitPoints = Math.min(hitPoints + newHp, maximumHitPoints)
+        hitPoints = (hitPoints + newHp).coerceAtMost(maximumHitPoints)
         level += 1
     }
 
-    val experienceNeededForNextLevel: Int
+    private val experienceNeededForNextLevel: Int
         get() = when {
             level < 10 -> 10 * (1 shl level)
             level < 20 -> 10000 * (1 shl (level - 10))
@@ -173,9 +173,8 @@ class Player(name: String): Creature(name) {
 
     val needsInput: Boolean
         get() {
-            if (behavior?.canPerform(this) != true) {
+            if (behavior?.canPerform(this) != true)
                 waitForInput()
-            }
 
             return behavior == null
         }
@@ -187,7 +186,7 @@ class Player(name: String): Creature(name) {
     override fun getAction(game: Game): Action? = behavior?.getAction(this)
 
     fun regainHitPoint() {
-        hitPoints = Math.min(maximumHitPoints, hitPoints + 1)
+        hitPoints = (hitPoints + 1).coerceAtMost(maximumHitPoints)
     }
 
     override fun canSee(target: Cell) =
@@ -197,11 +196,12 @@ class Player(name: String): Creature(name) {
         visibleCells = cell.getVisibleCells(sight)
     }
 
-    fun getInvisibleCells(): CellSet {
-        val cells = region.getCells()
-        cells.removeAll(visibleCells)
-        return cells
-    }
+    val invisibleCells: CellSet
+        get() {
+            val cells = region.getCells()
+            cells.removeAll(visibleCells)
+            return cells
+        }
 
     override fun you() = "you"
 

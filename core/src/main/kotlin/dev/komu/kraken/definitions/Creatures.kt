@@ -14,7 +14,13 @@ import dev.komu.kraken.utils.randomInt
 @Suppress("unused")
 object Creatures : Definitions() {
 
-    fun monster(name: String, level: Int, swarmSize: Expression? = null, probability: Int? = null, init: Monster.() -> Unit) =
+    fun monster(
+        name: String,
+        level: Int,
+        swarmSize: Expression? = null,
+        probability: Int? = null,
+        init: Monster.() -> Unit
+    ) =
         creature(name, level = level, swarmSize = swarmSize, probability = probability) {
             val monster = Monster(name)
             monster.init()

@@ -93,9 +93,7 @@ class Region(val world: World, val name: String, val level: Int, val width: Int,
 
     fun getMatchingCells(predicate: (Cell) -> Boolean): MutableCellSet {
         val result = MutableCellSet(this)
-        for (cell in cells)
-            if (predicate(cell))
-                result.add(cell)
+        cells.filterTo(result, predicate)
         return result
     }
 

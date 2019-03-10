@@ -9,18 +9,23 @@ abstract class ObjectDefinition<out T> {
     abstract fun create(): T
 }
 
-fun <T : ObjectDefinition<*>> Collection<T>.weightedRandom(): T {
-    val probabilitySum = sumBy { it.probability }
+fun <T : ObjectDefinition<*>> Collection<T>.weightedRandom(): T =
+    ProbabilityDistribution(this).randomItem()
 
-    var item = randomInt(probabilitySum)
-    for (dp in this) {
-        if (item < dp.probability)
-            return dp
+class ProbabilityDistribution<T : ObjectDefinition<*>>(private val items: Collection<T>) {
+    private val probabilitySum = items.sumBy { it.probability }
 
-        item -= dp.probability
+    fun randomItem(): T {
+        var item = randomInt(probabilitySum)
+        for (dp in items) {
+            if (item < dp.probability)
+                return dp
+
+            item -= dp.probability
+        }
+
+        error("could not randomize definition")
     }
-
-    error("could not randomize definition")
 }
 
 fun <T : ObjectDefinition<*>> Collection<T>.betweenLevels(minLevel: Int, maxLevel: Int): List<T> =

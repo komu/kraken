@@ -19,17 +19,12 @@ class BlackKnight : Monster("The Black Knight") {
     private var hasBeenFighting = false
     private var maxHitPoints = 1
 
-    override var hitPoints: Int = 5
-        set(hitPoints) {
-            super.hitPoints = hitPoints
-            maxHitPoints = Math.max(maxHitPoints, hitPoints)
-        }
-
     init {
         level = 30
         letter = 'p'
         color = Color.BLACK
 
+        maxHitPoints = 600
         hitPoints = 600
         hitBonus = 20
         weight = 80000

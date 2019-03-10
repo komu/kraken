@@ -140,11 +140,10 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         }
     }
 
-    fun addCreature(creature: Creature, target: Cell) {
+    private fun addCreature(creature: Creature, target: Cell) {
         creature.cell = target
-        if (target.region == currentRegion) {
+        if (target.region == currentRegion)
             creatures += creature
-        }
     }
 
     fun talk() {
@@ -365,7 +364,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     private fun spawnRandomMonsters() {
         val creatures = objectFactory.randomSwarm(player.region.level, player.level)
 
-        val invisibleCells = player.getInvisibleCells()
+        val invisibleCells = player.invisibleCells
         val regionCells = player.region.getCells()
         for (creature in creatures) {
             val target = invisibleCells.selectRandomTargetCell(creature) ?: regionCells.selectRandomTargetCell(creature)

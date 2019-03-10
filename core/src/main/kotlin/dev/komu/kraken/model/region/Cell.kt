@@ -93,7 +93,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     val isDeadEnd: Boolean
         get() = isPassable && countPassableMainNeighbours() == 1
 
-    fun canMoveInto(corporeal: Boolean) = creature == null && type.canMoveInto(corporeal)
+    fun canMoveInto(corporeal: Boolean = true) = creature == null && type.canMoveInto(corporeal)
 
     fun distance(cell: Cell) = coordinate.distance(cell.coordinate)
 
