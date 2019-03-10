@@ -15,7 +15,7 @@ import dev.komu.kraken.utils.randomElement
 
 class BlackKnight : Monster("The Black Knight") {
 
-    private val bite = NaturalWeapon("bite", "1", "randint(0, 1)")
+    private val bite = NaturalWeapon("bite", 1, "randint(0, 1)")
     private var hasBeenFighting = false
     private var maxHitPoints = 1
 

@@ -18,7 +18,7 @@ class BugsBunny: Monster("Bugs Bunny") {
         letter = 'r'
         color = Color.WHITE
         luck = 2
-        naturalWeapon = NaturalWeapon("hit", "10", "randint(4,10)")
+        naturalWeapon = NaturalWeapon("hit", 10, "randint(4,10)")
         killExperience = 450
         armorClass = 0
         speed = 9

@@ -15,7 +15,7 @@ class Doris(name: String): Monster(name) {
     init {
         weight = 10
         letter = 'f'
-        naturalWeapon = NaturalWeapon("bite", "1", "randint(3, 7)")
+        naturalWeapon = NaturalWeapon("bite", 1, "randint(3, 7)")
         state = PetState
     }
 

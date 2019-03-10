@@ -4,11 +4,12 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
+import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomElement
 
 class Oracle : Creature("The Oracle") {
 
-    private val curse = NaturalWeapon("curse", "20", "0")
+    private val curse = NaturalWeapon("curse", 20, Expression.Constant(0))
 
     init {
         hitPoints = 10000

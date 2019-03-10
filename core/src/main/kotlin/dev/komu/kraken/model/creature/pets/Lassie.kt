@@ -12,7 +12,7 @@ class Lassie(name: String): Monster(name) {
     init {
         weight = 25
         letter = 'C'
-        naturalWeapon = NaturalWeapon("bite", "1", "randint(3, 7)")
+        naturalWeapon = NaturalWeapon("bite", 1, "randint(3, 7)")
         state = PetState
     }
 

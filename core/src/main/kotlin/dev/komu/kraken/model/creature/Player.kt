@@ -22,7 +22,7 @@ class Player(name: String): Creature(name) {
 
     var maximumHitPoints = 0
     var experience = 0
-    private val hit: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
+    private val hit: Attack = NaturalWeapon("hit", 0, "randint(1, 3)")
     val skills = SkillSet()
     var visibleCells: CellSet by Delegates.notNull()
     var hunger = 2000

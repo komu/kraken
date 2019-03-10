@@ -12,7 +12,7 @@ open class Monster(name: String): Creature(name) {
     var lastKnownPlayerPosition: Cell? = null
 
     var state: MonsterState = DefaultMonsterState
-    var naturalWeapon: Attack = NaturalWeapon("hit", "0", "randint(1, 3)")
+    var naturalWeapon: Attack = NaturalWeapon("hit", 0, "randint(1, 3)")
 
     override var speed = Energy.NORMAL_SPEED
 
