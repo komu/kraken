@@ -3,7 +3,7 @@ package dev.komu.kraken.model.item.food
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.creature.Player
 
-class ColdCoffee: Food("potion of cold coffee") {
+class ColdCoffee(name: String): Food(name) {
 
     init {
         letter = '!'

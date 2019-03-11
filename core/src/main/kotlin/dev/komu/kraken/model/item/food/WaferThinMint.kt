@@ -3,7 +3,7 @@ package dev.komu.kraken.model.item.food
 import dev.komu.kraken.model.creature.HungerLevel
 import dev.komu.kraken.model.creature.Player
 
-class WaferThinMint: Food("wafer-thin mint") {
+class WaferThinMint(name: String): Food(name) {
 
     init {
         weight = 20

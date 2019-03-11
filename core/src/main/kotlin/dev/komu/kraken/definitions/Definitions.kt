@@ -10,11 +10,13 @@ abstract class Definitions {
     val itemDefinitions = mutableListOf<ItemDefinition<*>>()
     val creatureDefinitions = mutableListOf<CreatureDefinition<*>>()
 
-    fun <T : Item> item(name: String,
-                        level: Int? = null,
-                        probability: Int? = null,
-                        maximumInstances: Int? = null,
-                        create: () -> T): ItemDefinition<T> {
+    fun <T : Item> item(
+        name: String,
+        level: Int? = null,
+        probability: Int? = null,
+        maximumInstances: Int? = null,
+        create: () -> T
+    ): ItemDefinition<T> {
         val def = ItemDefinition(name, create)
 
         if (level != null)
@@ -30,13 +32,25 @@ abstract class Definitions {
         return def
     }
 
-    inline fun <T : Creature> creature(name: String, noinline create: () -> T, level: Int, init: CreatureDefinition<T>.() -> Unit = {}): CreatureDefinition<T> =
+    inline fun <T : Item> item(name: String, noinline create: (String) -> T, init: ItemDefinition<T>.() -> Unit = {}): ItemDefinition<T> =
+        ItemDefinition(name) { create(name) }.apply(init).also {
+            itemDefinitions += it
+        }
+
+    inline fun <T : Creature> creature(
+        name: String,
+        noinline create: () -> T,
+        level: Int,
+        init: CreatureDefinition<T>.() -> Unit = {}
+    ): CreatureDefinition<T> =
         CreatureDefinition(name, level, create).apply(init).also {
             creatureDefinitions += it
         }
 
     fun exp(exp: String) = Expression.parse(exp)
-    fun random(exp: ClosedRange<Int>) = Expression.Apply("randint", listOf(Expression.Constant(exp.start), Expression.Constant(exp.endInclusive)))
+    fun random(exp: ClosedRange<Int>) =
+        Expression.Apply("randint", listOf(Expression.Constant(exp.start), Expression.Constant(exp.endInclusive)))
+
     fun constant(value: Int) = Expression.Constant(value)
     fun hit(toHit: Int, exp: ClosedRange<Int>) = NaturalWeapon("hit", toHit, random(exp))
 }

@@ -8,7 +8,7 @@ object Weapons : Definitions() {
 
     // Blades
 
-    fun blade(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (Sword.() -> Unit)) =
+    private fun blade(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (Sword.() -> Unit)) =
         item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
             val s = Sword(name)
             s.init()
@@ -62,7 +62,7 @@ object Weapons : Definitions() {
 
     // Axes
 
-    fun axe(name: String, level: Int? = null, probability: Int? = null, init: (Sword.() -> Unit)) =
+    private fun axe(name: String, level: Int? = null, probability: Int? = null, init: (Sword.() -> Unit)) =
             item(name, level=level, probability=probability) {
                 val s = Sword(name)
                 s.damage = exp("1d3")
@@ -98,7 +98,7 @@ object Weapons : Definitions() {
     
     // Blunt weapons
 
-    fun blunt(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (BluntWeapon.() -> Unit)) =
+    private fun blunt(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (BluntWeapon.() -> Unit)) =
         item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
             val w = BluntWeapon(name)
             w.damage = exp("1d3")
@@ -142,7 +142,7 @@ object Weapons : Definitions() {
     
     // Pointed weapons
 
-    fun pointed(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (PointedWeapon.() -> Unit)) =
+    private fun pointed(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (PointedWeapon.() -> Unit)) =
             item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
                 val w = PointedWeapon(name)
                 w.letter = '\\'
@@ -166,7 +166,7 @@ object Weapons : Definitions() {
     
     // Projectiles
 
-    fun projectile(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (Projectile.() -> Unit)) =
+    private fun projectile(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (Projectile.() -> Unit)) =
         item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
             val w = Projectile(name)
             w.damage = exp("1d3")
@@ -202,7 +202,7 @@ object Weapons : Definitions() {
     
     // Missile launchers
 
-    fun launcher(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (MissileLauncher.() -> Unit)) =
+    private fun launcher(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (MissileLauncher.() -> Unit)) =
         item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
             val w = MissileLauncher(name)
             w.damage = exp("randint(1, 3)")
