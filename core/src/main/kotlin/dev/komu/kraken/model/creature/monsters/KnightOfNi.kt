@@ -5,7 +5,7 @@ import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.utils.rollDie
 
-class KnightOfNi: Monster("knight of ni") {
+class KnightOfNi(name: String): Monster(name) {
 
     override fun getAction(game: Game): Action? {
         val player = game.player

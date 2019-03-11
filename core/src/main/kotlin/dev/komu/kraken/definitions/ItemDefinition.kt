@@ -2,11 +2,14 @@ package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.Item
+import dev.komu.kraken.model.item.armor.Armor
+import dev.komu.kraken.model.item.armor.BodyPart
+import dev.komu.kraken.model.item.food.Food
 import dev.komu.kraken.model.item.weapon.Weapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.utils.exp.Expression
 
-open class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) : ObjectDefinition<T>() {
+open class ItemDefinition<T : Item>(val name: String, private val createItem: (String) -> T) : ObjectDefinition<T>() {
 
     override var level: Int? = null
     var color: Color? = null
@@ -15,24 +18,23 @@ open class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) :
 
     var createdInstances = 0
     var maximumInstances = Int.MAX_VALUE
-    private val initHooks = mutableListOf<T.() -> Unit>()
 
     val instantiable: Boolean
         get() = createdInstances < maximumInstances
 
     override fun create(): T {
-        val obj = createItem()
+        val obj = createItem(name)
 
         setProperties(obj)
-
-        for (hook in initHooks)
-            obj.hook()
 
         createdInstances++
         return obj
     }
 
     open fun setProperties(obj: T) {
+        if (level != null)
+            obj.level = level!!
+
         if (letter != null)
             obj.letter = letter!!
 
@@ -43,15 +45,10 @@ open class ItemDefinition<T : Item>(val name: String, val createItem: () -> T) :
             obj.weight = weight!!
     }
 
-    fun init(hook: T.() -> Unit): ItemDefinition<T> {
-        initHooks.add(hook)
-        return this
-    }
-
     override fun toString() = "ItemDefinition [name=$name]"
 }
 
-class WeaponDefinition(name: String, weaponClass: WeaponClass) : ItemDefinition<Weapon>(name, { Weapon(name, weaponClass) }) {
+class WeaponDefinition(name: String, weaponClass: WeaponClass) : ItemDefinition<Weapon>(name, { Weapon(it, weaponClass) }) {
 
     var toHit: Expression? = null
     var damage: Expression? = null
@@ -64,5 +61,37 @@ class WeaponDefinition(name: String, weaponClass: WeaponClass) : ItemDefinition<
 
         if (damage != null)
             obj.damage = damage!!
+    }
+}
+
+class ArmorDefinition(name: String) : ItemDefinition<Armor>(name, ::Armor) {
+
+    var armorBonus: Int? = null
+    var bodyPart: BodyPart? = null
+
+    override fun setProperties(obj: Armor) {
+        super.setProperties(obj)
+
+        if (armorBonus != null)
+            obj.armorBonus = armorBonus!!
+
+        if (bodyPart != null)
+            obj.bodyPart = bodyPart!!
+    }
+}
+
+class FoodDefinition<T : Food>(name: String, create: (String) -> T) : ItemDefinition<T>(name, create) {
+
+    var effectiveness: Int? = null
+    var healingEffect: Int? = null
+
+    override fun setProperties(obj: T) {
+        super.setProperties(obj)
+
+        if (effectiveness != null)
+            obj.effectiveness = effectiveness!!
+
+        if (healingEffect != null)
+            obj.healingEffect = healingEffect!!
     }
 }

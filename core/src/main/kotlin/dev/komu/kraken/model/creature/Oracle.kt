@@ -7,7 +7,7 @@ import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomElement
 
-class Oracle : Creature("The Oracle") {
+class Oracle(name: String) : Creature(name) {
 
     private val curse = NaturalWeapon("curse", 20, Expression.Constant(0))
 

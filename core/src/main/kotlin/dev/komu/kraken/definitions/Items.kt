@@ -5,10 +5,11 @@ package dev.komu.kraken.definitions
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.LightSource
-import dev.komu.kraken.model.item.armor.Armor
-import dev.komu.kraken.model.item.armor.BodyPart
 import dev.komu.kraken.model.item.armor.BodyPart.*
-import dev.komu.kraken.model.item.food.*
+import dev.komu.kraken.model.item.food.ColdCoffee
+import dev.komu.kraken.model.item.food.CyanideCapsule
+import dev.komu.kraken.model.item.food.Food
+import dev.komu.kraken.model.item.food.WaferThinMint
 
 @Suppress("unused")
 object Items : Definitions() {
@@ -62,52 +63,44 @@ object Items : Definitions() {
 
     // EDIBLES
 
-    fun food(name: String, effectiveness: Int, postInit: ItemDefinition<Food>.() -> Unit) = item(name, ::Food) {
-        postInit()
-
-        init {
-            this.effectiveness = effectiveness
-        }
-    }
-
-    val foodRation = food("food ration", effectiveness = 1000) {
+    val foodRation = food("food ration") {
+        effectiveness = 1000
         weight = 500
     }
 
-    val chunkOfCheese = food("chunk of cheese", effectiveness = 600) {
+    val chunkOfCheese = food("chunk of cheese") {
+        effectiveness = 600
         color = Color.YELLOW
         weight = 350
     }
 
-    val bigChunkOfCheese = food("big chunk of cheese", effectiveness = 1200) {
+    val bigChunkOfCheese = food("big chunk of cheese") {
+        effectiveness = 1200
         color = Color.YELLOW
         weight = 1100
     }
 
-    val bun = food("bun", effectiveness = 80) {
+    val bun = food("bun") {
+        effectiveness = 80
         probability = 60
         color = Color.BROWNISH
         weight = 60
     }
 
-    val fridayBun = item("Friday bun", ::HealingEdible) {
+    val fridayBun = food("Friday bun") {
         probability = 30
         color = Color.BROWNISH
         weight = 120
-        init {
-            effectiveness = 400
-            healingEffect = 5
-        }
+        effectiveness = 400
+        healingEffect = 5
     }
 
-    val wraithEssence = item("wraith essence", ::HealingEdible) {
+    val wraithEssence = food("wraith essence") {
         probability = 0
 
         color = Color.WHITE
         weight = 4
-        init {
-            effectiveness = 100
-        }
+        effectiveness = 100
     }
 
     val waferThinMint = item("wafer-thin mint", ::WaferThinMint) {
@@ -124,16 +117,13 @@ object Items : Definitions() {
 
     // POTIONS
 
-    val healingPotion = item("healing potion", ::HealingEdible) {
+    val healingPotion = food("healing potion", ::Food) {
         probability = 25
         color = Color.LIGHT_BLUE
         weight = 250
         letter = '!'
-
-        init {
-            effectiveness = 10
-            healingEffect = 10
-        }
+        effectiveness = 10
+        healingEffect = 10
     }
 
     // SCROLLS
@@ -170,151 +160,191 @@ object Items : Definitions() {
 
     // Light armors
 
-    private inline fun armor(name: String, light: Boolean, bodyPart: BodyPart, armorBonus: Int, postInit: ItemDefinition<Armor>.() -> Unit) =
-        item(name, ::Armor) {
+    private inline fun armor(name: String, light: Boolean, postInit: ArmorDefinition.() -> Unit) =
+        armor(name) {
             letter = if (light) ']' else '['
 
-            init {
-                this.bodyPart = bodyPart
-                this.armorBonus = armorBonus
-            }
             postInit()
         }
 
-    val oldRags = armor("old rags", light = true, bodyPart = TORSO, armorBonus = 0) {
+    val oldRags = armor("old rags", light = true) {
         level = 1
         probability = 30
         weight = 500
         color = Color.RED
+        bodyPart = TORSO
+        armorBonus = 0
     }
 
-    val clothes = armor("clothes", light = true, bodyPart = TORSO, armorBonus = 1) {
+    val clothes = armor("clothes", light = true) {
         level = 1
         weight = 500
         color = Color.BLUE
+        bodyPart = TORSO
+        armorBonus = 1
     }
 
-    val softLeatherArmor = armor("a soft leather armor", light = true, bodyPart = TORSO, armorBonus = 2) {
+    val softLeatherArmor = armor("a soft leather armor", light = true) {
         level = 4
         weight = 2300
+        bodyPart = TORSO
+        armorBonus = 2
     }
 
-    val hardLeatherArmor = armor("a hard leather armor", light = true, bodyPart = TORSO, armorBonus = 3) {
+    val hardLeatherArmor = armor("a hard leather armor", light = true) {
         level = 4
         probability = 70
         weight = 3000
+        bodyPart = TORSO
+        armorBonus = 3
     }
 
-    val studdedLeatherArmor = armor("a studded leather armor", light = true, bodyPart = TORSO, armorBonus = 4) {
+    val studdedLeatherArmor = armor("a studded leather armor", light = true) {
         level = 9
         probability = 60
         weight = 3500
+        bodyPart = TORSO
+        armorBonus = 4
     }
 
     // Heavy armors
 
-    val ringMail = armor("a ring mail", light = false, bodyPart = TORSO, armorBonus = 5) {
+    val ringMail = armor("a ring mail", light = false) {
         level = 15
         probability = 40
         weight = 4600
+        bodyPart = TORSO
+        armorBonus = 5
     }
 
-    val chainMail = armor("a chain mail", light = false, bodyPart = TORSO, armorBonus = 6) {
+    val chainMail = armor("a chain mail", light = false) {
         level = 30
         probability = 30
         weight = 6000
+        bodyPart = TORSO
+        armorBonus = 6
     }
 
-    val plateMail = armor("a plate mail", light = false, bodyPart = TORSO, armorBonus = 7) {
+    val plateMail = armor("a plate mail", light = false) {
         level = 50
         probability = 20
         weight = 12000
+        bodyPart = TORSO
+        armorBonus = 7
     }
 
     // Helmets
 
-    val leatherCap = armor("a leather cap", light = true, bodyPart = HEAD, armorBonus = 1) {
+    val leatherCap = armor("a leather cap", light = true) {
         level = 1
         weight = 200
+        bodyPart = HEAD
+        armorBonus = 1
     }
 
-    val metalCap = armor("a metal cap", light = false, bodyPart = HEAD, armorBonus = 2) {
+    val metalCap = armor("a metal cap", light = false) {
         level = 5
         weight = 400
+        bodyPart = HEAD
+        armorBonus = 2
     }
 
-    val chainCoif = armor("a chain coif", light = false, bodyPart = HEAD, armorBonus = 3) {
+    val chainCoif = armor("a chain coif", light = false) {
         level = 10
         weight = 2100
+        bodyPart = HEAD
+        armorBonus = 3
     }
 
-    val ironHelmet = armor("an iron helmet", light = false, bodyPart = HEAD, armorBonus = 4) {
+    val ironHelmet = armor("an iron helmet", light = false) {
         level = 20
         probability = 60
         weight = 3500
+        bodyPart = HEAD
+        armorBonus = 4
     }
 
-    val steelHelmet = armor("a steel helmet", light = false, bodyPart = HEAD, armorBonus = 5) {
+    val steelHelmet = armor("a steel helmet", light = false) {
         level = 30
         probability = 25
         weight = 3300
+        bodyPart = HEAD
+        armorBonus = 5
     }
 
     // Shields
 
-    val smallWoodenShield = armor("a small wooden shield", light = true, bodyPart = SHIELD, armorBonus = 1) {
+    val smallWoodenShield = armor("a small wooden shield", light = true) {
         level = 1
         weight = 700
+        bodyPart = SHIELD
+        armorBonus = 1
     }
 
-    val smallMetalShield = armor("a small metal shield", light = true, bodyPart = SHIELD, armorBonus = 2) {
+    val smallMetalShield = armor("a small metal shield", light = true) {
         level = 4
         weight = 1500
+        bodyPart = SHIELD
+        armorBonus = 2
     }
 
-    val largeWoodenShield = armor("a large wooden shield", light = true, bodyPart = SHIELD, armorBonus = 3) {
+    val largeWoodenShield = armor("a large wooden shield", light = true) {
         level = 13
         probability = 80
         weight = 3200
+        bodyPart = SHIELD
+        armorBonus = 3
     }
 
-    val largeMetalShield = armor("a large metal shield", light = false, bodyPart = SHIELD, armorBonus = 4) {
+    val largeMetalShield = armor("a large metal shield", light = false) {
         level = 18
         probability = 40
         weight = 4500
+        bodyPart = SHIELD
+        armorBonus = 4
     }
 
 
     // Gloves, gauntlets
 
-    val leatherGloves = armor("a pair of leather gloves", light = true, bodyPart = HANDS, armorBonus = 1) {
+    val leatherGloves = armor("a pair of leather gloves", light = true) {
         level = 3
         weight = 200
+        bodyPart = HANDS
+        armorBonus = 1
     }
 
-    val gauntlets = armor("a pair of gauntlets", light = true, bodyPart = HANDS, armorBonus = 2) {
+    val gauntlets = armor("a pair of gauntlets", light = true) {
         level = 9
         probability = 60
         weight = 450
+        bodyPart = HANDS
+        armorBonus = 2
     }
 
 
     // Boots, shoes
 
-    val leatherShoes = armor("a pair of leather shoes", light = true, bodyPart = FEET, armorBonus = 1) {
+    val leatherShoes = armor("a pair of leather shoes", light = true) {
         level = 1
         weight = 380
+        bodyPart = FEET
+        armorBonus = 1
     }
 
-    val leatherBoots = armor("a pair of leather boots", light = true, bodyPart = FEET, armorBonus = 2) {
+    val leatherBoots = armor("a pair of leather boots", light = true) {
         level = 8
         weight = 1200
+        bodyPart = FEET
+        armorBonus = 2
     }
 
-    val steelBoots = armor("a pair of steel boots", light = false, bodyPart = FEET, armorBonus = 3) {
+    val steelBoots = armor("a pair of steel boots", light = false) {
         level = 23
         probability = 80
         weight = 2700
+        bodyPart = FEET
+        armorBonus = 3
     }
 
     // Unique armors

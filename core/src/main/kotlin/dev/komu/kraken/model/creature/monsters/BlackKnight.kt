@@ -13,7 +13,7 @@ import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.utils.randomElement
 
-class BlackKnight : Monster("The Black Knight") {
+class BlackKnight(name: String) : Monster(name) {
 
     private val bite = NaturalWeapon("bite", 1, "randint(0, 1)")
     private var hasBeenFighting = false

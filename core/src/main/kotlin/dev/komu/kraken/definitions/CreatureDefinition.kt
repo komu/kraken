@@ -7,9 +7,10 @@ import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomInt
 
-class CreatureDefinition<out T : Creature>(val name: String, override val level: Int, val createCreature: () -> T) :
+class CreatureDefinition<out T : Creature>(val name: String, val createCreature: (String) -> T) :
     ObjectDefinition<T>() {
 
+    override var level = 1
     var letter: Char? = null
     var color: Color? = null
     var hitPoints: ClosedRange<Int>? = null
@@ -24,8 +25,8 @@ class CreatureDefinition<out T : Creature>(val name: String, override val level:
     var weight: Int? = null
     var corporeal: Boolean? = null
     var omniscient: Boolean? = null
-
-    private val initHooks = ArrayList<T.() -> Unit>(1)
+    var wieldedWeapon: WeaponDefinition? = null
+    val inventory = mutableListOf<ItemDefinition<*>>()
 
     var swarmSize: ClosedRange<Int> = 1..1
 
@@ -34,11 +35,7 @@ class CreatureDefinition<out T : Creature>(val name: String, override val level:
     fun createSwarm(): Collection<T> =
         List(randomInt(swarmSize)) { create() }
 
-    fun init(hook: T.() -> Unit) {
-        initHooks += hook
-    }
-
-    override fun create(): T = createCreature().also {
+    override fun create(): T = createCreature(name).also {
         if (color != null)
             it.color = color!!
 
@@ -81,8 +78,11 @@ class CreatureDefinition<out T : Creature>(val name: String, override val level:
         if (omniscient != null)
             it.omniscient = omniscient!!
 
-        for (hook in initHooks)
-            it.hook()
+        if (wieldedWeapon != null)
+            it.wieldedWeapon = wieldedWeapon!!.create()
+
+        for (item in inventory)
+            it.inventory.add(item.create())
     }
 
     override fun toString() = "CreatureDefinition [name=$name]"

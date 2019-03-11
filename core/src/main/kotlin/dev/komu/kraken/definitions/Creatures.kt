@@ -9,8 +9,8 @@ import dev.komu.kraken.model.creature.monsters.*
 
 object Creatures : Definitions() {
 
-    inline fun monster(name: String, level: Int, init: CreatureDefinition<Monster>.() -> Unit) =
-        creature(name, { Monster(name) }, level, init)
+    inline fun monster(name: String, init: CreatureDefinition<Monster>.() -> Unit) =
+        creature(name, { Monster(name) }, init)
 
     // Note about probability: default is 100. Defining this attribute
     // with a value of 200 would thus mean that the creature is twice is likely
@@ -18,13 +18,14 @@ object Creatures : Definitions() {
 
     // (a) Ants
 
-    private fun CreatureDefinition<Monster>.ant() {
+    private fun CreatureDefinition<*>.ant() {
         letter = 'a'
         corpsePoisonousness = constant(2)
     }
 
-    val whiteAnt = monster("white ant", level = 4) {
+    val whiteAnt = monster("white ant") {
         ant()
+        level = 4
         hitPoints = 3..7
         color = Color.WHITE
         naturalWeapon = hit(0, 1..4)
@@ -34,8 +35,9 @@ object Creatures : Definitions() {
         weight = 800
     }
 
-    val greyAnt = monster("grey ant", level = 6) {
+    val greyAnt = monster("grey ant") {
         ant()
+        level = 6
         hitPoints = 4..8
         color = Color.GRAY
         naturalWeapon = hit(0, 2..4)
@@ -45,8 +47,9 @@ object Creatures : Definitions() {
         weight = 850
     }
 
-    val redAnt = monster("red ant", level = 7) {
+    val redAnt = monster("red ant") {
         ant()
+        level = 7
         hitPoints = 6..12
         color = Color.RED
         naturalWeapon = hit(0, 2..5)
@@ -56,8 +59,9 @@ object Creatures : Definitions() {
         weight = 1100
     }
 
-    val blackAnt = monster("black ant", level = 9) {
+    val blackAnt = monster("black ant") {
         ant()
+        level = 9
         hitPoints = 10..16
         color = Color.BLACK
         swarmSize = 3..6
@@ -68,8 +72,9 @@ object Creatures : Definitions() {
         weight = 1000
     }
 
-    val yellowAnt = monster("yellow ant", level = 12) {
+    val yellowAnt = monster("yellow ant") {
         ant()
+        level = 12
         hitPoints = 16..24
         color = Color.YELLOW
         swarmSize = 2..7
@@ -80,8 +85,9 @@ object Creatures : Definitions() {
         weight = 1300
     }
 
-    val greenAnt = monster("green ant", level = 14) {
+    val greenAnt = monster("green ant") {
         ant()
+        level = 14
         hitPoints = 20..35
         color = Color.GREEN
         swarmSize = 4..6
@@ -93,8 +99,9 @@ object Creatures : Definitions() {
         weight = 1300
     }
 
-    val blueAnt = monster("blue ant", level = 16) {
+    val blueAnt = monster("blue ant") {
         ant()
+        level = 16
         hitPoints = 34..48
         color = Color.BLUE
         swarmSize = 5..9
@@ -107,15 +114,16 @@ object Creatures : Definitions() {
 
     // (A) Angelic Beings
 
-    private fun CreatureDefinition<Monster>.baseAngel() {
+    private fun CreatureDefinition<*>.baseAngel() {
         letter = 'A'
         corpsePoisonousness = constant(0)
         color = Color.WHITE
         canUseDoors = true
     }
 
-    val angel = monster("angel", level = 30) {
+    val angel = monster("angel") {
         baseAngel()
+        level = 30
         hitPoints = 250..350
         naturalWeapon = hit(5, 6..16)
         killExperience = 310
@@ -125,8 +133,9 @@ object Creatures : Definitions() {
         weight = 45000
     }
 
-    val archangel = monster("archangel", level = 60) {
+    val archangel = monster("archangel") {
         baseAngel()
+        level = 60
         hitPoints = 650..850
         naturalWeapon = hit(8, 10..25)
         killExperience = 860
@@ -138,13 +147,14 @@ object Creatures : Definitions() {
 
 
     // (b) Bats
-    private fun CreatureDefinition<Monster>.bat() {
+    private fun CreatureDefinition<*>.bat() {
         letter = 'b'
         corpsePoisonousness = constant(1)
     }
 
-    val giantBat = monster("giant bat", level = 1) {
+    val giantBat = monster("giant bat") {
         bat()
+        level = 1
         naturalWeapon = hit(0, 1..3)
         hitPoints = 2..5
         color = Color.BROWN
@@ -155,8 +165,9 @@ object Creatures : Definitions() {
         weight = 2300
     }
 
-    val giantWhiteBat = monster("giant white bat", level = 3) {
+    val giantWhiteBat = monster("giant white bat") {
         bat()
+        level = 3
         naturalWeapon = hit(1, 2..4)
         hitPoints = 3..7
         color = Color.WHITE
@@ -167,8 +178,9 @@ object Creatures : Definitions() {
         weight = 2500
     }
 
-    val giantBlackBat = monster("giant black bat", level = 5) {
+    val giantBlackBat = monster("giant black bat") {
         bat()
+        level = 5
         swarmSize = 2..4
         naturalWeapon = hit(0, 2..6)
         hitPoints = 5..9
@@ -180,8 +192,9 @@ object Creatures : Definitions() {
         weight = 2600
     }
 
-    val giantGreenBat = monster("giant green bat", level = 8) {
+    val giantGreenBat = monster("giant green bat") {
         bat()
+        level = 8
         naturalWeapon = hit(1, 3..7)
         swarmSize = 3..5
         hitPoints = 8..13
@@ -194,8 +207,9 @@ object Creatures : Definitions() {
     }
 
     // "No, a Siamese bat. They're more dangerous."
-    val siameseBat = monster("siamese bat", level = 8) {
+    val siameseBat = monster("siamese bat") {
         bat()
+        level = 8
         swarmSize = 3..5
         naturalWeapon = hit(1, 3..8)
         hitPoints = 9..15
@@ -209,13 +223,14 @@ object Creatures : Definitions() {
 
     // (B) Birds
 
-    private fun CreatureDefinition<Monster>.bird() {
+    private fun CreatureDefinition<*>.bird() {
         letter = 'B'
         corpsePoisonousness = constant(0)
     }
 
-    val headlessChicken = monster("headless chicken", level = 1) {
+    val headlessChicken = monster("headless chicken") {
         bird()
+        level = 1
         probability = 20
         naturalWeapon = hit(0, 1..2)
         hitPoints = 1..1
@@ -227,8 +242,9 @@ object Creatures : Definitions() {
         weight = 1700
     }
 
-    val europeanSwallow = monster("european swallow", level = 1) {
+    val europeanSwallow = monster("european swallow") {
         bird()
+        level = 1
         naturalWeapon = hit(0, 1..2)
         hitPoints = 1..3
         color = Color.BLACK
@@ -239,8 +255,9 @@ object Creatures : Definitions() {
         weight = 100
     }
 
-    val africanSwallow = monster("african swallow", level = 2) {
+    val africanSwallow = monster("african swallow") {
         bird()
+        level = 2
         probability = 60
         naturalWeapon = hit(0, 1..3)
         hitPoints = 2..4
@@ -252,8 +269,9 @@ object Creatures : Definitions() {
         weight = 200
     }
 
-    val crow = monster("crow", level = 4) {
+    val crow = monster("crow") {
         bird()
+        level = 4
         swarmSize = 1..6
         naturalWeapon = hit(0, 2..4)
         hitPoints = 3..7
@@ -267,13 +285,14 @@ object Creatures : Definitions() {
 
     // (c) Centipedes
 
-    private fun CreatureDefinition<Monster>.centipede() {
+    private fun CreatureDefinition<*>.centipede() {
         letter = 'c'
         corpsePoisonousness = constant(1)
     }
 
-    val giantWhiteCentipede = monster("giant white centipede", level = 1) {
+    val giantWhiteCentipede = monster("giant white centipede") {
         centipede()
+        level = 1
         naturalWeapon = hit(0, 1..4)
         hitPoints = 3..5
         color = Color.WHITE
@@ -284,8 +303,9 @@ object Creatures : Definitions() {
         weight = 800
     }
 
-    val giantYellowCentipede = monster("giant yellow centipede", level = 2) {
+    val giantYellowCentipede = monster("giant yellow centipede") {
         centipede()
+        level = 2
         naturalWeapon = hit(0, 2..4)
         hitPoints = 4..6
         color = Color.YELLOW
@@ -296,8 +316,9 @@ object Creatures : Definitions() {
         weight = 800
     }
 
-    val giantGreenCentipede = monster("giant green centipede", level = 4) {
+    val giantGreenCentipede = monster("giant green centipede") {
         centipede()
+        level = 4
         naturalWeapon = hit(1, 1..6)
         hitPoints = 6..10
         color = Color.GREEN
@@ -308,8 +329,9 @@ object Creatures : Definitions() {
         weight = 900
     }
 
-    val giantRedCentipede = monster("giant red centipede", level = 6) {
+    val giantRedCentipede = monster("giant red centipede") {
         centipede()
+        level = 6
         naturalWeapon = hit(0, 2..7)
         hitPoints = 9..14
         color = Color.RED
@@ -323,13 +345,14 @@ object Creatures : Definitions() {
     // (C) Canines
 
 
-    private fun CreatureDefinition<Monster>.canine() {
+    private fun CreatureDefinition<*>.canine() {
         letter = 'C'
         corpsePoisonousness = constant(1)
     }
 
-    val jackal = monster("jackal", level = 1) {
+    val jackal = monster("jackal") {
         canine()
+        level = 1
         swarmSize = 3..6
         naturalWeapon = hit(0, 1..3)
         hitPoints = 1..5
@@ -341,8 +364,9 @@ object Creatures : Definitions() {
         weight = 6000
     }
 
-    val wildDog = monster("wild dog", level = 2) {
+    val wildDog = monster("wild dog") {
         canine()
+        level = 2
         naturalWeapon = hit(0, 1..4)
         hitPoints = 3..5
         color = Color.BROWN
@@ -353,8 +377,9 @@ object Creatures : Definitions() {
         weight = 14000
     }
 
-    val wolf = monster("wolf", level = 11) {
+    val wolf = monster("wolf") {
         canine()
+        level = 11
         naturalWeapon = hit(2, 2..10)
         hitPoints = 23..35
         color = Color.DARK_GRAY
@@ -368,14 +393,15 @@ object Creatures : Definitions() {
 
     // (d) Young/Mature Dragons
 
-    private fun CreatureDefinition<Monster>.youngDragon() {
+    private fun CreatureDefinition<*>.youngDragon() {
         letter = 'd'
         canUseDoors = true
         corpsePoisonousness = constant(3)
     }
 
-    val youngRedDragon = monster("young red dragon", level = 10) {
+    val youngRedDragon = monster("young red dragon") {
         youngDragon()
+        level = 10
         naturalWeapon = hit(3, 3..13)
         hitPoints = 60..80
         color = Color.RED
@@ -386,8 +412,9 @@ object Creatures : Definitions() {
         weight = 120000
     }
 
-    val youngBlackDragon = monster("young black dragon", level = 13) {
+    val youngBlackDragon = monster("young black dragon") {
         youngDragon()
+        level = 13
         naturalWeapon = hit(3, 6..15)
         hitPoints = 70..90
         color = Color.BLACK
@@ -398,8 +425,9 @@ object Creatures : Definitions() {
         weight = 145000
     }
 
-    val matureRedDragon = monster("mature red dragon", level = 22) {
+    val matureRedDragon = monster("mature red dragon") {
         youngDragon()
+        level = 22
         naturalWeapon = hit(6, 6..20)
         hitPoints = 220..300
         color = Color.RED
@@ -410,8 +438,9 @@ object Creatures : Definitions() {
         weight = 420000
     }
 
-    val matureBlackDragon = monster("mature black dragon", level = 27) {
+    val matureBlackDragon = monster("mature black dragon") {
         youngDragon()
+        level = 27
         naturalWeapon = hit(6, 5..22)
         hitPoints = 270..390
         color = Color.BLACK
@@ -424,14 +453,15 @@ object Creatures : Definitions() {
 
     // (D) Ancient Dragons
 
-    private fun CreatureDefinition<Monster>.ancientDragon() {
+    private fun CreatureDefinition<*>.ancientDragon() {
         letter = 'D'
         canUseDoors = true
         corpsePoisonousness = constant(4)
     }
 
-    val ancientRedDragon = monster("ancient red dragon", level = 60) {
+    val ancientRedDragon = monster("ancient red dragon") {
         ancientDragon()
+        level = 60
         naturalWeapon = hit(12, 8..30)
         hitPoints = 600..800
         color = Color.RED
@@ -442,8 +472,9 @@ object Creatures : Definitions() {
         weight = 800000
     }
 
-    val ancientBlackDragon = monster("ancient black dragon", level = 65) {
+    val ancientBlackDragon = monster("ancient black dragon") {
         ancientDragon()
+        level = 65
         naturalWeapon = hit(12, 10..40)
         hitPoints = 700..850
         color = Color.BLACK
@@ -456,14 +487,15 @@ object Creatures : Definitions() {
 
     // (e) Floating Eyes
 
-    private fun CreatureDefinition<Monster>.eye() {
+    private fun CreatureDefinition<*>.eye() {
         letter = 'e'
         immobile = true
         corpsePoisonousness = constant(1)
     }
 
-    val floatingEye = monster("floating eye", level = 3) {
+    val floatingEye = monster("floating eye") {
         eye()
+        level = 3
         naturalWeapon = hit(0, 1..5)
         hitPoints = 8..14
         color = Color.YELLOW
@@ -476,15 +508,16 @@ object Creatures : Definitions() {
 
     // (E) Elementals
 
-    private fun CreatureDefinition<Monster>.elemental() {
+    private fun CreatureDefinition<*>.elemental() {
         letter = 'E'
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }
 
     val emmentalElemental =
-        creature("emmental elemental", level = 8, create = { EmmentalElemental("emmental elemental") }) {
+        creature("emmental elemental", ::EmmentalElemental) {
             elemental()
+            level = 8
             naturalWeapon = hit(4, 1..8)
             hitPoints = 70..140
             color = Color.YELLOW
@@ -496,8 +529,9 @@ object Creatures : Definitions() {
         }
 
     val fogElemental =
-        monster("fog elemental", level = 18) {
+        monster("fog elemental") {
             elemental()
+            level = 18
             naturalWeapon = hit(7, 3..5)
             hitPoints = 120..180
             color = Color.WHITE
@@ -509,8 +543,9 @@ object Creatures : Definitions() {
         }
 
     val brunostElemental =
-        creature("brunost elemental", level = 38, create = { EmmentalElemental("brunost elemental") }) {
+        creature("brunost elemental", ::EmmentalElemental) {
             elemental()
+            level = 38
             naturalWeapon = hit(10, 1..11)
             hitPoints = 270..340
             color = Color.YELLOW
@@ -523,13 +558,14 @@ object Creatures : Definitions() {
 
     // (f) Felines
 
-    private fun CreatureDefinition<Monster>.feline() {
+    private fun CreatureDefinition<*>.feline() {
         letter = 'f'
         corpsePoisonousness = constant(1)
     }
 
-    val crazyCat = monster("crazy cat", level = 1) {
+    val crazyCat = monster("crazy cat") {
         feline()
+        level = 1
         naturalWeapon = hit(0, 1..3)
         hitPoints = 1..4
         color = Color.BLACK
@@ -540,8 +576,9 @@ object Creatures : Definitions() {
         weight = 2200
     }
 
-    val lion = monster("lion", level = 12) {
+    val lion = monster("lion") {
         feline()
+        level = 12
         naturalWeapon = hit(0, 1..8)
         hitPoints = 21..45
         color = Color.YELLOWISH
@@ -556,14 +593,15 @@ object Creatures : Definitions() {
     // (F) Dragon Flies
     // (g) Golems
 
-    private fun CreatureDefinition<Monster>.golem() {
+    private fun CreatureDefinition<*>.golem() {
         letter = 'g'
         canUseDoors = true
         corpsePoisonousness = constant(3)
     }
 
-    val strawGolem = monster("straw golem", level = 5) {
+    val strawGolem = monster("straw golem") {
         golem()
+        level = 5
         naturalWeapon = hit(0, 2..6)
         hitPoints = 10..30
         color = Color.YELLOW
@@ -575,8 +613,9 @@ object Creatures : Definitions() {
         weight = 15000
     }
 
-    val clayGolem = monster("clay golem", level = 10) {
+    val clayGolem = monster("clay golem") {
         golem()
+        level = 10
         naturalWeapon = hit(0, 1..8)
         hitPoints = 30..80
         color = Color.BROWN
@@ -588,8 +627,9 @@ object Creatures : Definitions() {
         weight = 120000
     }
 
-    val ironGolem = monster("iron golem", level = 15) {
+    val ironGolem = monster("iron golem") {
         golem()
+        level = 15
         naturalWeapon = hit(5, 2..9)
         hitPoints = 100..150
         color = Color.GRAY
@@ -600,8 +640,9 @@ object Creatures : Definitions() {
         weight = 350000
     }
 
-    val steelGolem = monster("steel golem", level = 20) {
+    val steelGolem = monster("steel golem") {
         golem()
+        level = 20
         naturalWeapon = hit(9, 2..13)
         hitPoints = 150..220
         color = Color.CYAN
@@ -615,14 +656,15 @@ object Creatures : Definitions() {
 
     // (G) Ghosts
 
-    private fun CreatureDefinition<Monster>.baseGhost() {
+    private fun CreatureDefinition<*>.baseGhost() {
         letter = 'G'
         corporeal = false
         omniscient = true
     }
 
-    val spook = monster("spook", level = 7) {
+    val spook = monster("spook") {
         baseGhost()
+        level = 7
         naturalWeapon = hit(0, 1..6)
         hitPoints = 8..13
         color = Color.WHITE
@@ -633,8 +675,9 @@ object Creatures : Definitions() {
         weight = 0
     }
 
-    val ghost = monster("ghost", level = 13) {
+    val ghost = monster("ghost") {
         baseGhost()
+        level = 13
         naturalWeapon = hit(0, 2..9)
         hitPoints = 23..33
         color = Color.WHITEISH
@@ -644,8 +687,9 @@ object Creatures : Definitions() {
         weight = 0
     }
 
-    val banshee = monster("banshee", level = 19) {
+    val banshee = monster("banshee") {
         baseGhost()
+        level = 19
         naturalWeapon = hit(4, 4..6)
         hitPoints = 33..53
         color = Color.CYAN
@@ -656,8 +700,9 @@ object Creatures : Definitions() {
         weight = 0
     }
 
-    val bunshee = monster("bunshee", level = 23) {
+    val bunshee = monster("bunshee") {
         baseGhost()
+        level = 23
         probability = 30
         naturalWeapon = hit(5, 6..13)
         hitPoints = 53..73
@@ -673,20 +718,21 @@ object Creatures : Definitions() {
     // (h) Hobbits, Dwarves, Elves
     // (H) Hybrid Monsters
 
-    private fun CreatureDefinition<Monster>.hybrid() {
+    private fun CreatureDefinition<*>.hybrid() {
         letter = 'H'
         color = Color.RED
         corpsePoisonousness = constant(2)
     }
 
     // (i) Icky Things
-    private fun CreatureDefinition<Monster>.ickyThing() {
+    private fun CreatureDefinition<*>.ickyThing() {
         letter = 'i'
         corpsePoisonousness = constant(1)
     }
 
-    val whiteIckyThing = monster("white icky thing", level = 1) {
+    val whiteIckyThing = monster("white icky thing") {
         ickyThing()
+        level = 1
         naturalWeapon = hit(0, 1..3)
         hitPoints = 2..5
         color = Color.WHITE
@@ -697,8 +743,9 @@ object Creatures : Definitions() {
         weight = 21000
     }
     
-    val redIckyThing = monster("red icky thing", level = 8) {
+    val redIckyThing = monster("red icky thing") {
         ickyThing()
+        level = 8
         naturalWeapon = hit(2, 2..7)
         hitPoints = 21..35
         color = Color.RED
@@ -712,13 +759,14 @@ object Creatures : Definitions() {
 
     // (I) Insects
 
-    private fun CreatureDefinition<Monster>.insect() {
+    private fun CreatureDefinition<*>.insect() {
         letter = 'I'
         corpsePoisonousness = constant(1)
     }
 
-    val giantWasp = monster("giant wasp", level = 3) {
+    val giantWasp = monster("giant wasp") {
         insect()
+        level = 3
         swarmSize = 1..7
         naturalWeapon = hit(1, 1..4)
         hitPoints = 4..6
@@ -730,8 +778,9 @@ object Creatures : Definitions() {
         weight = 750
     }
 
-    val inarianMosquito = monster("inarian mosquito", level = 15) {
+    val inarianMosquito = monster("inarian mosquito") {
         insect()
+        level = 15
         swarmSize = 4..14
         naturalWeapon = hit(5, 3..5)
         hitPoints = 20..27
@@ -746,14 +795,15 @@ object Creatures : Definitions() {
 
     // (j) Jellies
 
-    private fun CreatureDefinition<Monster>.jelly() {
+    private fun CreatureDefinition<*>.jelly() {
         letter = 'j'
         immobile = true
         corpsePoisonousness = constant(0)
     }
 
-    val whiteJelly = monster("white jelly", level = 3) {
+    val whiteJelly = monster("white jelly") {
         jelly()
+        level = 3
         naturalWeapon = hit(-1, 2..5)
         hitPoints = 6..15
         color = Color.WHITE
@@ -764,8 +814,9 @@ object Creatures : Definitions() {
         weight = 7000
     }
 
-    val greenJelly = monster("green jelly", level = 8) {
+    val greenJelly = monster("green jelly") {
         jelly()
+        level = 8
         naturalWeapon = hit(-1, 3..6)
         hitPoints = 26..35
         color = Color.GREEN
@@ -779,13 +830,14 @@ object Creatures : Definitions() {
 
     // (J) Snakes
 
-    private fun CreatureDefinition<Monster>.baseSnake() {
+    private fun CreatureDefinition<*>.baseSnake() {
         letter = 'J'
         corpsePoisonousness = constant(3)
     }
 
-    val gardenSnake = monster("garden snake", level = 1) {
+    val gardenSnake = monster("garden snake") {
         baseSnake()
+        level = 1
         naturalWeapon = hit(-1, 1..4)
         hitPoints = 3..5
         color = Color.GREEN
@@ -796,8 +848,9 @@ object Creatures : Definitions() {
         weight = 400
     }
 
-    val rattlesnake = monster("rattlesnake", level = 10) {
+    val rattlesnake = monster("rattlesnake") {
         baseSnake()
+        level = 10
         naturalWeapon = hit(1, 3..8)
         hitPoints = 15..25
         color = Color.BROWNISH
@@ -808,8 +861,9 @@ object Creatures : Definitions() {
         weight = 1200
     }
 
-    val kingCobra = monster("king cobra", level = 18) {
+    val kingCobra = monster("king cobra") {
         baseSnake()
+        level = 18
         naturalWeapon = hit(4, 3..13)
         hitPoints = 45..65
         color = Color.BLACK
@@ -821,14 +875,15 @@ object Creatures : Definitions() {
     }
 
     // (k) Kobolds
-    private fun CreatureDefinition<Monster>.baseKobold() {
+    private fun CreatureDefinition<*>.baseKobold() {
         letter = 'k'
         canUseDoors = true
         corpsePoisonousness = constant(3)
     }
 
-    val kobold = monster("kobold", level = 3) {
+    val kobold = monster("kobold") {
         baseKobold()
+        level = 3
         swarmSize = 1..4
         naturalWeapon = hit(0, 1..4)
         hitPoints = 3..7
@@ -840,8 +895,9 @@ object Creatures : Definitions() {
         weight = 35000
     }
 
-    val largeKobold = monster("large kobold", level = 14) {
+    val largeKobold = monster("large kobold") {
         baseKobold()
+        level = 14
         naturalWeapon = hit(4, 2..7)
         hitPoints = 40..65
         color = Color.BLUE
@@ -857,14 +913,15 @@ object Creatures : Definitions() {
     // (L) Liches
     // (m) Molds
 
-    private fun CreatureDefinition<Monster>.mold() {
+    private fun CreatureDefinition<*>.mold() {
         letter = 'm'
         immobile = true
         corpsePoisonousness = constant(3)
     }
 
-    val greenMold = monster("green mold", level = 2) {
+    val greenMold = monster("green mold") {
         mold()
+        level = 2
         naturalWeapon = hit(0, 1..4)
         hitPoints = 4..8
         color = Color.GREEN
@@ -875,8 +932,9 @@ object Creatures : Definitions() {
         weight = 4000
     }
 
-    val brownMold = monster("brown mold", level = 3) {
+    val brownMold = monster("brown mold") {
         mold()
+        level = 3
         naturalWeapon = hit(-1, 2..6)
         hitPoints = 5..9
         color = Color.BROWN
@@ -887,8 +945,9 @@ object Creatures : Definitions() {
         weight = 4500
     }
 
-    val blackMold = monster("black mold", level = 20) {
+    val blackMold = monster("black mold") {
         mold()
+        level = 20
         naturalWeapon = hit(6, 3..14)
         hitPoints = 70..100
         color = Color.BLACK
@@ -904,15 +963,16 @@ object Creatures : Definitions() {
     // (N) (NOT IN USE)
     // (o) Orcs
 
-    private fun CreatureDefinition<Monster>.baseOrc() {
+    private fun CreatureDefinition<*>.baseOrc() {
         letter = 'o'
         color = Color.DARK_GREEN
         canUseDoors = true
         corpsePoisonousness = constant(3)
     }
 
-    val orc = monster("orc", level = 8) {
+    val orc = monster("orc") {
         baseOrc()
+        level = 8
         swarmSize = 1..10
         naturalWeapon = hit(2, 1..7)
         hitPoints = 10..20
@@ -923,8 +983,9 @@ object Creatures : Definitions() {
         weight = 65000
     }
 
-    val largeOrc = monster("large orc", level = 14) {
+    val largeOrc = monster("large orc") {
         baseOrc()
+        level = 14
         swarmSize = 1..4
         naturalWeapon = hit(6, 3..10)
         hitPoints = 30..50
@@ -938,15 +999,16 @@ object Creatures : Definitions() {
 
     // (O) Ogres
 
-    private fun CreatureDefinition<Monster>.baseOgre() {
+    private fun CreatureDefinition<*>.baseOgre() {
         letter = 'O'
         color = Color.BROWN
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }
 
-    val ogre = monster("ogre", level = 25) {
+    val ogre = monster("ogre") {
         baseOgre()
+        level = 25
         swarmSize = 1..4
         naturalWeapon = hit(7, 1..10)
         hitPoints = 150..250
@@ -959,14 +1021,15 @@ object Creatures : Definitions() {
 
     // (p) Persons (humans)
 
-    private fun CreatureDefinition<Monster>.person() {
+    private fun CreatureDefinition<*>.person() {
         letter = 'p'
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }
 
-    val knightOfNi = creature("knight of ni", level = 8, create = ::KnightOfNi) {
+    val knightOfNi = creature("knight of ni", create = ::KnightOfNi) {
         person()
+        level = 8
         swarmSize = 1..5
         hitPoints = 20..30
         color = Color.BLACKISH
@@ -975,13 +1038,12 @@ object Creatures : Definitions() {
         armorClass = 10
         speed = 5
         weight = 75000
-        init {
-            wieldedWeapon = Weapons.scimitar.create()
-        }
+        wieldedWeapon = Weapons.scimitar
     }
 
-    val poorKnightOfQueenMargareta = monster("poor knight of Queen Margareta", level = 15) {
+    val poorKnightOfQueenMargareta = monster("poor knight of Queen Margareta") {
         person()
+        level = 15
         hitPoints = 70..120
         color = Color.RED
         luck = 0
@@ -989,24 +1051,22 @@ object Creatures : Definitions() {
         armorClass = 14
         speed = 6
         weight = 85000
-
-        init {
-            wieldedWeapon = Weapons.dagger.create()
-            inventory.add(Items.oldRags.create())
-        }
+        wieldedWeapon = Weapons.dagger
+        inventory += Items.oldRags
     }
 
     // (P) Giants
 
-    private fun CreatureDefinition<Monster>.giant() {
+    private fun CreatureDefinition<*>.giant() {
         letter = 'P'
         color = Color.BROWN
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }
 
-    val hillGiant = monster("hill giant", level = 31) {
+    val hillGiant = monster("hill giant") {
         giant()
+        level = 31
         naturalWeapon = hit(10, 2..9)
         hitPoints = 200..300
         luck = 0
@@ -1020,13 +1080,14 @@ object Creatures : Definitions() {
     // (Q) Quylthulgs
     // (r) Rodents
 
-    private fun CreatureDefinition<Monster>.rodent() {
+    private fun CreatureDefinition<*>.rodent() {
         letter = 'r'
         color = Color.BLACK
     }
 
-    val caveRat = monster("cave rat", level = 1) {
+    val caveRat = monster("cave rat") {
         rodent()
+        level = 1
         swarmSize = 1..8
         naturalWeapon = hit(0, 1..4)
         hitPoints = 1..3
@@ -1039,14 +1100,15 @@ object Creatures : Definitions() {
 
     // (R) Reptiles and Amphibians
 
-    private fun CreatureDefinition<Monster>.baseLizard() {
+    private fun CreatureDefinition<*>.baseLizard() {
         letter = 'R'
         color = Color.GREEN
         corpsePoisonousness = constant(0)
     }
 
-    val newt = monster("newt", level = 1) {
+    val newt = monster("newt") {
         baseLizard()
+        level = 1
         naturalWeapon = hit(-1, 1..3)
         hitPoints = 1..3
         color = Color.YELLOW
@@ -1057,8 +1119,9 @@ object Creatures : Definitions() {
         weight = 300
     }
 
-    val lizard = monster("lizard", level = 2) {
+    val lizard = monster("lizard") {
         baseLizard()
+        level = 2
         naturalWeapon = hit(0, 1..4)
         hitPoints = 2..4
         color = Color.GREEN
@@ -1069,8 +1132,9 @@ object Creatures : Definitions() {
         weight = 670
     }
 
-    val crocodile = monster("crocodile", level = 20) {
+    val crocodile = monster("crocodile") {
         baseLizard()
+        level = 20
         naturalWeapon = hit(7, 4..7)
         hitPoints = 50..80
         color = Color.DARK_GREEN
@@ -1081,8 +1145,9 @@ object Creatures : Definitions() {
         weight = 200000
     }
 
-    val crazyFrog = monster("crazy frog", level = 15) {
+    val crazyFrog = monster("crazy frog") {
         baseLizard()
+        level = 15
         naturalWeapon = hit(5, 2..7)
         hitPoints = 50..70
         color = Color.BLACK
@@ -1096,14 +1161,15 @@ object Creatures : Definitions() {
     // (s) Skeletons
     // (S) Spiders
 
-    private fun CreatureDefinition<Monster>.baseSpider() {
+    private fun CreatureDefinition<*>.baseSpider() {
         letter = 'S'
         color = Color.BLACK
         corpsePoisonousness = constant(2)
     }
 
-    val caveSpider = monster("cave spider", level = 1) {
+    val caveSpider = monster("cave spider") {
         baseSpider()
+        level = 1
         probability = 60
         naturalWeapon = hit(0, 1..4)
         hitPoints = 3..6
@@ -1114,8 +1180,9 @@ object Creatures : Definitions() {
         weight = 1300
     }
 
-    val veryPoisonousSpider = monster("very poisonous spider", level = 1) {
+    val veryPoisonousSpider = monster("very poisonous spider") {
         baseSpider()
+        level = 1
         probability = 10
         naturalWeapon = hit(1, 2..5)
         hitPoints = 3..6
@@ -1130,15 +1197,16 @@ object Creatures : Definitions() {
     // (t) Ticks
     // (T) Trolls
 
-    private fun CreatureDefinition<Monster>.baseTroll() {
+    private fun CreatureDefinition<*>.baseTroll() {
         letter = 'T'
         color = Color.DARK_GREEN
         canUseDoors = true
         corpsePoisonousness = constant(2)
     }
 
-    val troll = monster("troll", level = 15) {
+    val troll = monster("troll") {
         baseTroll()
+        level = 15
         naturalWeapon = hit(4, 3..12)
         hitPoints = 150..200
         luck = -2
@@ -1150,14 +1218,15 @@ object Creatures : Definitions() {
 
     // (u) Minor Demons
 
-    private fun CreatureDefinition<Monster>.minorDemon() {
+    private fun CreatureDefinition<*>.minorDemon() {
         letter = 'u'
         color = Color.RED
         corpsePoisonousness = constant(3)
     }
 
-    val imp = monster("imp", level = 15) {
+    val imp = monster("imp") {
         minorDemon()
+        level = 15
         naturalWeapon = hit(5, 1..7)
         hitPoints = 60..90
         luck = 2
@@ -1171,15 +1240,16 @@ object Creatures : Definitions() {
 
     // (U) Major Demons
 
-    private fun CreatureDefinition<Monster>.majorDemon() {
+    private fun CreatureDefinition<*>.majorDemon() {
         letter = 'U'
         color = Color.RED
         canUseDoors = true
         corpsePoisonousness = constant(5)
     }
 
-    val hornedDemon = monster("horned demon", level = 35) {
+    val hornedDemon = monster("horned demon") {
         majorDemon()
+        level = 35
         naturalWeapon = hit(12, 4..17)
         hitPoints = 260..330
         luck = 2
@@ -1194,15 +1264,16 @@ object Creatures : Definitions() {
     // (v) Vortexes
     // (V) Vampires
 
-    private fun CreatureDefinition<Monster>.baseVampire() {
+    private fun CreatureDefinition<*>.baseVampire() {
         letter = 'z'
         color = Color.BLACK
         canUseDoors = true
         corpsePoisonousness = constant(5)
     }
 
-    val vampire = monster("vampire", level = 25) {
+    val vampire = monster("vampire") {
         baseVampire()
+        level = 25
         naturalWeapon = hit(4, 3..10)
         hitPoints = 50..90
         luck = 2
@@ -1215,14 +1286,15 @@ object Creatures : Definitions() {
     // (w) Worms and Worm Masses
     // (W) Wraiths
 
-    private fun CreatureDefinition<Monster>.baseWraith() {
+    private fun CreatureDefinition<*>.baseWraith() {
         letter = 'W'
         color = Color.BLACK
         canUseDoors = true
     }
 
-    val bogWraith = creature("bog wraith", level = 20, create = { Wraith("bog wraith") }) {
+    val bogWraith = creature("bog wraith", ::Wraith) {
         baseWraith()
+        level = 20
         naturalWeapon = hit(2, 2..6)
         hitPoints = 40..60
         luck = 0
@@ -1232,8 +1304,9 @@ object Creatures : Definitions() {
         weight = 15000
     }
 
-    val forestWraith = creature("forest wraith", level = 25, create = { Wraith("bog wraith") }) {
+    val forestWraith = creature("forest wraith", ::Wraith) {
         baseWraith()
+        level = 25
         naturalWeapon = hit(4, 2..8)
         hitPoints = 60..90
         luck = 2
@@ -1250,14 +1323,15 @@ object Creatures : Definitions() {
     // (Y) Yetis
 
     // (z) Zombies
-    private fun CreatureDefinition<Monster>.baseZombie() {
+    private fun CreatureDefinition<*>.baseZombie() {
         letter = 'z'
         color = Color.BLACK
         corpsePoisonousness = constant(3)
     }
 
-    val koboldZombie = monster("kobold zombie", level = 8) {
+    val koboldZombie = monster("kobold zombie") {
         baseZombie()
+        level = 8
         naturalWeapon = hit(2, 1..6)
         hitPoints = 20..40
         luck = 0
@@ -1267,8 +1341,9 @@ object Creatures : Definitions() {
         weight = 55000
     }
 
-    val orcZombie = monster("orc zombie", level = 14) {
+    val orcZombie = monster("orc zombie") {
         baseZombie()
+        level = 14
         naturalWeapon = hit(3, 2..8)
         hitPoints = 35..55
         luck = 0
@@ -1279,8 +1354,9 @@ object Creatures : Definitions() {
         weight = 85000
     }
 
-    val trollZombie = monster("troll zombie", level = 20) {
+    val trollZombie = monster("troll zombie") {
         baseZombie()
+        level = 20
         naturalWeapon = hit(6, 4..10)
         hitPoints = 100..170
         luck = 1
@@ -1298,20 +1374,24 @@ object Creatures : Definitions() {
     // Special creatures
 
     // Special creatures
-    val blackKnight = creature("The Black Knight", ::BlackKnight, level = 30) {
+    val blackKnight = creature("The Black Knight", ::BlackKnight) {
+        level = 30
         probability = 0
     }
 
-    val bugsBunny = creature("Bugs Bunny", ::BugsBunny, level = 20) {
+    val bugsBunny = creature("Bugs Bunny", ::BugsBunny) {
+        level = 20
         probability = 0
     }
 
-    val oracle = creature("The Oracle", ::Oracle, level = 1000) {
+    val oracle = creature("The Oracle", ::Oracle) {
+        level = 1000
         probability = 0
     }
 
-    val surstromming = monster("the Surstromming", level = 50) {
+    val surstromming = monster("the Surstromming") {
         hybrid()
+        level = 50
         probability = 0
         naturalWeapon = hit(15, 6..20)
         hitPoints = 800..850
@@ -1325,8 +1405,9 @@ object Creatures : Definitions() {
         corpsePoisonousness = constant(10)
     }
 
-    val melog = monster("the Melog", level = 30) {
+    val melog = monster("the Melog") {
         golem()
+        level = 30
         probability = 0
         naturalWeapon = hit(8, 3..15)
         hitPoints = 550..550

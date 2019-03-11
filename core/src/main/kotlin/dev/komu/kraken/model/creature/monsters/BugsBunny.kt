@@ -10,7 +10,7 @@ import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.randomInt
 
-class BugsBunny: Monster("Bugs Bunny") {
+class BugsBunny(name: String): Monster(name) {
 
     init {
         level = 20
