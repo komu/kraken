@@ -3,6 +3,7 @@ package dev.komu.kraken.definitions
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
+import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.utils.exp.Expression
 
 abstract class Definitions {
@@ -10,27 +11,10 @@ abstract class Definitions {
     val itemDefinitions = mutableListOf<ItemDefinition<*>>()
     val creatureDefinitions = mutableListOf<CreatureDefinition<*>>()
 
-    fun <T : Item> item(
-        name: String,
-        level: Int? = null,
-        probability: Int? = null,
-        maximumInstances: Int? = null,
-        create: () -> T
-    ): ItemDefinition<T> {
-        val def = ItemDefinition(name, create)
-
-        if (level != null)
-            def.level = level
-
-        if (probability != null)
-            def.probability = probability
-
-        if (maximumInstances != null)
-            def.maximumInstances = maximumInstances
-
-        itemDefinitions.add(def)
-        return def
-    }
+    inline fun weapon(name: String, weaponClass: WeaponClass, init: WeaponDefinition.() -> Unit) =
+        WeaponDefinition(name, weaponClass).apply(init).also {
+            Weapons.itemDefinitions.add(it)
+        }
 
     inline fun <T : Item> item(name: String, noinline create: (String) -> T, init: ItemDefinition<T>.() -> Unit = {}): ItemDefinition<T> =
         ItemDefinition(name) { create(name) }.apply(init).also {

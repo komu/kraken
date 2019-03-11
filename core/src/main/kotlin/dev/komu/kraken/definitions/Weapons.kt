@@ -1,60 +1,74 @@
+@file:Suppress("unused")
 package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
-import dev.komu.kraken.model.item.weapon.*
+import dev.komu.kraken.model.item.weapon.WeaponClass
 
-@Suppress("unused")
 object Weapons : Definitions() {
 
     // Blades
 
-    private fun blade(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (Sword.() -> Unit)) =
-        item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
-            val s = Sword(name)
-            s.init()
-            s
+    private inline fun blade(name: String, init: WeaponDefinition.() -> Unit) =
+        weapon(name, WeaponClass.SWORD) {
+            letter = '†'
+            damage = exp("1d3")
+            letter = '۶'
+            color = Color.DARK_GRAY
+            init()
         }
 
-    val dagger = blade("a dagger", level=2) {
+    val dagger = blade("a dagger") {
+        level = 2
         weight = 100
     }
-
-    val knife = blade("a knife", level=1) {
+    
+    val knife = blade("a knife") {
+        level = 1
         damage = exp("1d2")
     }
 
-    val rapier = blade("a rapier", level=3) {
+    val rapier = blade("a rapier") {
+        level = 3
         toHit = exp("1")
         damage = exp("1d5")
         weight = 1100
     }
 
-    val shortSword = blade("a short sword", level=5) {
+    val shortSword = blade("a short sword") {
+        level = 5
         toHit = exp("1")
         damage = exp("1d6")
         weight = 1200
     }
 
-    val scimitar = blade("a scimitar", level=8, probability=80) {
+    val scimitar = blade("a scimitar") {
+        level = 8
+        probability = 80
         toHit = exp("2")
         damage = exp("1d6+1")
         weight = 2100
     }
 
-    val longSword = blade("a long sword", level=10, probability=60) {
+    val longSword = blade("a long sword") {
+        level = 10
+        probability = 60
         toHit = exp("2")
         damage = exp("1d6+2")
         weight = 2500
     }
 
-    val mithrilSword = blade("a mithril sword", level=20, probability=10) {
+    val mithrilSword = blade("a mithril sword") {
+        level = 20
+        probability = 10
         toHit = exp("5")
         damage = exp("2d8+4")
         weight = 1000
         color = Color.WHITE
     }
 
-    val twoHandedSword = blade("a two-handed sword", level=16, probability=50) {
+    val twoHandedSword = blade("a two-handed sword") {
+        level = 16
+        probability = 50
         toHit = exp("3")
         damage = exp("1d8+3")
         weight = 4200
@@ -62,174 +76,200 @@ object Weapons : Definitions() {
 
     // Axes
 
-    private fun axe(name: String, level: Int? = null, probability: Int? = null, init: (Sword.() -> Unit)) =
-            item(name, level=level, probability=probability) {
-                val s = Sword(name)
-                s.damage = exp("1d3")
-                s.letter = '۶'
-                s.color = Color.DARK_GRAY
-                s.init()
-                s
-            }
+    private inline fun axe(name: String, init: WeaponDefinition.() -> Unit) =
+        weapon(name, WeaponClass.AXE) {
+            damage = exp("1d3")
+            letter = '۶'
+            color = Color.DARK_GRAY
+            init()
+        }
 
-    val hatchet = axe("a hatchet", level=6) {
+    val hatchet = axe("a hatchet") {
+        level = 6
         toHit = exp("0")
         damage = exp("1d4+2")
         weight = 1800
     }
-    
-    val concreteAxe = axe("an axe", level=10, probability=80) {
+
+    val concreteAxe = axe("an axe") {
+        level = 10
+        probability = 80
         toHit = exp("1")
         damage = exp("1d6+2")
         weight = 2700
     }
-    
-    val battleAxe = axe("a battle axe", level=14, probability=60) {
+
+    val battleAxe = axe("a battle axe") {
+        level = 14
+        probability = 60
         toHit = exp("1")
         damage = exp("2d3+4")
         weight = 4500
     }
 
-    val twoHandedAxe = axe("a two-handed axe", level=18, probability=50) {
+    val twoHandedAxe = axe("a two-handed axe") {
+        level = 18
+        probability = 50
         toHit = exp("3")
         damage = exp("1d9+4")
         weight = 7200
     }
-    
+
     // Blunt weapons
 
-    private fun blunt(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (BluntWeapon.() -> Unit)) =
-        item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
-            val w = BluntWeapon(name)
-            w.damage = exp("1d3")
-            w.letter = '/'
-            w.color = Color.BROWN
-            w.init()
-            w
+    private inline fun blunt(name: String, init: WeaponDefinition.() -> Unit) =
+        weapon(name, WeaponClass.BLUNT) {
+            damage = exp("1d3")
+            letter = '/'
+            color = Color.BROWN
+            init()
         }
 
-    val club = blunt("a club", level=2) {
+    val club = blunt("a club") {
+        level = 2
         toHit = exp("0")
         damage = exp("1d5")
         weight = 2100
     }
-    
-    val mace = blunt("a mace", level=6) {
+
+    val mace = blunt("a mace") {
+        level = 6
         toHit = exp("1")
         damage = exp("1d5+2")
         weight = 2000
         color = Color.BLACK
     }
-    
-    val flail = blunt("a flail", level=9, probability=80) {
+
+    val flail = blunt("a flail") {
+        level = 9
+        probability = 80
         toHit = exp("2")
         damage = exp("1d7+2")
         weight = 3800
     }
-    
-    val warHammer = blunt("a war hammer", level=12, probability=60) {
+
+    val warHammer = blunt("a war hammer") {
+        level = 12
+        probability = 60
         toHit = exp("2")
         damage = exp("2d4+3")
         weight = 4000
         color = Color.GRAY
     }
-    
-    val spoon = blunt("spoon", level=1, probability=30) {
+
+    val spoon = blunt("spoon") {
+        level = 1
+        probability = 30
         toHit = exp("-1")
         damage = exp("1")
         weight = 20
     }
-    
+
     // Pointed weapons
 
-    private fun pointed(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (PointedWeapon.() -> Unit)) =
-            item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
-                val w = PointedWeapon(name)
-                w.letter = '\\'
-                w.color = Color.BROWN
-                w.init()
-                w
-            }
+    private inline fun pointed(name: String, init: WeaponDefinition.() -> Unit) =
+        weapon(name, WeaponClass.SPEAR) {
+            letter = '\\'
+            color = Color.BROWN
+            init()
+        }
 
-    val spear = pointed("a spear", level=5) {
+    val spear = pointed("a spear") {
+        level = 5
         toHit = exp("2")
         damage = exp("1d7")
         weight = 2700
     }
-    
-    val halberd = pointed("a halberd", level=15, probability=50) {
+
+    val halberd = pointed("a halberd") {
+        level = 15
+        probability = 50
         toHit = exp("2")
         damage = exp("2d6+3")
         weight = 3500
         color = Color.GRAY
     }
-    
+
     // Projectiles
 
-    private fun projectile(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (Projectile.() -> Unit)) =
-        item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
-            val w = Projectile(name)
-            w.damage = exp("1d3")
-            w.letter = '}'
-            w.color = Color.BROWN
-            w.init()
-            w
+    private inline fun projectile(name: String, init: WeaponDefinition.() -> Unit) =
+        weapon(name, WeaponClass.PROJECTILE) {
+            damage = exp("1d3")
+            letter = '}'
+            color = Color.BROWN
+            init()
         }
 
-    val javelin = projectile("a javelin", level=11, probability=50) {
+    val javelin = projectile("a javelin") {
+        level = 11
+        probability = 50
         toHit = exp("1")
         damage = exp("1d12+2")
         weight = 2700
     }
-    
-    val arrow = projectile("an arrow", level=1, probability=0) {
+
+    val arrow = projectile("an arrow") {
+        level = 1
+        probability = 0
         damage = exp("2d4")
         weight = 120
         color = Color.BROWNISH
     }
-    
-    val bolt = projectile("a bolt", level=1, probability=0) {
+
+    val bolt = projectile("a bolt") {
+        level = 1
+        probability = 0
         damage = exp("2d4+1randint(4, 9)")
         weight = 160
         color = Color.BROWNISH
     }
-    
-    val dart = projectile("a dart", level=1, probability=0) {
+
+    val dart = projectile("a dart") {
+        level = 1
+        probability = 0
         damage = exp("1d5")
         weight = 60
         color = Color.RED
     }
-    
+
     // Missile launchers
 
-    private fun launcher(name: String, level: Int? = null, probability: Int? = null, maximumInstances: Int? = null, init: (MissileLauncher.() -> Unit)) =
-        item(name, level=level, probability=probability, maximumInstances=maximumInstances) {
-            val w = MissileLauncher(name)
-            w.damage = exp("randint(1, 3)")
-            w.letter = '{'
-            w.color = Color.BROWN
-            w.init()
-            w
+    private inline fun launcher(name: String, init: WeaponDefinition.() -> Unit) =
+        weapon(name, WeaponClass.LAUNCHER) {
+            damage = exp("1d3")
+            letter = '{'
+            color = Color.BROWN
+            init()
         }
 
-    val shortBow = launcher("a short bow", level=6, probability=0) {
-         weight = 2000
+    val shortBow = launcher("a short bow") {
+        level = 6
+        probability = 0
+        weight = 2000
     }
-    
-    val lightCrossbow = launcher("a light crossbow", level=11, probability=0) {
+
+    val lightCrossbow = launcher("a light crossbow") {
+        level = 11
+        probability = 0
         weight = 4500
     }
-    
+
     // Unique weapons
-    
-    val blackSword = blade("the Black Sword", level=50, probability=0, maximumInstances=1) {
+
+    val blackSword = blade("the Black Sword") {
+        level = 50
+        probability = 0
+        maximumInstances = 1
         toHit = exp("5")
         damage = exp("4d5+5")
         weight = 3000
         color = Color.BLACK
     }
-    
-    val aluminiumPole = blunt("Aluminium Pole", level=50, probability=0, maximumInstances=1) {
+
+    val aluminiumPole = blunt("Aluminium Pole") {
+        level = 50
+        probability = 0
+        maximumInstances = 1
         toHit = exp("2")
         damage = exp("4d5+1")
         weight = 1000

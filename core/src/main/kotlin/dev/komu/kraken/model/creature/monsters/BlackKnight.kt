@@ -89,7 +89,7 @@ class BlackKnight : Monster("The Black Knight") {
 
     override val naturalAttack = bite
 
-    override fun takeDamage(points: Int, attacker: Creature) {
+    override fun takeDamage(points: Int, attacker: Creature, cause: String) {
         hasBeenFighting = true
         hitPoints = Math.max(1, hitPoints - points)
         if (fullyCrippled)
