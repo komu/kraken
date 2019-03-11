@@ -7,7 +7,7 @@ import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomInt
 
-class CreatureDefinition<out T : Creature>(val name: String, val createCreature: (String) -> T) :
+class CreatureDefinition<out T : Creature>(val name: String, private val createCreature: (String) -> T) :
     ObjectDefinition<T>() {
 
     override var level = 1
