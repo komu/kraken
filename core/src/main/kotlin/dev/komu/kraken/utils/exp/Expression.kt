@@ -1,84 +1,51 @@
 package dev.komu.kraken.utils.exp
 
+import dev.komu.kraken.utils.randomInt
 import dev.komu.kraken.utils.rollDie
-import java.util.Collections.emptyMap
 
 sealed class Expression {
 
-    abstract fun evaluate(env: Map<String, Int> = emptyMap()): Int
+    abstract fun evaluate(): Int
 
-    class Apply(private val function: String, private val args: List<Expression>): Expression() {
+    operator fun plus(value: Int): Expression =
+        Plus(this, constant(value))
 
-        override fun evaluate(env: Map<String, Int>): Int {
-            val func = Functions.findFunction(function, args.size) ?: throw EvaluationException("No such function: $function/${args.size}")
-            return func(args.map { it.evaluate(env) })
-        }
+    class RandomInt(private val range: ClosedRange<Int>) : Expression() {
+
+        override fun evaluate(): Int =
+            randomInt(range)
 
         override fun toString() =
-            function + args.joinToString(", ", "(", ")")
+            "randomInt($range)"
     }
 
-    class Binary(private val op: BinOp, private val lhs: Expression, private val rhs: Expression): Expression() {
+    class Plus(private val lhs: Expression, private val rhs: Expression) :
+        Expression() {
 
-        override fun evaluate(env: Map<String, Int>) =
-            op.evaluate(lhs.evaluate(env), rhs.evaluate(env))
-
-        override fun toString() = "($lhs $op $rhs)"
+        override fun evaluate() = lhs.evaluate() + rhs.evaluate()
     }
 
-    class Constant(private val value: Int): Expression() {
+    class Constant(private val value: Int) : Expression() {
 
-        override fun evaluate(env: Map<String, Int>) = value
+        override fun evaluate() = value
 
         override fun toString() = value.toString()
     }
 
-    class Die(private val multiplier: Int, private val sides: Int): Expression() {
+    class Die(private val multiplier: Int, private val sides: Int) : Expression() {
 
-        override fun evaluate(env: Map<String, Int>) =
+        override fun evaluate() =
             rollDie(sides, multiplier)
 
         override fun toString() = "${multiplier}d$sides"
     }
 
-    class Variable(private val name: String): Expression() {
-
-        override fun evaluate(env: Map<String, Int>): Int =
-            env[name] ?: throw EvaluationException("Unbound variable <$name>")
-
-        override fun toString() = name
-    }
-
     companion object {
 
-        fun evaluate(exp: String, env: Map<String, Int> = emptyMap()): Int =
-            parse(exp).evaluate(env)
+        fun constant(value: Int): Expression =
+            Constant(value)
 
-        fun parse(exp: String): Expression =
-            ExpressionParser(exp).parse()
+        fun random(range: ClosedRange<Int>): Expression =
+            RandomInt(range)
     }
 }
-
-enum class BinOp(private val op: String) {
-    ADD("+") {
-        override fun evaluate(lhs: Int, rhs: Int) = lhs + rhs
-    },
-    SUB("-") {
-        override fun evaluate(lhs: Int, rhs: Int) = lhs - rhs
-    },
-    MUL("*") {
-        override fun evaluate(lhs: Int, rhs: Int) = lhs * rhs
-    },
-    DIV("/") {
-        override fun evaluate(lhs: Int, rhs: Int) = lhs / rhs
-    },
-    MOD("%") {
-        override fun evaluate(lhs: Int, rhs: Int) = lhs % rhs
-    };
-
-    abstract fun evaluate(lhs: Int, rhs: Int): Int
-
-    override fun toString() = op
-}
-
-class EvaluationException(message: String): RuntimeException(message)

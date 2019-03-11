@@ -8,6 +8,7 @@ import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.creature.PetState
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.Probability
+import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomItem
 
 class Doris(name: String): Monster(name) {
@@ -15,7 +16,7 @@ class Doris(name: String): Monster(name) {
     init {
         weight = 10
         letter = 'f'
-        naturalWeapon = NaturalWeapon("bite", 1, "randint(3, 7)")
+        naturalWeapon = NaturalWeapon("bite", 1, Expression.random(3..7))
         state = PetState
     }
 

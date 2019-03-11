@@ -3,6 +3,7 @@ package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.weapon.WeaponClass
+import dev.komu.kraken.utils.exp.*
 
 object Weapons : Definitions() {
 
@@ -11,7 +12,7 @@ object Weapons : Definitions() {
     private inline fun blade(name: String, init: WeaponDefinition.() -> Unit) =
         weapon(name, WeaponClass.SWORD) {
             letter = '†'
-            damage = exp("1d3")
+            damage = 1 * d3
             letter = '۶'
             color = Color.DARK_GRAY
             init()
@@ -24,44 +25,44 @@ object Weapons : Definitions() {
     
     val knife = blade("a knife") {
         level = 1
-        damage = exp("1d2")
+        damage = 1 * d2
     }
 
     val rapier = blade("a rapier") {
         level = 3
-        toHit = exp("1")
-        damage = exp("1d5")
+        toHit = 1
+        damage = 1 * d5
         weight = 1100
     }
 
     val shortSword = blade("a short sword") {
         level = 5
-        toHit = exp("1")
-        damage = exp("1d6")
+        toHit = 1
+        damage = 1 * d6
         weight = 1200
     }
 
     val scimitar = blade("a scimitar") {
         level = 8
         probability = 80
-        toHit = exp("2")
-        damage = exp("1d6+1")
+        toHit = 2
+        damage = d6 + 1
         weight = 2100
     }
 
     val longSword = blade("a long sword") {
         level = 10
         probability = 60
-        toHit = exp("2")
-        damage = exp("1d6+2")
+        toHit = 2
+        damage = d6 + 2
         weight = 2500
     }
 
     val mithrilSword = blade("a mithril sword") {
         level = 20
         probability = 10
-        toHit = exp("5")
-        damage = exp("2d8+4")
+        toHit = 5
+        damage = 2 * d8 + 4
         weight = 1000
         color = Color.WHITE
     }
@@ -69,8 +70,8 @@ object Weapons : Definitions() {
     val twoHandedSword = blade("a two-handed sword") {
         level = 16
         probability = 50
-        toHit = exp("3")
-        damage = exp("1d8+3")
+        toHit = 3
+        damage = d8 + 3
         weight = 4200
     }
 
@@ -78,7 +79,7 @@ object Weapons : Definitions() {
 
     private inline fun axe(name: String, init: WeaponDefinition.() -> Unit) =
         weapon(name, WeaponClass.AXE) {
-            damage = exp("1d3")
+            damage = 1 * d3
             letter = '۶'
             color = Color.DARK_GRAY
             init()
@@ -86,32 +87,32 @@ object Weapons : Definitions() {
 
     val hatchet = axe("a hatchet") {
         level = 6
-        toHit = exp("0")
-        damage = exp("1d4+2")
+        toHit = 0
+        damage = d4 + 2
         weight = 1800
     }
 
     val concreteAxe = axe("an axe") {
         level = 10
         probability = 80
-        toHit = exp("1")
-        damage = exp("1d6+2")
+        toHit = 1
+        damage = d6 + 2
         weight = 2700
     }
 
     val battleAxe = axe("a battle axe") {
         level = 14
         probability = 60
-        toHit = exp("1")
-        damage = exp("2d3+4")
+        toHit = 1
+        damage = 2 * d3 + 4
         weight = 4500
     }
 
     val twoHandedAxe = axe("a two-handed axe") {
         level = 18
         probability = 50
-        toHit = exp("3")
-        damage = exp("1d9+4")
+        toHit = 3
+        damage = d9 + 4
         weight = 7200
     }
 
@@ -119,7 +120,7 @@ object Weapons : Definitions() {
 
     private inline fun blunt(name: String, init: WeaponDefinition.() -> Unit) =
         weapon(name, WeaponClass.BLUNT) {
-            damage = exp("1d3")
+            damage = 1 * d3
             letter = '/'
             color = Color.BROWN
             init()
@@ -127,15 +128,14 @@ object Weapons : Definitions() {
 
     val club = blunt("a club") {
         level = 2
-        toHit = exp("0")
-        damage = exp("1d5")
+        damage = 1 * d5
         weight = 2100
     }
 
     val mace = blunt("a mace") {
         level = 6
-        toHit = exp("1")
-        damage = exp("1d5+2")
+        toHit = 1
+        damage = d5 + 2
         weight = 2000
         color = Color.BLACK
     }
@@ -143,16 +143,16 @@ object Weapons : Definitions() {
     val flail = blunt("a flail") {
         level = 9
         probability = 80
-        toHit = exp("2")
-        damage = exp("1d7+2")
+        toHit = 2
+        damage = d7 + 2
         weight = 3800
     }
 
     val warHammer = blunt("a war hammer") {
         level = 12
         probability = 60
-        toHit = exp("2")
-        damage = exp("2d4+3")
+        toHit = 2
+        damage = 2 * d4 + 3
         weight = 4000
         color = Color.GRAY
     }
@@ -160,8 +160,8 @@ object Weapons : Definitions() {
     val spoon = blunt("spoon") {
         level = 1
         probability = 30
-        toHit = exp("-1")
-        damage = exp("1")
+        toHit = -1
+        damage = constant(1)
         weight = 20
     }
 
@@ -176,16 +176,16 @@ object Weapons : Definitions() {
 
     val spear = pointed("a spear") {
         level = 5
-        toHit = exp("2")
-        damage = exp("1d7")
+        toHit = 2
+        damage = 1 * d7
         weight = 2700
     }
 
     val halberd = pointed("a halberd") {
         level = 15
         probability = 50
-        toHit = exp("2")
-        damage = exp("2d6+3")
+        toHit = 2
+        damage = 2 * d6 + 3
         weight = 3500
         color = Color.GRAY
     }
@@ -194,7 +194,7 @@ object Weapons : Definitions() {
 
     private inline fun projectile(name: String, init: WeaponDefinition.() -> Unit) =
         weapon(name, WeaponClass.PROJECTILE) {
-            damage = exp("1d3")
+            damage = 1 * d3
             letter = '}'
             color = Color.BROWN
             init()
@@ -203,15 +203,15 @@ object Weapons : Definitions() {
     val javelin = projectile("a javelin") {
         level = 11
         probability = 50
-        toHit = exp("1")
-        damage = exp("1d12+2")
+        toHit = 1
+        damage = d12 + 2
         weight = 2700
     }
 
     val arrow = projectile("an arrow") {
         level = 1
         probability = 0
-        damage = exp("2d4")
+        damage = 2 * d4
         weight = 120
         color = Color.BROWNISH
     }
@@ -219,7 +219,7 @@ object Weapons : Definitions() {
     val bolt = projectile("a bolt") {
         level = 1
         probability = 0
-        damage = exp("2d4+1randint(4, 9)")
+        damage = 2 * d4 + 1
         weight = 160
         color = Color.BROWNISH
     }
@@ -227,7 +227,7 @@ object Weapons : Definitions() {
     val dart = projectile("a dart") {
         level = 1
         probability = 0
-        damage = exp("1d5")
+        damage = 1 * d5
         weight = 60
         color = Color.RED
     }
@@ -236,7 +236,7 @@ object Weapons : Definitions() {
 
     private inline fun launcher(name: String, init: WeaponDefinition.() -> Unit) =
         weapon(name, WeaponClass.LAUNCHER) {
-            damage = exp("1d3")
+            damage = 1 * d3
             letter = '{'
             color = Color.BROWN
             init()
@@ -260,8 +260,8 @@ object Weapons : Definitions() {
         level = 50
         probability = 0
         maximumInstances = 1
-        toHit = exp("5")
-        damage = exp("4d5+5")
+        toHit = 5
+        damage = 4 * d5 + 5
         weight = 3000
         color = Color.BLACK
     }
@@ -270,8 +270,8 @@ object Weapons : Definitions() {
         level = 50
         probability = 0
         maximumInstances = 1
-        toHit = exp("2")
-        damage = exp("4d5+1")
+        toHit = 2
+        damage = 4 * d5 + 1
         weight = 1000
         color = Color.ALUMINIUM
     }

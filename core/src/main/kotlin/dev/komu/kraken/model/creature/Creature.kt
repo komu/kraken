@@ -64,7 +64,7 @@ abstract class Creature(var name: String): MessageTarget {
     abstract val speed: Int
     var weight = 50 * 1000
     var canUseDoors: Boolean = false
-    var corpsePoisonousness = Expression.parse("randint(1, 3)")
+    var corpsePoisonousness = Expression.random(1..3)
     var wieldedWeapon: Weapon? = null
     var strength = rollDie(10, 10)
     var charisma = rollDie(10, 10)

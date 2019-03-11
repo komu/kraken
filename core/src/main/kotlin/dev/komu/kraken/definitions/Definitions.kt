@@ -44,10 +44,7 @@ abstract class Definitions {
             creatureDefinitions += it
         }
 
-    fun exp(exp: String) = Expression.parse(exp)
-    fun random(exp: ClosedRange<Int>) =
-        Expression.Apply("randint", listOf(Expression.Constant(exp.start), Expression.Constant(exp.endInclusive)))
-
-    fun constant(value: Int) = Expression.Constant(value)
+    fun random(exp: ClosedRange<Int>) = Expression.random(exp)
+    fun constant(value: Int) = Expression.constant(value)
     fun hit(toHit: Int, exp: ClosedRange<Int>) = NaturalWeapon("hit", toHit, random(exp))
 }

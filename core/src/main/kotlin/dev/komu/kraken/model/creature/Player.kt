@@ -14,6 +14,7 @@ import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.CellSet
 import dev.komu.kraken.model.skill.Proficiency
 import dev.komu.kraken.model.skill.SkillSet
+import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomInt
 import dev.komu.kraken.utils.rollDie
 import kotlin.properties.Delegates
@@ -22,7 +23,7 @@ class Player(name: String): Creature(name) {
 
     var maximumHitPoints = 0
     var experience = 0
-    private val hit: Attack = NaturalWeapon("hit", 0, "randint(1, 3)")
+    private val hit: Attack = NaturalWeapon("hit", 0, Expression.random(1..3))
     val skills = SkillSet()
     var visibleCells: CellSet by Delegates.notNull()
     var hunger = 2000

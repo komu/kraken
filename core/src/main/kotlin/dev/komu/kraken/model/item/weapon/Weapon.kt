@@ -10,9 +10,9 @@ class Weapon(name: String, override val weaponClass: WeaponClass): Equipable(nam
 
     override var attackVerb = "hit"
 
-    var toHit: Expression = Expression.Constant(0)
+    var toHit = 0
 
-    var damage = Expression.parse("randint(1, 3)")
+    var damage = Expression.random(1..3)
 
     init {
         letter = '/'
@@ -22,7 +22,7 @@ class Weapon(name: String, override val weaponClass: WeaponClass): Equipable(nam
     override val description: String
         get() = "(h: $toHit, d: $damage); ${super.description}"
 
-    override fun getToHit(target: Creature) = toHit.evaluate()
+    override fun getToHit(target: Creature) = toHit
 
     override fun getDamage(target: Creature) = damage.evaluate()
 

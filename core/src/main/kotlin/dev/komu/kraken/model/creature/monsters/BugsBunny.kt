@@ -8,6 +8,7 @@ import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
+import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomInt
 
 class BugsBunny(name: String): Monster(name) {
@@ -18,7 +19,7 @@ class BugsBunny(name: String): Monster(name) {
         letter = 'r'
         color = Color.WHITE
         luck = 2
-        naturalWeapon = NaturalWeapon("hit", 10, "randint(4,10)")
+        naturalWeapon = NaturalWeapon("hit", 10, Expression.random(4..10))
         killExperience = 450
         armorClass = 0
         speed = 9

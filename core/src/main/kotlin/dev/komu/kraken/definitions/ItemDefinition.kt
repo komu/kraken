@@ -50,7 +50,7 @@ open class ItemDefinition<T : Item>(val name: String, private val createItem: (S
 
 class WeaponDefinition(name: String, weaponClass: WeaponClass) : ItemDefinition<Weapon>(name, { Weapon(it, weaponClass) }) {
 
-    var toHit: Expression? = null
+    var toHit: Int? = null
     var damage: Expression? = null
 
     override fun setProperties(obj: Weapon) {

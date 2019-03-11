@@ -9,7 +9,7 @@ import dev.komu.kraken.utils.randomElement
 
 class Oracle(name: String) : Creature(name) {
 
-    private val curse = NaturalWeapon("curse", 20, Expression.Constant(0))
+    private val curse = NaturalWeapon("curse", 20, Expression.constant(0))
 
     init {
         hitPoints = 10000
