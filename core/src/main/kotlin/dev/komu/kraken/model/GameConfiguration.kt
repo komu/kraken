@@ -1,5 +1,6 @@
 package dev.komu.kraken.model
 
+import dev.komu.kraken.model.creature.PetType
 import org.jetbrains.annotations.TestOnly
 
 class GameConfiguration(
@@ -8,13 +9,6 @@ class GameConfiguration(
 ){
 
     var wizardMode = false
-
-    enum class PetType(private val petName: String) {
-        DORIS("Doris"),
-        LASSIE("Lassie");
-
-        override fun toString() = petName
-    }
 
     companion object {
         @TestOnly

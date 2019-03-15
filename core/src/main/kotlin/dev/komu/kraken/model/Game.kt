@@ -4,15 +4,12 @@ import dev.komu.kraken.common.Direction
 import dev.komu.kraken.definitions.Creatures
 import dev.komu.kraken.definitions.Items
 import dev.komu.kraken.definitions.Weapons
-import dev.komu.kraken.model.GameConfiguration.PetType
 import dev.komu.kraken.model.actions.*
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.creature.PetState
 import dev.komu.kraken.model.creature.Player
-import dev.komu.kraken.model.creature.pets.Doris
-import dev.komu.kraken.model.creature.pets.Lassie
 import dev.komu.kraken.model.item.Equipable
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.ItemInfo
@@ -73,10 +70,7 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         player.inventory.add(Items.cyanideCapsule.create())
         enterRegion("start", "from up")
 
-        if (config.pet == PetType.DORIS)
-            putPetNextToPlayer(Doris("Doris"))
-        else if (config.pet == PetType.LASSIE)
-            putPetNextToPlayer(Lassie("Lassie"))
+        putPetNextToPlayer(config.pet.instantiate())
 
         currentRegion.updateLighting()
         player.updateVisiblePoints()

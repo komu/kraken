@@ -3,14 +3,11 @@
 package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
-import dev.komu.kraken.model.creature.Monster
-import dev.komu.kraken.model.creature.Oracle
-import dev.komu.kraken.model.creature.monsters.*
+import dev.komu.kraken.model.creature.*
+import dev.komu.kraken.model.item.weapon.NaturalWeapon
+import dev.komu.kraken.utils.exp.Expression
 
-object Creatures : Definitions() {
-
-    inline fun monster(name: String, init: CreatureDefinition<Monster>.() -> Unit) =
-        creature(name, { Monster(name) }, init)
+object Creatures : MonsterDefinitions() {
 
     // Note about probability: default is 100. Defining this attribute
     // with a value of 200 would thus mean that the creature is twice is likely
@@ -18,7 +15,7 @@ object Creatures : Definitions() {
 
     // (a) Ants
 
-    private fun CreatureDefinition<*>.ant() {
+    private fun MonsterDefinition.ant() {
         letter = 'a'
         corpsePoisonousness = constant(2)
     }
@@ -114,7 +111,7 @@ object Creatures : Definitions() {
 
     // (A) Angelic Beings
 
-    private fun CreatureDefinition<*>.baseAngel() {
+    private fun MonsterDefinition.baseAngel() {
         letter = 'A'
         corpsePoisonousness = constant(0)
         color = Color.WHITE
@@ -147,7 +144,7 @@ object Creatures : Definitions() {
 
 
     // (b) Bats
-    private fun CreatureDefinition<*>.bat() {
+    private fun MonsterDefinition.bat() {
         letter = 'b'
         corpsePoisonousness = constant(1)
     }
@@ -223,7 +220,7 @@ object Creatures : Definitions() {
 
     // (B) Birds
 
-    private fun CreatureDefinition<*>.bird() {
+    private fun MonsterDefinition.bird() {
         letter = 'B'
         corpsePoisonousness = constant(0)
     }
@@ -285,7 +282,7 @@ object Creatures : Definitions() {
 
     // (c) Centipedes
 
-    private fun CreatureDefinition<*>.centipede() {
+    private fun MonsterDefinition.centipede() {
         letter = 'c'
         corpsePoisonousness = constant(1)
     }
@@ -345,7 +342,7 @@ object Creatures : Definitions() {
     // (C) Canines
 
 
-    private fun CreatureDefinition<*>.canine() {
+    private fun MonsterDefinition.canine() {
         letter = 'C'
         corpsePoisonousness = constant(1)
     }
@@ -393,7 +390,7 @@ object Creatures : Definitions() {
 
     // (d) Young/Mature Dragons
 
-    private fun CreatureDefinition<*>.youngDragon() {
+    private fun MonsterDefinition.youngDragon() {
         letter = 'd'
         canUseDoors = true
         corpsePoisonousness = constant(3)
@@ -453,7 +450,7 @@ object Creatures : Definitions() {
 
     // (D) Ancient Dragons
 
-    private fun CreatureDefinition<*>.ancientDragon() {
+    private fun MonsterDefinition.ancientDragon() {
         letter = 'D'
         canUseDoors = true
         corpsePoisonousness = constant(4)
@@ -487,7 +484,7 @@ object Creatures : Definitions() {
 
     // (e) Floating Eyes
 
-    private fun CreatureDefinition<*>.eye() {
+    private fun MonsterDefinition.eye() {
         letter = 'e'
         immobile = true
         corpsePoisonousness = constant(1)
@@ -508,57 +505,56 @@ object Creatures : Definitions() {
 
     // (E) Elementals
 
-    private fun CreatureDefinition<*>.elemental() {
+    private fun MonsterDefinition.elemental() {
         letter = 'E'
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }
 
-    val emmentalElemental =
-        creature("emmental elemental", ::EmmentalElemental) {
-            elemental()
-            level = 8
-            naturalWeapon = hit(4, 1..8)
-            hitPoints = 70..140
-            color = Color.YELLOW
-            luck = -2
-            killExperience = 16
-            armorClass = 14
-            speed = 3
-            weight = 200000
-        }
+    val emmentalElemental = monster("emmental elemental") {
+        elemental()
+        level = 8
+        naturalWeapon = hit(4, 1..8)
+        hitPoints = 70..140
+        color = Color.YELLOW
+        luck = -2
+        killExperience = 16
+        armorClass = 14
+        speed = 3
+        weight = 200000
+        drops = CheeseDrops
+    }
 
-    val fogElemental =
-        monster("fog elemental") {
-            elemental()
-            level = 18
-            naturalWeapon = hit(7, 3..5)
-            hitPoints = 120..180
-            color = Color.WHITE
-            luck = 0
-            killExperience = 125
-            armorClass = 7
-            speed = 5
-            weight = 200
-        }
+    val fogElemental = monster("fog elemental") {
+        elemental()
+        level = 18
+        naturalWeapon = hit(7, 3..5)
+        hitPoints = 120..180
+        color = Color.WHITE
+        luck = 0
+        killExperience = 125
+        armorClass = 7
+        speed = 5
+        weight = 200
+    }
 
-    val brunostElemental =
-        creature("brunost elemental", ::EmmentalElemental) {
-            elemental()
-            level = 38
-            naturalWeapon = hit(10, 1..11)
-            hitPoints = 270..340
-            color = Color.YELLOW
-            luck = -1
-            killExperience = 180
-            armorClass = 14
-            speed = 4
-            weight = 280000
-        }
+    val brunostElemental = monster("brunost elemental") {
+        elemental()
+        level = 38
+        naturalWeapon = hit(10, 1..11)
+        hitPoints = 270..340
+        color = Color.YELLOW
+        luck = -1
+        killExperience = 180
+        armorClass = 14
+        speed = 4
+        weight = 280000
+        drops = CheeseDrops
+    }
 
     // (f) Felines
 
-    private fun CreatureDefinition<*>.feline() {
+    private fun MonsterDefinition.feline() {
         letter = 'f'
         corpsePoisonousness = constant(1)
     }
@@ -593,7 +589,7 @@ object Creatures : Definitions() {
     // (F) Dragon Flies
     // (g) Golems
 
-    private fun CreatureDefinition<*>.golem() {
+    private fun MonsterDefinition.golem() {
         letter = 'g'
         canUseDoors = true
         corpsePoisonousness = constant(3)
@@ -656,7 +652,7 @@ object Creatures : Definitions() {
 
     // (G) Ghosts
 
-    private fun CreatureDefinition<*>.baseGhost() {
+    private fun MonsterDefinition.baseGhost() {
         letter = 'G'
         corporeal = false
         omniscient = true
@@ -718,14 +714,14 @@ object Creatures : Definitions() {
     // (h) Hobbits, Dwarves, Elves
     // (H) Hybrid Monsters
 
-    private fun CreatureDefinition<*>.hybrid() {
+    private fun MonsterDefinition.hybrid() {
         letter = 'H'
         color = Color.RED
         corpsePoisonousness = constant(2)
     }
 
     // (i) Icky Things
-    private fun CreatureDefinition<*>.ickyThing() {
+    private fun MonsterDefinition.ickyThing() {
         letter = 'i'
         corpsePoisonousness = constant(1)
     }
@@ -759,7 +755,7 @@ object Creatures : Definitions() {
 
     // (I) Insects
 
-    private fun CreatureDefinition<*>.insect() {
+    private fun MonsterDefinition.insect() {
         letter = 'I'
         corpsePoisonousness = constant(1)
     }
@@ -795,7 +791,7 @@ object Creatures : Definitions() {
 
     // (j) Jellies
 
-    private fun CreatureDefinition<*>.jelly() {
+    private fun MonsterDefinition.jelly() {
         letter = 'j'
         immobile = true
         corpsePoisonousness = constant(0)
@@ -830,7 +826,7 @@ object Creatures : Definitions() {
 
     // (J) Snakes
 
-    private fun CreatureDefinition<*>.baseSnake() {
+    private fun MonsterDefinition.baseSnake() {
         letter = 'J'
         corpsePoisonousness = constant(3)
     }
@@ -875,7 +871,7 @@ object Creatures : Definitions() {
     }
 
     // (k) Kobolds
-    private fun CreatureDefinition<*>.baseKobold() {
+    private fun MonsterDefinition.baseKobold() {
         letter = 'k'
         canUseDoors = true
         corpsePoisonousness = constant(3)
@@ -913,7 +909,7 @@ object Creatures : Definitions() {
     // (L) Liches
     // (m) Molds
 
-    private fun CreatureDefinition<*>.mold() {
+    private fun MonsterDefinition.mold() {
         letter = 'm'
         immobile = true
         corpsePoisonousness = constant(3)
@@ -963,7 +959,7 @@ object Creatures : Definitions() {
     // (N) (NOT IN USE)
     // (o) Orcs
 
-    private fun CreatureDefinition<*>.baseOrc() {
+    private fun MonsterDefinition.baseOrc() {
         letter = 'o'
         color = Color.DARK_GREEN
         canUseDoors = true
@@ -999,7 +995,7 @@ object Creatures : Definitions() {
 
     // (O) Ogres
 
-    private fun CreatureDefinition<*>.baseOgre() {
+    private fun MonsterDefinition.baseOgre() {
         letter = 'O'
         color = Color.BROWN
         canUseDoors = true
@@ -1021,14 +1017,15 @@ object Creatures : Definitions() {
 
     // (p) Persons (humans)
 
-    private fun CreatureDefinition<*>.person() {
+    private fun MonsterDefinition.person() {
         letter = 'p'
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }
 
-    val knightOfNi = creature("knight of ni", create = ::KnightOfNi) {
+    val knightOfNi = monster("knight of ni") {
         person()
+        state = { KnightOfNiMonsterState }
         level = 8
         swarmSize = 1..5
         hitPoints = 20..30
@@ -1057,7 +1054,7 @@ object Creatures : Definitions() {
 
     // (P) Giants
 
-    private fun CreatureDefinition<*>.giant() {
+    private fun MonsterDefinition.giant() {
         letter = 'P'
         color = Color.BROWN
         canUseDoors = true
@@ -1080,7 +1077,7 @@ object Creatures : Definitions() {
     // (Q) Quylthulgs
     // (r) Rodents
 
-    private fun CreatureDefinition<*>.rodent() {
+    private fun MonsterDefinition.rodent() {
         letter = 'r'
         color = Color.BLACK
     }
@@ -1100,7 +1097,7 @@ object Creatures : Definitions() {
 
     // (R) Reptiles and Amphibians
 
-    private fun CreatureDefinition<*>.baseLizard() {
+    private fun MonsterDefinition.baseLizard() {
         letter = 'R'
         color = Color.GREEN
         corpsePoisonousness = constant(0)
@@ -1161,7 +1158,7 @@ object Creatures : Definitions() {
     // (s) Skeletons
     // (S) Spiders
 
-    private fun CreatureDefinition<*>.baseSpider() {
+    private fun MonsterDefinition.baseSpider() {
         letter = 'S'
         color = Color.BLACK
         corpsePoisonousness = constant(2)
@@ -1197,7 +1194,7 @@ object Creatures : Definitions() {
     // (t) Ticks
     // (T) Trolls
 
-    private fun CreatureDefinition<*>.baseTroll() {
+    private fun MonsterDefinition.baseTroll() {
         letter = 'T'
         color = Color.DARK_GREEN
         canUseDoors = true
@@ -1218,7 +1215,7 @@ object Creatures : Definitions() {
 
     // (u) Minor Demons
 
-    private fun CreatureDefinition<*>.minorDemon() {
+    private fun MonsterDefinition.minorDemon() {
         letter = 'u'
         color = Color.RED
         corpsePoisonousness = constant(3)
@@ -1240,7 +1237,7 @@ object Creatures : Definitions() {
 
     // (U) Major Demons
 
-    private fun CreatureDefinition<*>.majorDemon() {
+    private fun MonsterDefinition.majorDemon() {
         letter = 'U'
         color = Color.RED
         canUseDoors = true
@@ -1264,7 +1261,7 @@ object Creatures : Definitions() {
     // (v) Vortexes
     // (V) Vampires
 
-    private fun CreatureDefinition<*>.baseVampire() {
+    private fun MonsterDefinition.baseVampire() {
         letter = 'z'
         color = Color.BLACK
         canUseDoors = true
@@ -1286,13 +1283,14 @@ object Creatures : Definitions() {
     // (w) Worms and Worm Masses
     // (W) Wraiths
 
-    private fun CreatureDefinition<*>.baseWraith() {
+    private fun MonsterDefinition.baseWraith() {
         letter = 'W'
         color = Color.BLACK
         canUseDoors = true
+        drops = WraithDrops
     }
 
-    val bogWraith = creature("bog wraith", ::Wraith) {
+    val bogWraith = monster("bog wraith") {
         baseWraith()
         level = 20
         naturalWeapon = hit(2, 2..6)
@@ -1304,7 +1302,7 @@ object Creatures : Definitions() {
         weight = 15000
     }
 
-    val forestWraith = creature("forest wraith", ::Wraith) {
+    val forestWraith = monster("forest wraith") {
         baseWraith()
         level = 25
         naturalWeapon = hit(4, 2..8)
@@ -1323,7 +1321,7 @@ object Creatures : Definitions() {
     // (Y) Yetis
 
     // (z) Zombies
-    private fun CreatureDefinition<*>.baseZombie() {
+    private fun MonsterDefinition.baseZombie() {
         letter = 'z'
         color = Color.BLACK
         corpsePoisonousness = constant(3)
@@ -1374,19 +1372,49 @@ object Creatures : Definitions() {
     // Special creatures
 
     // Special creatures
-    val blackKnight = creature("The Black Knight", ::BlackKnight) {
+    val blackKnight = monster("The Black Knight") {
         level = 30
         probability = 0
+        letter = 'p'
+        color = Color.BLACK
+
+        hitPoints = 600..600
+        hitBonus = 20
+        weight = 80000
+        luck = 2
+        canUseDoors = true
+        killExperience = 4000
+        armorClass = -6
+        speed = 8
+        wieldedWeapon = Weapons.blackSword
+        naturalWeapon = NaturalWeapon("bite", 1, Expression.random(0..1))
+        state = ::BlackKnightState
     }
 
-    val bugsBunny = creature("Bugs Bunny", ::BugsBunny) {
+    val bugsBunny = monster("Bugs Bunny") {
         level = 20
         probability = 0
+        hitPoints = 100..200
+        letter = 'r'
+        color = Color.WHITE
+        luck = 2
+        naturalWeapon = NaturalWeapon("hit", 10, Expression.random(4..10))
+        killExperience = 450
+        armorClass = 0
+        speed = 9
+        weight = 4500
+        state = { BugsBunnyState }
     }
 
-    val oracle = creature("The Oracle", ::Oracle) {
+    val oracle = monster("The Oracle") {
         level = 1000
         probability = 0
+        hitPoints = 10000..10000
+        letter = '@'
+        color = Color.WHITE
+        speed = 500000
+        naturalWeapon = NaturalWeapon("curse", 20, Expression.constant(0))
+        state = { OracleState }
     }
 
     val surstromming = monster("the Surstromming") {

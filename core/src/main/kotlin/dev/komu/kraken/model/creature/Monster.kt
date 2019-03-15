@@ -4,11 +4,11 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.region.Cell
 
-open class Monster(name: String): Creature(name) {
+class Monster(name: String): Creature(name) {
 
     var lastKnownPlayerPosition: Cell? = null
 
-    var state: MonsterState = DefaultMonsterState
+    var state: MonsterState = DefaultMonsterState.INSTANCE
 
     override val isFriendly: Boolean
         get() = state.isFriendly
@@ -26,8 +26,16 @@ open class Monster(name: String): Creature(name) {
         return action
     }
 
+    override fun talk(target: Creature) {
+        state.talk(this, target)
+    }
+
     override fun onAttackedBy(attacker: Creature) {
         if (attacker.isPlayer && state.isFriendly)
-            state = DefaultMonsterState
+            state = DefaultMonsterState.INSTANCE
+    }
+
+    override fun didTakeDamage(points: Int, attacker: Creature) {
+        state.didTakeDamage(this, points, attacker)
     }
 }

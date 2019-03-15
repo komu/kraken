@@ -8,9 +8,7 @@ import dev.komu.kraken.model.actions.MoveAction
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.common.MessageTarget
-import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.armor.Armoring
-import dev.komu.kraken.model.item.food.Corpse
 import dev.komu.kraken.model.item.food.Taste
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.Weapon
@@ -40,6 +38,8 @@ abstract class Creature(var name: String): MessageTarget {
         get() = if (field == '\u0000') name[0] else field
 
     var color = Color.GRAY
+
+    var drops: Drops = CorpseDrops
 
     var maximumHitPoints = 1
     var hitPoints = 1
@@ -140,8 +140,10 @@ abstract class Creature(var name: String): MessageTarget {
     open fun onKilledCreature(target: Creature) {
     }
 
-    open fun takeDamage(points: Int, attacker: Creature, cause: String = attacker.name) {
+    fun takeDamage(points: Int, attacker: Creature, cause: String = attacker.name) {
         hitPoints = max(0, hitPoints - points)
+
+        didTakeDamage(points, attacker)
 
         if (!isAlive) {
             attacker.message("%s %s.", You(), verb("die"))
@@ -149,6 +151,9 @@ abstract class Creature(var name: String): MessageTarget {
                 message("%s %s.", You(), verb("die"))
             die(cause)
         }
+    }
+
+    protected open fun didTakeDamage(points: Int, attacker: Creature) {
     }
 
     open fun talk(target: Creature) {
@@ -166,41 +171,22 @@ abstract class Creature(var name: String): MessageTarget {
     open fun verb(verb: String): String =
         if (verb.endsWith("s")) "${verb}es" else "${verb}s"
 
-    open fun createCorpse(): Item? {
-        if (!corporeal)
-            return null
-
-        val corpse = Corpse("$name corpse")
-        corpse.weight = weight
-        corpse.color = color
-        corpse.level = level
-        corpse.poisonDamage = corpsePoisonousness
-        corpse.effectiveness = max((0.05 * weight).toInt(), 800)
-        corpse.taste = taste
-        return corpse
-    }
 
     open fun die(killer: String) {
         hitPoints = 0
-        cell.items.addAll(inventory.items)
-        inventory.items.clear()
+        cell.items += inventory.items
 
         val weapon = wieldedWeapon
-        if (weapon != null) {
-            cell.items.add(weapon)
-            wieldedWeapon = null
-        }
+        if (weapon != null)
+            cell.items += weapon
 
-        cell.items.addAll(armoring.removeAllArmors())
-
-        val corpse = createCorpse()
-        if (corpse != null)
-            cell.items.add(corpse)
+        cell.items += armoring
+        cell.items += drops.createDropsFor(this)
 
         removeFromGame()
     }
 
-    protected fun removeFromGame() {
+    fun removeFromGame() {
         cellOrNull = null
     }
 

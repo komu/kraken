@@ -12,7 +12,7 @@ import dev.komu.kraken.model.item.food.Food
 import dev.komu.kraken.model.item.food.WaferThinMint
 
 @Suppress("unused")
-object Items : Definitions() {
+object Items : ItemDefinitions() {
 
     // MISC ITEMS
 

@@ -9,13 +9,13 @@ class DefinitionsTest {
 
     @Test
     fun loadDefinitions() {
-        for (def in Weapons.itemDefinitions)
+        for (def in Weapons.items)
             def.create()
 
-        for (def in Items.itemDefinitions)
+        for (def in Items.items)
             def.create()
 
-        for (def in Creatures.creatureDefinitions)
+        for (def in Creatures.monsters)
             def.create()
     }
 }

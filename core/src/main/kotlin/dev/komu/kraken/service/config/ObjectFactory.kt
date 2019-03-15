@@ -5,20 +5,22 @@ import dev.komu.kraken.model.creature.Creature
 import java.util.*
 
 class ObjectFactory {
-    private val creatures = HashMap<String, CreatureDefinition<*>>()
+    private val creatures = HashMap<String, MonsterDefinition>()
     private val items = HashMap<String, ItemDefinition<*>>()
 
     val instantiableItems: Collection<ItemDefinition<*>>
         get() = items.values.filter { it.instantiable }
 
-    val instantiableCreatures: Collection<CreatureDefinition<*>>
+    val instantiableMonsters: Collection<MonsterDefinition>
         get() = creatures.values.filter { it.instantiable }
 
-    fun addDefinitions(definitions: Definitions) {
-        for (definition in definitions.itemDefinitions)
+    fun addDefinitions(definitions: ItemDefinitions) {
+        for (definition in definitions.items)
             items[definition.name] = definition
+    }
 
-        for (definition in definitions.creatureDefinitions)
+    fun addDefinitions(definitions: MonsterDefinitions) {
+        for (definition in definitions.monsters)
             creatures[definition.name] = definition
     }
 
@@ -32,7 +34,7 @@ class ObjectFactory {
         val minLevel = regionLevel / 6
         val maxLevel = (regionLevel + playerLevel) / 2
 
-        return instantiableCreatures.betweenLevels(minLevel, maxLevel).weightedRandom().createSwarm()
+        return instantiableMonsters.betweenLevels(minLevel, maxLevel).weightedRandom().createSwarm()
     }
 
     private fun getItemDefinition(name: String) =

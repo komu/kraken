@@ -4,7 +4,6 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.actions.RandomMoveAction
-import dev.komu.kraken.utils.Probability
 
 /**
  * Defines the AI for creatures.
@@ -16,6 +15,16 @@ interface MonsterState {
      */
     fun act(self: Monster, game: Game): Pair<Action?, MonsterState>
 
+    fun talk(self: Monster, target: Creature) {
+        target.say(self, "Hrmph.")
+    }
+
+    /**
+     * Called after monster has taken damage, but before checking if it has died.
+     */
+    fun didTakeDamage(self: Monster, points: Int, attacker: Creature) {
+    }
+
     /**
      * Are creatures in this state friendly towards player?
      */
@@ -23,30 +32,7 @@ interface MonsterState {
         get() = false
 }
 
-object PetState : MonsterState {
-    override fun act(self: Monster, game: Game): Pair<Action?, MonsterState> {
-        val player = game.player
-
-        val enemy = self.adjacentCreatures.find { !it.isFriendly }
-        val lastKnownPlayerPosition = self.lastKnownPlayerPosition
-        return when {
-            enemy != null ->
-                AttackAction(enemy, self)
-            self.isAdjacentToCreature(player) ->
-                RandomMoveAction(self)
-            self.seesCreature(player) && Probability.check(50) ->
-                RandomMoveAction(self)
-            lastKnownPlayerPosition != null ->
-                self.moveTowardsAction(lastKnownPlayerPosition)
-            else ->
-                RandomMoveAction(self)
-        } to this
-    }
-
-    override val isFriendly = true
-}
-
-object DefaultMonsterState : MonsterState {
+open class DefaultMonsterState : MonsterState {
 
     override fun act(self: Monster, game: Game): Pair<Action?, MonsterState> {
         val player = game.player
@@ -64,5 +50,9 @@ object DefaultMonsterState : MonsterState {
             else ->
                 RandomMoveAction(self)
         } to this
+    }
+
+    companion object {
+        val INSTANCE = DefaultMonsterState()
     }
 }

@@ -5,7 +5,7 @@ import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.utils.exp.*
 
-object Weapons : Definitions() {
+object Weapons : ItemDefinitions() {
 
     // Blades
 

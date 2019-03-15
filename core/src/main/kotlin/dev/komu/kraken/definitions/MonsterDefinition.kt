@@ -1,14 +1,14 @@
 package dev.komu.kraken.definitions
 
 import dev.komu.kraken.model.common.Color
-import dev.komu.kraken.model.creature.Creature
+import dev.komu.kraken.model.creature.Drops
 import dev.komu.kraken.model.creature.Monster
+import dev.komu.kraken.model.creature.MonsterState
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomInt
 
-class CreatureDefinition<out T : Creature>(val name: String, private val createCreature: (String) -> T) :
-    ObjectDefinition<T>() {
+class MonsterDefinition(val name: String) : ObjectDefinition<Monster>() {
 
     override var level = 1
     var letter: Char? = null
@@ -23,19 +23,22 @@ class CreatureDefinition<out T : Creature>(val name: String, private val createC
     var armorClass: Int? = null
     var speed: Int? = null
     var weight: Int? = null
+    var hitBonus: Int? = null
     var corporeal: Boolean? = null
     var omniscient: Boolean? = null
     var wieldedWeapon: WeaponDefinition? = null
     val inventory = mutableListOf<ItemDefinition<*>>()
+    var state: (() -> MonsterState)? = null
+    var drops: Drops? = null
 
     var swarmSize: ClosedRange<Int> = 1..1
 
     var instantiable = true
 
-    fun createSwarm(): Collection<T> =
+    fun createSwarm(): Collection<Monster> =
         List(randomInt(swarmSize)) { create() }
 
-    override fun create(): T = createCreature(name).also {
+    override fun create(): Monster = Monster(name).also {
         if (color != null)
             it.color = color!!
 
@@ -54,8 +57,11 @@ class CreatureDefinition<out T : Creature>(val name: String, private val createC
         if (letter != null)
             it.letter = letter!!
 
-        if (naturalWeapon != null && it is Monster)
+        if (naturalWeapon != null)
             it.naturalWeapon = naturalWeapon!!
+
+        if (state != null)
+            it.state = state!!()
 
         if (killExperience != null)
             it.killExperience = killExperience!!
@@ -63,10 +69,13 @@ class CreatureDefinition<out T : Creature>(val name: String, private val createC
         if (luck != null)
             it.luck = luck!!
 
+        if (hitBonus != null)
+            it.hitBonus = hitBonus!!
+
         if (armorClass != null)
             it.armorClass = armorClass!!
 
-        if (speed != null && it is Monster)
+        if (speed != null)
             it.baseSpeed = speed!!
 
         if (weight != null)
@@ -83,6 +92,9 @@ class CreatureDefinition<out T : Creature>(val name: String, private val createC
 
         if (wieldedWeapon != null)
             it.wieldedWeapon = wieldedWeapon!!.create()
+
+        if (drops != null)
+            it.drops = drops!!
 
         for (item in inventory)
             it.inventory.add(item.create())

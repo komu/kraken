@@ -6,7 +6,7 @@ import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
 import dev.komu.kraken.desktop.extensions.makeAction
 import dev.komu.kraken.model.GameConfiguration
-import dev.komu.kraken.model.GameConfiguration.PetType
+import dev.komu.kraken.model.creature.PetType
 import javax.swing.*
 
 class StartGameDialog(owner: JFrame) : JDialog() {
