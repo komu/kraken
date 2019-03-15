@@ -1,10 +1,8 @@
 package dev.komu.kraken.model
 
-import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Item
-import dev.komu.kraken.service.config.ObjectFactory
 import dev.komu.kraken.utils.relinquish
 import dev.komu.kraken.utils.yieldLock
 import java.util.concurrent.Executors

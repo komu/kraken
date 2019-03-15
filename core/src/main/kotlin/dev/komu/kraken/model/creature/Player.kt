@@ -12,7 +12,7 @@ import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.CellSet
 import dev.komu.kraken.model.skill.Proficiency
 import dev.komu.kraken.model.skill.SkillSet
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 import dev.komu.kraken.utils.randomInt
 import dev.komu.kraken.utils.rollDie
 import kotlin.properties.Delegates

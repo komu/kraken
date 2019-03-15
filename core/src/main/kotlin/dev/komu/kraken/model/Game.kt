@@ -1,6 +1,5 @@
 package dev.komu.kraken.model
 
-import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.actions.*
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.creature.Creature
@@ -11,7 +10,6 @@ import dev.komu.kraken.model.item.Food
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.ItemInfo
 import dev.komu.kraken.model.region.*
-import dev.komu.kraken.service.config.ObjectFactory
 import dev.komu.kraken.utils.MaximumCounter
 
 class Game(val config: GameConfiguration,

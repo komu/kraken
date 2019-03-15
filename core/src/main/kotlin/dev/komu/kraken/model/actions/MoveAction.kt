@@ -1,6 +1,6 @@
 package dev.komu.kraken.model.actions
 
-import dev.komu.kraken.common.Direction
+import dev.komu.kraken.model.Direction
 import dev.komu.kraken.model.creature.Creature
 
 class MoveAction(private val creature: Creature, private val towards: Direction) : Action {

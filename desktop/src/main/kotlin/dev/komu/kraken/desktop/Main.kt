@@ -1,10 +1,9 @@
 package dev.komu.kraken.desktop
 
-import dev.komu.kraken.common.Direction
-import dev.komu.kraken.common.Version
 import dev.komu.kraken.content.buildObjectFactory
 import dev.komu.kraken.content.preparePlayer
 import dev.komu.kraken.desktop.common.ErrorDialog
+import dev.komu.kraken.desktop.common.Version
 import dev.komu.kraken.desktop.console.ConsoleView
 import dev.komu.kraken.desktop.extensions.makeAction
 import dev.komu.kraken.desktop.extensions.set
@@ -13,6 +12,7 @@ import dev.komu.kraken.desktop.game.RegionView
 import dev.komu.kraken.desktop.game.StartGameDialog
 import dev.komu.kraken.desktop.game.StatisticsView
 import dev.komu.kraken.desktop.game.action.GameActionSet
+import dev.komu.kraken.model.Direction
 import dev.komu.kraken.model.GameFacade
 import dev.komu.kraken.utils.logger
 import java.awt.BorderLayout

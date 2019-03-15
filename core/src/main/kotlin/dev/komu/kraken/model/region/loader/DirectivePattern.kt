@@ -1,4 +1,4 @@
-package dev.komu.kraken.service.region
+package dev.komu.kraken.model.region.loader
 
 class DirectivePattern(pattern: String) {
 

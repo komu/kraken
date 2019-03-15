@@ -1,8 +1,8 @@
 package dev.komu.kraken.desktop.console
 
-import dev.komu.kraken.common.Direction
 import dev.komu.kraken.desktop.extensions.makeAction
 import dev.komu.kraken.desktop.extensions.set
+import dev.komu.kraken.model.Direction
 import java.awt.Frame
 import java.awt.GridLayout
 import java.awt.event.ActionEvent

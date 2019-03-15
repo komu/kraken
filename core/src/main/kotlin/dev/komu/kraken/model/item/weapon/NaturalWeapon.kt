@@ -2,7 +2,7 @@ package dev.komu.kraken.model.item.weapon
 
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.creature.Creature
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 
 class NaturalWeapon(private val verb: String, private val toHit: Int, private val damage: Expression): Attack {
 

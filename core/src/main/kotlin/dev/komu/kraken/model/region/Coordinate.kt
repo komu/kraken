@@ -1,6 +1,6 @@
 package dev.komu.kraken.model.region
 
-import dev.komu.kraken.common.Direction
+import dev.komu.kraken.model.Direction
 import dev.komu.kraken.utils.square
 import kotlin.math.abs
 import kotlin.math.sign

@@ -1,6 +1,6 @@
 package dev.komu.kraken.desktop.console
 
-import dev.komu.kraken.common.Direction
+import dev.komu.kraken.model.Direction
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.utils.collections.CircularBuffer

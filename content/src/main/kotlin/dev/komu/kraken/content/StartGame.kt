@@ -1,10 +1,10 @@
 package dev.komu.kraken.content
 
+import dev.komu.kraken.model.ObjectFactory
 import dev.komu.kraken.model.creature.Player
-import dev.komu.kraken.service.config.ObjectFactory
-import dev.komu.kraken.utils.isFestivus
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Month
 
 fun preparePlayer(player: Player) {
     player.wieldedWeapon = Weapons.dagger.create()
@@ -31,3 +31,6 @@ fun buildObjectFactory() =
         addDefinitions(Items)
         addDefinitions(Creatures)
     }
+
+private val LocalDate.isFestivus: Boolean
+    get() = month == Month.DECEMBER && dayOfMonth == 23

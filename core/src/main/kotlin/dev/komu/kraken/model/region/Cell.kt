@@ -1,6 +1,6 @@
 package dev.komu.kraken.model.region
 
-import dev.komu.kraken.common.Direction
+import dev.komu.kraken.model.Direction
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.Item
 import matchAllBetween

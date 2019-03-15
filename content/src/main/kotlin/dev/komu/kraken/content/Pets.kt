@@ -8,8 +8,8 @@ import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.creature.MonsterState
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
+import dev.komu.kraken.utils.Expression
 import dev.komu.kraken.utils.Probability
-import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.randomItem
 
 enum class PetType(private val petName: String) {

@@ -15,7 +15,7 @@ import dev.komu.kraken.model.item.weapon.Weapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.model.region.Region
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 import dev.komu.kraken.utils.rollDie
 import java.lang.Math.max
 

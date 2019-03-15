@@ -6,7 +6,7 @@ import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.definitions.MonsterDefinition
 import dev.komu.kraken.model.definitions.MonsterDefinitions
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 
 object Creatures : MonsterDefinitions() {
 

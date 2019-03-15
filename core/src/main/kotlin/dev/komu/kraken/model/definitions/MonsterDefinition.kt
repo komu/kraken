@@ -5,7 +5,7 @@ import dev.komu.kraken.model.creature.Drops
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.creature.MonsterState
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 import dev.komu.kraken.utils.randomInt
 
 class MonsterDefinition(val name: String) : ObjectDefinition<Monster>() {

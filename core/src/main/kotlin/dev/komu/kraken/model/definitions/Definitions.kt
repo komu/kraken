@@ -4,7 +4,7 @@ import dev.komu.kraken.model.item.Food
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 
 abstract class Definitions {
 

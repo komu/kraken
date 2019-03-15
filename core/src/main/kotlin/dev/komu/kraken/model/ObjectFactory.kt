@@ -1,4 +1,4 @@
-package dev.komu.kraken.service.config
+package dev.komu.kraken.model
 
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.definitions.*
@@ -38,8 +38,8 @@ class ObjectFactory {
     }
 
     private fun getItemDefinition(name: String) =
-        items[name] ?: throw ConfigurationException("No such item <$name>")
+        items[name] ?: error("No such item <$name>")
 
     private fun getCreatureDefinition(name: String) =
-        creatures[name] ?: throw ConfigurationException("No such creature <$name>")
+        creatures[name] ?: error("No such creature <$name>")
 }

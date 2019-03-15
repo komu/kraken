@@ -5,7 +5,7 @@ import dev.komu.kraken.model.definitions.ProbabilityDistribution
 import dev.komu.kraken.model.definitions.betweenLevels
 import dev.komu.kraken.model.region.generators.MazeRegionGenerator
 import dev.komu.kraken.model.region.generators.RoomFirstRegionGenerator
-import dev.komu.kraken.service.region.RegionLoader
+import dev.komu.kraken.model.region.loader.RegionLoader
 import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.randomInt
 import java.util.*

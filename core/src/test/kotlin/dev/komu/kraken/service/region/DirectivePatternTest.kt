@@ -1,5 +1,6 @@
 package dev.komu.kraken.service.region
 
+import dev.komu.kraken.model.region.loader.DirectivePattern
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

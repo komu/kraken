@@ -3,7 +3,7 @@ package dev.komu.kraken.utils
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock
 
-fun <T> Lock.relinquish(callback: () -> T): T =
+inline fun <T> Lock.relinquish(callback: () -> T): T =
     try {
         unlock()
         callback()

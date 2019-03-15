@@ -1,13 +1,13 @@
 package dev.komu.kraken.service.region.generators
 
-import dev.komu.kraken.common.Direction
+import dev.komu.kraken.model.Direction
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.GameConfiguration
+import dev.komu.kraken.model.ObjectFactory
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.region.World
 import dev.komu.kraken.model.region.generators.MazeRegionGenerator
-import dev.komu.kraken.service.config.ObjectFactory
 import org.junit.jupiter.api.RepeatedTest
 import kotlin.test.assertTrue
 

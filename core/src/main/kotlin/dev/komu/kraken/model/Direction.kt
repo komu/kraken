@@ -1,4 +1,4 @@
-package dev.komu.kraken.common
+package dev.komu.kraken.model
 
 import dev.komu.kraken.utils.randomElement
 

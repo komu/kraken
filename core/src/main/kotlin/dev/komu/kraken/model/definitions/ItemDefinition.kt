@@ -7,7 +7,7 @@ import dev.komu.kraken.model.item.armor.Armor
 import dev.komu.kraken.model.item.armor.BodyPart
 import dev.komu.kraken.model.item.weapon.Weapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
-import dev.komu.kraken.utils.exp.Expression
+import dev.komu.kraken.utils.Expression
 
 open class ItemDefinition<T : Item>(val name: String, private val createItem: (String) -> T) : ObjectDefinition<T>() {
 
