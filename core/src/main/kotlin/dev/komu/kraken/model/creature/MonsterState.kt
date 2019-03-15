@@ -6,8 +6,19 @@ import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.actions.RandomMoveAction
 import dev.komu.kraken.utils.Probability
 
+/**
+ * Defines the AI for creatures.
+ */
 interface MonsterState {
+
+    /**
+     * Evaluate what to do next. Return a pair of action to perform and the next state.
+     */
     fun act(self: Monster, game: Game): Pair<Action?, MonsterState>
+
+    /**
+     * Are creatures in this state friendly towards player?
+     */
     val isFriendly: Boolean
         get() = false
 }
