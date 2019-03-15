@@ -19,7 +19,6 @@ import kotlin.properties.Delegates
 
 class Player(name: String): Creature(name) {
 
-    var maximumHitPoints = 0
     var experience = 0
     val skills = SkillSet()
     var visibleCells: CellSet by Delegates.notNull()

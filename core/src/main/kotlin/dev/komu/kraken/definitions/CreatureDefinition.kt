@@ -39,8 +39,11 @@ class CreatureDefinition<out T : Creature>(val name: String, private val createC
         if (color != null)
             it.color = color!!
 
-        if (hitPoints != null)
-            it.hitPoints = randomInt(hitPoints!!)
+        if (hitPoints != null) {
+            val hp = randomInt(hitPoints!!)
+            it.maximumHitPoints = hp
+            it.hitPoints = hp
+        }
 
         if (canUseDoors != null)
             it.canUseDoors = canUseDoors!!

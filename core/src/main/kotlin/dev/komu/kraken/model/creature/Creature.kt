@@ -40,6 +40,8 @@ abstract class Creature(var name: String): MessageTarget {
         get() = if (field == '\u0000') name[0] else field
 
     var color = Color.GRAY
+
+    var maximumHitPoints = 1
     var hitPoints = 1
     abstract val isFriendly: Boolean
     var immobile = false
@@ -76,7 +78,7 @@ abstract class Creature(var name: String): MessageTarget {
             return carriedKilos / (strength * 2)
         }
 
-    val weightOfCarriedItems: Int
+    private val weightOfCarriedItems: Int
         get() = (wieldedWeapon?.weight ?: 0) + armoring.weight + inventory.weight
 
     open fun getProficiency(weaponClass: WeaponClass): Int = 0
