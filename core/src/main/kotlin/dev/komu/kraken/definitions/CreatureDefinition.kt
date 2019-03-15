@@ -64,7 +64,7 @@ class CreatureDefinition<out T : Creature>(val name: String, private val createC
             it.armorClass = armorClass!!
 
         if (speed != null && it is Monster)
-            it.speed = speed!!
+            it.baseSpeed = speed!!
 
         if (weight != null)
             it.weight = weight!!

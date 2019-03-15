@@ -1,7 +1,7 @@
 package dev.komu.kraken.model.item.armor
 
 import dev.komu.kraken.model.common.Color
-import dev.komu.kraken.model.creature.Player
+import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.Equipable
 
 open class Armor(name: String): Equipable(name) {
@@ -17,15 +17,15 @@ open class Armor(name: String): Equipable(name) {
     override val description: String
         get() = "ac: $armorBonus; ${super.description}"
 
-    override fun equip(player: Player): Boolean {
-        val oldArmor = player.replaceArmor(this)
-        player.inventory.remove(this)
+    override fun equip(creature: Creature): Boolean {
+        val oldArmor = creature.armoring.replaceArmor(this)
+        creature.inventory.remove(this)
         if (oldArmor != null) {
-            player.message("You were wearing %s.", oldArmor.title)
-            player.inventory.add(oldArmor)
+            creature.message("You were wearing %s.", oldArmor.title)
+            creature.inventory.add(oldArmor)
         }
 
-        player.message("You are now wearing %s.", title)
+        creature.message("You are now wearing %s.", title)
         return true
     }
 }

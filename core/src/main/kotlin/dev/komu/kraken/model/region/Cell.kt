@@ -160,7 +160,7 @@ class Cell(val region: Region, val coordinate: Coordinate, var state: CellState)
     }
 
     fun updateLighting() {
-        val totalLighting = lightPower + (creature?.lighting ?: 0) + items.sumBy { it.lighting }
+        val totalLighting = lightPower + (creature?.inventory?.lighting ?: 0) + items.sumBy { it.lighting }
         if (totalLighting > 0)
             for (cell in getVisibleCells(totalLighting / 10))
                 cell.lighting += max(totalLighting - 10 * distance(cell), 0)

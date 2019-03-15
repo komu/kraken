@@ -20,9 +20,6 @@ class Doris(name: String): Monster(name) {
         state = PetState
     }
 
-    override val isPet: Boolean
-        get() = true
-
     override fun talk(target: Creature) {
         val verb = randomItem("meows", "purrs")
         target.message("%s %s.", name, verb)

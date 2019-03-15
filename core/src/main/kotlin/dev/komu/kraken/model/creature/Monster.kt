@@ -1,21 +1,14 @@
 package dev.komu.kraken.model.creature
 
-import dev.komu.kraken.model.Energy
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
-import dev.komu.kraken.model.common.Attack
-import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.region.Cell
-import dev.komu.kraken.utils.exp.Expression
 
 open class Monster(name: String): Creature(name) {
 
     var lastKnownPlayerPosition: Cell? = null
 
     var state: MonsterState = DefaultMonsterState
-    var naturalWeapon: Attack = NaturalWeapon("hit", 0, Expression.random(1..3))
-
-    override var speed = Energy.NORMAL_SPEED
 
     override val isFriendly: Boolean
         get() = state.isFriendly
@@ -37,7 +30,4 @@ open class Monster(name: String): Creature(name) {
         if (attacker.isPlayer && state.isFriendly)
             state = DefaultMonsterState
     }
-
-    override val naturalAttack: Attack
-        get() = naturalWeapon
 }

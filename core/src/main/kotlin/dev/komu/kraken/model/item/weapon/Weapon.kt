@@ -2,7 +2,6 @@ package dev.komu.kraken.model.item.weapon
 
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.creature.Creature
-import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Equipable
 import dev.komu.kraken.utils.exp.Expression
 
@@ -26,16 +25,16 @@ class Weapon(name: String, override val weaponClass: WeaponClass): Equipable(nam
 
     override fun getDamage(target: Creature) = damage.evaluate()
 
-    override fun equip(player: Player): Boolean {
-        val oldWeapon = player.wieldedWeapon
-        player.wieldedWeapon = this
-        player.inventory.remove(this)
+    override fun equip(creature: Creature): Boolean {
+        val oldWeapon = creature.wieldedWeapon
+        creature.wieldedWeapon = this
+        creature.inventory.remove(this)
         if (oldWeapon != null) {
-            player.message("You were wielding %s.", oldWeapon.title)
-            player.inventory.add(oldWeapon)
+            creature.message("You were wielding %s.", oldWeapon.title)
+            creature.inventory.add(oldWeapon)
         }
 
-        player.message("You wield %s.", title)
+        creature.message("You wield %s.", title)
         return true
     }
 }

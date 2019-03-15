@@ -1,13 +1,11 @@
 package dev.komu.kraken.model.creature
 
-import dev.komu.kraken.model.Energy
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.Behavior
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.item.Item
-import dev.komu.kraken.model.item.armor.Armor
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.model.region.Cell
@@ -23,7 +21,6 @@ class Player(name: String): Creature(name) {
 
     var maximumHitPoints = 0
     var experience = 0
-    private val hit: Attack = NaturalWeapon("hit", 0, Expression.random(1..3))
     val skills = SkillSet()
     var visibleCells: CellSet by Delegates.notNull()
     var hunger = 2000
@@ -32,12 +29,6 @@ class Player(name: String): Creature(name) {
     var sight = 20
     var behavior: Behavior? = null
 
-    private val game: Game
-        get() = region.world.game
-
-    override val speed: Int
-        get() = (Energy.NORMAL_SPEED - weightPenalty).coerceAtLeast(Energy.MIN_SPEED)
-
     init {
         letter = '@'
         color = Color.BLUE
@@ -45,30 +36,8 @@ class Player(name: String): Creature(name) {
         hitPoints = maximumHitPoints
         canUseDoors = true
         skills.setWeaponProficiency(WeaponClass.SWORD, Proficiency.BASIC)
+        naturalWeapon = NaturalWeapon("hit", 0, Expression.random(1..3))
     }
-
-    fun getThrowRange(weight: Int): Int =
-        when {
-            weight < 1000  -> 30
-            weight < 2000  -> 20
-            weight < 3000  -> 15
-            weight < 5000  -> 10
-            weight < 10000 -> 8
-            weight < 15000 -> 5
-            weight < 20000 -> 3
-            weight < 25000 -> 2
-            weight < 50000 -> 1
-            else           -> 0
-        }
-
-    private val weightPenalty: Int
-        get() {
-            val carriedKilos = weightOfCarriedItems / 1000
-            return carriedKilos / (strength * 2)
-        }
-
-    fun replaceArmor(armor: Armor): Armor? =
-        armoring.replaceArmor(armor)
 
     val activatedItems: List<Item>
         get() {
@@ -102,7 +71,6 @@ class Player(name: String): Creature(name) {
     override fun getProficiency(weaponClass: WeaponClass) =
         skills.getWeaponProficiency(weaponClass).bonus
 
-    override val isPlayer = true
     override val isFriendly = true
 
     override fun onSuccessfulHit(target: Creature, weapon: Attack) {
@@ -205,9 +173,6 @@ class Player(name: String): Creature(name) {
         }
 
     override fun you() = "you"
-
-    override val naturalAttack: Attack
-        get() = hit
 
     override fun verb(verb: String) = verb
 

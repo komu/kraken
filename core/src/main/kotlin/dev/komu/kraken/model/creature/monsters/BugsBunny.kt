@@ -22,7 +22,7 @@ class BugsBunny(name: String): Monster(name) {
         naturalWeapon = NaturalWeapon("hit", 10, Expression.random(4..10))
         killExperience = 450
         armorClass = 0
-        speed = 9
+        baseSpeed = 9
         weight = 4500
     }
 

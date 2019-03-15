@@ -8,6 +8,8 @@ import dev.komu.kraken.model.GameConfiguration.PetType
 import dev.komu.kraken.model.actions.*
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.creature.Creature
+import dev.komu.kraken.model.creature.Monster
+import dev.komu.kraken.model.creature.PetState
 import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.creature.pets.Doris
 import dev.komu.kraken.model.creature.pets.Lassie
@@ -127,7 +129,10 @@ class Game(val config: GameConfiguration, private val console: Console, val list
 
             maximumDungeonLevel.update(region.level)
             if (oldCell != null) {
-                val pet = oldCell.adjacentCells.find { it.creature?.isPet == true }?.creature
+                // TODO: perhaps all adjacent creatures could come with player?
+                val pet = oldCell.adjacentCells
+                    .mapNotNull { it.creature as? Monster }
+                    .find { it.state is PetState }
                 if (pet != null)
                     putPetNextToPlayer(pet)
             }

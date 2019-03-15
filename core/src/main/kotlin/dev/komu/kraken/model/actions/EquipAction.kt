@@ -1,9 +1,9 @@
 package dev.komu.kraken.model.actions
 
-import dev.komu.kraken.model.creature.Player
+import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.item.Equipable
 
-class EquipAction(private val item: Equipable, private val player: Player) : Action {
+class EquipAction(private val item: Equipable, private val creature: Creature) : Action {
     override fun perform(): ActionResult =
-        if (item.equip(player)) ActionResult.Success else ActionResult.Failure
+        if (item.equip(creature)) ActionResult.Success else ActionResult.Failure
 }

@@ -17,9 +17,6 @@ class Lassie(name: String): Monster(name) {
         state = PetState
     }
 
-    override val isPet: Boolean
-        get() = true
-
     override fun talk(target: Creature) {
         target.message("$name barks.")
     }

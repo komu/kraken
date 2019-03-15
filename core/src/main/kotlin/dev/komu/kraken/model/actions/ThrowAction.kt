@@ -13,7 +13,7 @@ class ThrowAction(private val projectile: Item, private val direction: Direction
         player.inventory.remove(projectile)
         var currentCell = player.cell
         var nextCell = currentCell.getCellTowards(direction)
-        val range = player.getThrowRange(projectile.weight)
+        val range = getThrowRange(projectile.weight)
 
         var distance = 0
         while (distance < range && nextCell.isPassable) {
@@ -30,7 +30,6 @@ class ThrowAction(private val projectile: Item, private val direction: Direction
 
         return ActionResult.Success
     }
-
 
     private fun throwAttack(attacker: Creature, projectile: Item, target: Creature): Boolean {
         target.onAttackedBy(attacker)
@@ -49,5 +48,19 @@ class ThrowAction(private val projectile: Item, private val direction: Direction
             target.message("%s flies past %s.", projectile.title, target.name)
             false
         }
+    }
+
+    // TODO: take strength of thrower into account
+    private fun getThrowRange(weight: Int): Int = when {
+        weight < 1000  -> 30
+        weight < 2000  -> 20
+        weight < 3000  -> 15
+        weight < 5000  -> 10
+        weight < 10000 -> 8
+        weight < 15000 -> 5
+        weight < 20000 -> 3
+        weight < 25000 -> 2
+        weight < 50000 -> 1
+        else           -> 0
     }
 }

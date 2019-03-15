@@ -16,7 +16,6 @@ import dev.komu.kraken.utils.randomElement
 
 class BlackKnight(name: String) : Monster(name) {
 
-    private val bite = NaturalWeapon("bite", 1, Expression.random(0..1))
     private var hasBeenFighting = false
     private var maxHitPoints = 1
 
@@ -33,8 +32,9 @@ class BlackKnight(name: String) : Monster(name) {
         canUseDoors = true
         killExperience = 4000
         armorClass = -6
-        speed = 8
+        baseSpeed = 8
         wieldedWeapon = Weapons.blackSword.create()
+        naturalWeapon = NaturalWeapon("bite", 1, Expression.random(0..1))
     }
 
     override fun talk(target: Creature) {
@@ -88,15 +88,13 @@ class BlackKnight(name: String) : Monster(name) {
         }
     }
 
-    override val naturalAttack = bite
-
     override fun takeDamage(points: Int, attacker: Creature, cause: String) {
         hasBeenFighting = true
         hitPoints = Math.max(1, hitPoints - points)
         if (fullyCrippled)
             return
 
-        speed = (speed - 1).coerceAtLeast(Energy.MIN_SPEED)
+        baseSpeed = (baseSpeed - 1).coerceAtLeast(Energy.MIN_SPEED)
         if (fullyCrippled) {
             attacker.message("The Black Knight is crippled!")
             val weapon = wieldedWeapon

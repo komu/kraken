@@ -12,6 +12,7 @@ import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.armor.Armoring
 import dev.komu.kraken.model.item.food.Corpse
 import dev.komu.kraken.model.item.food.Taste
+import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.Weapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.model.region.Cell
@@ -24,25 +25,19 @@ abstract class Creature(var name: String): MessageTarget {
 
     var cellOrNull: Cell? = null
         set(cell) {
-            val oldValue = field
-            if (oldValue != null)
-                oldValue.creature = null
-
+            field?.creature = null
             field = cell
-
-            if (cell != null)
-                cell.creature = this
+            field?.creature = this
         }
 
+    var naturalWeapon: Attack = NaturalWeapon("hit", 0, Expression.random(1..3))
+
     var cell: Cell
-        get() = cellOrNull ?: throw NullPointerException("no current cell for $this")
+        get() = cellOrNull ?: error("no current cell for $this")
         set(cell) { cellOrNull = cell }
 
     var letter = '\u0000'
         get() = if (field == '\u0000') name[0] else field
-
-    open val isPet: Boolean
-        get() = false
 
     var color = Color.GRAY
     var hitPoints = 1
@@ -61,7 +56,7 @@ abstract class Creature(var name: String): MessageTarget {
 
     var luck: Int = 0
     val energy = Energy()
-    abstract val speed: Int
+    var baseSpeed = Energy.NORMAL_SPEED
     var weight = 50 * 1000
     var canUseDoors: Boolean = false
     var corpsePoisonousness = Expression.random(1..3)
@@ -72,16 +67,28 @@ abstract class Creature(var name: String): MessageTarget {
     val armoring = Armoring()
     val inventory = Inventory()
 
+    val speed: Int
+        get() = (baseSpeed - weightPenalty).coerceAtLeast(Energy.MIN_SPEED)
+
+    private val weightPenalty: Int
+        get() {
+            val carriedKilos = weightOfCarriedItems / 1000
+            return carriedKilos / (strength * 2)
+        }
+
     val weightOfCarriedItems: Int
         get() = (wieldedWeapon?.weight ?: 0) + armoring.weight + inventory.weight
 
     open fun getProficiency(weaponClass: WeaponClass): Int = 0
 
-    open val isPlayer: Boolean
-        get() = false
+    val isPlayer: Boolean
+        get() = this is Player
 
     val region: Region
         get() = cell.region
+
+    protected val game: Game
+        get() = region.world.game
 
     fun seesCreature(creature: Creature) =
         canSee(creature.cell)
@@ -147,9 +154,7 @@ abstract class Creature(var name: String): MessageTarget {
     }
 
     open val attack: Attack
-        get() = wieldedWeapon ?: naturalAttack
-
-    abstract val naturalAttack: Attack
+        get() = wieldedWeapon ?: naturalWeapon
 
     open fun you(): String = name
 
@@ -196,9 +201,6 @@ abstract class Creature(var name: String): MessageTarget {
     protected fun removeFromGame() {
         cellOrNull = null
     }
-
-    val lighting: Int
-        get() = inventory.lighting
 
     override fun message(pattern: String, vararg args: Any?) {
     }

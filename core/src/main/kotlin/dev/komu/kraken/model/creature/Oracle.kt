@@ -13,7 +13,7 @@ class Oracle(name: String) : Monster(name) {
         hitPoints = 10000
         letter = '@'
         color = Color.WHITE
-        speed = 500000
+        baseSpeed = 500000
         state = OracleState
         naturalWeapon = NaturalWeapon("curse", 20, Expression.constant(0))
     }
