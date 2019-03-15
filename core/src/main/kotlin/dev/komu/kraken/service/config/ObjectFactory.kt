@@ -1,7 +1,7 @@
 package dev.komu.kraken.service.config
 
-import dev.komu.kraken.definitions.*
 import dev.komu.kraken.model.creature.Creature
+import dev.komu.kraken.model.definitions.*
 import java.util.*
 
 class ObjectFactory {

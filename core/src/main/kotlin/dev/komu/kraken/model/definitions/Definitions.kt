@@ -1,7 +1,7 @@
-package dev.komu.kraken.definitions
+package dev.komu.kraken.model.definitions
 
+import dev.komu.kraken.model.item.Food
 import dev.komu.kraken.model.item.Item
-import dev.komu.kraken.model.item.food.Food
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.WeaponClass
 import dev.komu.kraken.utils.exp.Expression
@@ -24,12 +24,12 @@ abstract class ItemDefinitions : Definitions() {
 
     inline fun weapon(name: String, weaponClass: WeaponClass, init: WeaponDefinition.() -> Unit) =
         WeaponDefinition(name, weaponClass).apply(init).also {
-            Weapons.items.add(it)
+            items.add(it)
         }
 
     inline fun armor(name: String, init: ArmorDefinition.() -> Unit) =
         ArmorDefinition(name).apply(init).also {
-            Weapons.items.add(it)
+            items.add(it)
         }
 
     inline fun food(name: String, init: FoodDefinition<Food>.() -> Unit = {}): FoodDefinition<Food> =

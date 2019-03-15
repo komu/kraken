@@ -3,8 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(project(":content"))
     implementation("com.jgoodies:forms:1.2.1")
 
     testCompile("junit:junit:4.12")

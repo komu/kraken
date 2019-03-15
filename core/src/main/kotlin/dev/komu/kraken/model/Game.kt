@@ -1,27 +1,24 @@
 package dev.komu.kraken.model
 
 import dev.komu.kraken.common.Direction
-import dev.komu.kraken.definitions.Creatures
-import dev.komu.kraken.definitions.Items
-import dev.komu.kraken.definitions.Weapons
 import dev.komu.kraken.model.actions.*
 import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.creature.Creature
 import dev.komu.kraken.model.creature.Monster
-import dev.komu.kraken.model.creature.PetState
 import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Equipable
+import dev.komu.kraken.model.item.Food
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.ItemInfo
-import dev.komu.kraken.model.item.food.Food
 import dev.komu.kraken.model.region.*
 import dev.komu.kraken.service.config.ObjectFactory
 import dev.komu.kraken.utils.MaximumCounter
-import dev.komu.kraken.utils.isFestivus
-import java.time.DayOfWeek
-import java.time.LocalDate
 
-class Game(val config: GameConfiguration, private val console: Console, val listener: () -> Unit) : ReadOnlyGame {
+class Game(val config: GameConfiguration,
+           val objectFactory: ObjectFactory,
+           val preparePlayer: (Player) -> Unit,
+           private val console: Console,
+           val listener: () -> Unit) : ReadOnlyGame {
     val globalClock = Clock()
     private val regionClock = Clock()
     private val creatures = mutableListOf<Creature>()
@@ -29,12 +26,6 @@ class Game(val config: GameConfiguration, private val console: Console, val list
 
     val player = Player(config.name)
     private val world = World(this)
-
-    val objectFactory = ObjectFactory().apply {
-        addDefinitions(Weapons)
-        addDefinitions(Items)
-        addDefinitions(Creatures)
-    }
 
     private val maximumDungeonLevel = MaximumCounter(0)
     var over = false
@@ -65,30 +56,18 @@ class Game(val config: GameConfiguration, private val console: Console, val list
     }
 
     fun start() {
-        player.wieldedWeapon = Weapons.dagger.create()
-        player.inventory.add(Items.foodRation.create())
-        player.inventory.add(Items.cyanideCapsule.create())
         enterRegion("start", "from up")
 
-        putPetNextToPlayer(config.pet.instantiate())
+        player.message("Hello %s, welcome to Kraken!", player.name)
+        preparePlayer(player)
+
+        val pet = config.pet
+        if (pet != null)
+            putNextToPlayer(pet())
 
         currentRegion.updateLighting()
         player.updateVisiblePoints()
         currentRegion.updateSeenCells(player.visibleCells)
-        player.message("Hello %s, welcome to Kraken!", player.name)
-
-        val today = LocalDate.now()
-        if (today.isFestivus) {
-            player.message("Happy Festivus!")
-            player.strength += 10
-            player.luck = 2
-            player.inventory.add(Weapons.aluminiumPole.create())
-        }
-
-        if (today.dayOfWeek == DayOfWeek.FRIDAY) {
-            player.message("It is Friday, good luck!")
-            player.luck = 1
-        }
 
         globalClock.schedulePeriodic(1) {
             player.increaseHungriness(this)
@@ -98,12 +77,12 @@ class Game(val config: GameConfiguration, private val console: Console, val list
         }
     }
 
-    private fun putPetNextToPlayer(pet: Creature) {
+    private fun putNextToPlayer(creature: Creature) {
         val target = player.cell.adjacentCells.find { it.isFloor && it.creature == null }
 
         if (target != null) {
-            pet.cell = target
-            creatures += pet
+            creature.cell = target
+            creatures += creature
         }
     }
 
@@ -123,12 +102,12 @@ class Game(val config: GameConfiguration, private val console: Console, val list
 
             maximumDungeonLevel.update(region.level)
             if (oldCell != null) {
-                // TODO: perhaps all adjacent creatures could come with player?
-                val pet = oldCell.adjacentCells
+                val monsters = oldCell.adjacentCells
                     .mapNotNull { it.creature as? Monster }
-                    .find { it.state is PetState }
-                if (pet != null)
-                    putPetNextToPlayer(pet)
+                    .filter { it.state.comesAlongInSteps }
+
+                for (monster in monsters)
+                    putNextToPlayer(monster)
             }
 
             regionClock.schedulePeriodic(500) {

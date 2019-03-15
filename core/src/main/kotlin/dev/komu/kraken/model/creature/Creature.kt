@@ -8,8 +8,8 @@ import dev.komu.kraken.model.actions.MoveAction
 import dev.komu.kraken.model.common.Attack
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.common.MessageTarget
+import dev.komu.kraken.model.item.Taste
 import dev.komu.kraken.model.item.armor.Armoring
-import dev.komu.kraken.model.item.food.Taste
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.model.item.weapon.Weapon
 import dev.komu.kraken.model.item.weapon.WeaponClass

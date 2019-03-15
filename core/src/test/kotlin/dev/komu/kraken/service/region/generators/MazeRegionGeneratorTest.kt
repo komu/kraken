@@ -7,12 +7,13 @@ import dev.komu.kraken.model.common.Console
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.region.World
 import dev.komu.kraken.model.region.generators.MazeRegionGenerator
+import dev.komu.kraken.service.config.ObjectFactory
 import org.junit.jupiter.api.RepeatedTest
 import kotlin.test.assertTrue
 
 class MazeRegionGeneratorTest {
 
-    private val world = World(Game(GameConfiguration.dummy(), MyConsole) {})
+    private val world = World(Game(GameConfiguration.dummy(), ObjectFactory(), {}, MyConsole) {})
 
     @RepeatedTest(100)
     fun generateRandomRegions() {

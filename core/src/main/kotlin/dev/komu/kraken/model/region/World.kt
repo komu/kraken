@@ -1,8 +1,8 @@
 package dev.komu.kraken.model.region
 
-import dev.komu.kraken.definitions.ProbabilityDistribution
-import dev.komu.kraken.definitions.betweenLevels
 import dev.komu.kraken.model.Game
+import dev.komu.kraken.model.definitions.ProbabilityDistribution
+import dev.komu.kraken.model.definitions.betweenLevels
 import dev.komu.kraken.model.region.generators.MazeRegionGenerator
 import dev.komu.kraken.model.region.generators.RoomFirstRegionGenerator
 import dev.komu.kraken.service.region.RegionLoader

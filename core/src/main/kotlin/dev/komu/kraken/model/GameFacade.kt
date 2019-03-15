@@ -2,7 +2,9 @@ package dev.komu.kraken.model
 
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.common.Console
+import dev.komu.kraken.model.creature.Player
 import dev.komu.kraken.model.item.Item
+import dev.komu.kraken.service.config.ObjectFactory
 import dev.komu.kraken.utils.relinquish
 import dev.komu.kraken.utils.yieldLock
 import java.util.concurrent.Executors
@@ -13,11 +15,11 @@ import kotlin.concurrent.withLock
 /**
  * All commands from UI to game go through this facade.
  */
-class GameFacade(config: GameConfiguration, console: Console, val listener: (Boolean) -> Unit) {
+class GameFacade(config: GameConfiguration, objectFactory: ObjectFactory, preparePlayer: (Player) -> Unit, console: Console, val listener: (Boolean) -> Unit) {
 
     private val gameExecutor = Executors.newSingleThreadExecutor { Thread(it, "game") }
     private val lock = ReentrantReadWriteLock(true)
-    private val game = Game(config, LockRelinquishingConsole(console, lock.writeLock())) {
+    private val game = Game(config, objectFactory, preparePlayer, LockRelinquishingConsole(console, lock.writeLock())) {
         listener(true)
         lock.writeLock().yieldLock()
     }

@@ -1,6 +1,8 @@
 package dev.komu.kraken.model.item.food
 
 import dev.komu.kraken.model.creature.Player
+import dev.komu.kraken.model.item.Food
+import dev.komu.kraken.model.item.Taste
 import dev.komu.kraken.utils.exp.Expression
 import dev.komu.kraken.utils.rollDie
 

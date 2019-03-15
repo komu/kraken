@@ -1,9 +1,10 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "unused")
 
-package dev.komu.kraken.definitions
+package dev.komu.kraken.content
 
 import dev.komu.kraken.model.common.Color
-import dev.komu.kraken.model.creature.*
+import dev.komu.kraken.model.definitions.MonsterDefinition
+import dev.komu.kraken.model.definitions.MonsterDefinitions
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.exp.Expression
 

@@ -1,4 +1,4 @@
-package dev.komu.kraken.definitions
+package dev.komu.kraken.model.definitions
 
 import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.creature.Drops

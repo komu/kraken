@@ -1,15 +1,15 @@
 @file:Suppress("unused")
 
-package dev.komu.kraken.definitions
+package dev.komu.kraken.content
 
 import dev.komu.kraken.model.common.Color
+import dev.komu.kraken.model.definitions.ArmorDefinition
+import dev.komu.kraken.model.definitions.ItemDefinition
+import dev.komu.kraken.model.definitions.ItemDefinitions
+import dev.komu.kraken.model.item.Food
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.item.LightSource
 import dev.komu.kraken.model.item.armor.BodyPart.*
-import dev.komu.kraken.model.item.food.ColdCoffee
-import dev.komu.kraken.model.item.food.CyanideCapsule
-import dev.komu.kraken.model.item.food.Food
-import dev.komu.kraken.model.item.food.WaferThinMint
 
 @Suppress("unused")
 object Items : ItemDefinitions() {

@@ -30,6 +30,9 @@ interface MonsterState {
      */
     val isFriendly: Boolean
         get() = false
+
+    val comesAlongInSteps: Boolean
+        get() = false
 }
 
 open class DefaultMonsterState : MonsterState {

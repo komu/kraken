@@ -1,9 +1,12 @@
-package dev.komu.kraken.model.creature
+package dev.komu.kraken.content
 
 import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.actions.RandomMoveAction
+import dev.komu.kraken.model.creature.Creature
+import dev.komu.kraken.model.creature.Monster
+import dev.komu.kraken.model.creature.MonsterState
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.Probability
 import dev.komu.kraken.utils.exp.Expression
@@ -32,6 +35,9 @@ enum class PetType(private val petName: String) {
 }
 
 sealed class PetState : MonsterState {
+
+    override val comesAlongInSteps: Boolean
+        get() = true
 
     override fun act(self: Monster, game: Game): Pair<Action?, MonsterState> {
         val player = game.player

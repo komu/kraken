@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api(kotlin("stdlib-jdk8"))
+    api(project(":core"))
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.0")

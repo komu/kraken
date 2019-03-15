@@ -4,9 +4,9 @@ import com.jgoodies.forms.builder.DefaultFormBuilder
 import com.jgoodies.forms.factories.ButtonBarFactory
 import com.jgoodies.forms.layout.CellConstraints
 import com.jgoodies.forms.layout.FormLayout
+import dev.komu.kraken.content.PetType
 import dev.komu.kraken.desktop.extensions.makeAction
 import dev.komu.kraken.model.GameConfiguration
-import dev.komu.kraken.model.creature.PetType
 import javax.swing.*
 
 class StartGameDialog(owner: JFrame) : JDialog() {
@@ -31,10 +31,12 @@ class StartGameDialog(owner: JFrame) : JDialog() {
         return configuration
     }
 
-    private fun createConfiguration(): GameConfiguration =
-        GameConfiguration(
+    private fun createConfiguration(): GameConfiguration {
+        val pet = petCombo.selectedItem as PetType
+        return GameConfiguration(
             name = nameField.text.takeUnless { it.isEmpty() } ?: "Anonymous Coward",
-            pet = petCombo.selectedItem as PetType)
+            pet = pet::instantiate)
+    }
 
     private fun initContent() {
         val cc = CellConstraints()

@@ -2,6 +2,8 @@ package dev.komu.kraken.desktop
 
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.common.Version
+import dev.komu.kraken.content.buildObjectFactory
+import dev.komu.kraken.content.preparePlayer
 import dev.komu.kraken.desktop.common.ErrorDialog
 import dev.komu.kraken.desktop.console.ConsoleView
 import dev.komu.kraken.desktop.extensions.makeAction
@@ -195,7 +197,8 @@ class Main(val wizardMode: Boolean) {
 
         if (config != null) {
             config.wizardMode = wizardMode
-            val game = GameFacade(config, consoleView) { tick -> update(tick) }
+
+            val game = GameFacade(config, buildObjectFactory(), ::preparePlayer, consoleView) { tick -> update(tick) }
             consoleView.clear()
             gameActions.gameFacade = game
             regionView.gameFacade = game

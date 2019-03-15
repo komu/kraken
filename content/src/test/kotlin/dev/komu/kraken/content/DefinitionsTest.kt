@@ -1,8 +1,5 @@
-package dev.komu.kraken.test.files
+package dev.komu.kraken.content
 
-import dev.komu.kraken.definitions.Creatures
-import dev.komu.kraken.definitions.Items
-import dev.komu.kraken.definitions.Weapons
 import org.junit.jupiter.api.Test
 
 class DefinitionsTest {

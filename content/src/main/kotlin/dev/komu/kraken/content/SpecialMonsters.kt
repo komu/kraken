@@ -1,4 +1,4 @@
-package dev.komu.kraken.model.creature
+package dev.komu.kraken.content
 
 import dev.komu.kraken.common.Direction
 import dev.komu.kraken.model.Energy
@@ -6,6 +6,10 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.actions.AttackAction
 import dev.komu.kraken.model.actions.RandomMoveAction
+import dev.komu.kraken.model.creature.Creature
+import dev.komu.kraken.model.creature.DefaultMonsterState
+import dev.komu.kraken.model.creature.Monster
+import dev.komu.kraken.model.creature.MonsterState
 import dev.komu.kraken.model.item.Item
 import dev.komu.kraken.model.region.Cell
 import dev.komu.kraken.utils.randomElement
