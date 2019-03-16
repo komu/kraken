@@ -26,40 +26,31 @@ sealed class Expression {
 
     class RandomInt(private val range: ClosedRange<Int>) : Expression() {
 
-        override fun evaluate(): Int =
-            randomInt(range)
-
-        override fun toString() =
-            "randomInt($range)"
+        override fun evaluate(): Int = randomInt(range)
+        override fun toString() = "randomInt($range)"
     }
 
-    class Plus(private val lhs: Expression, private val rhs: Expression) :
-        Expression() {
+    class Plus(private val lhs: Expression, private val rhs: Expression) : Expression() {
 
         override fun evaluate() = lhs.evaluate() + rhs.evaluate()
+        override fun toString() = "$lhs+$rhs"
     }
 
     class Constant(private val value: Int) : Expression() {
 
         override fun evaluate() = value
-
         override fun toString() = value.toString()
     }
 
     class Die(private val multiplier: Int, private val sides: Int) : Expression() {
 
-        override fun evaluate() =
-            rollDie(sides, multiplier)
-
+        override fun evaluate() = rollDie(sides, multiplier)
         override fun toString() = "${multiplier}d$sides"
     }
 
     companion object {
 
-        fun constant(value: Int): Expression =
-            Constant(value)
-
-        fun random(range: ClosedRange<Int>): Expression =
-            RandomInt(range)
+        fun constant(value: Int): Expression = Constant(value)
+        fun random(range: ClosedRange<Int>): Expression = Expression.RandomInt(range)
     }
 }
