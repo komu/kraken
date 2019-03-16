@@ -48,6 +48,10 @@ abstract class Creature(var name: String): MessageTarget {
     var corporeal = true
     var omniscient = false
     var level = 1
+
+    /** How far this creature can see? */
+    var sight = 20
+
     var killExperience = -1
         get() = if (field != -1) field else level * level
 
@@ -120,11 +124,8 @@ abstract class Creature(var name: String): MessageTarget {
         if (omniscient)
             return true
 
-        return calculateCanSee(target)
+        return cell.distance(target) <= sight && cell.hasLineOfSight(target)
     }
-
-    private fun calculateCanSee(target: Cell): Boolean =
-        cell.hasLineOfSight(target)
 
     val adjacentCreatures: Collection<Creature>
         get() = cell.adjacentCells.mapNotNull(Cell::creature)

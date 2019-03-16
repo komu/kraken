@@ -25,7 +25,7 @@ class Player(name: String): Creature(name) {
     var hunger = 2000
     var fainted = false
     var regenerated = false
-    var sight = 20
+
     var behavior: Behavior? = null
 
     init {
