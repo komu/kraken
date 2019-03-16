@@ -17,7 +17,7 @@ object Creatures : MonsterDefinitions() {
     // (a) Ants
 
     private fun MonsterDefinition.ant() {
-        letter = 'a'
+        race = Races.ant
         corpsePoisonousness = constant(2)
     }
 
@@ -113,7 +113,7 @@ object Creatures : MonsterDefinitions() {
     // (A) Angelic Beings
 
     private fun MonsterDefinition.baseAngel() {
-        letter = 'A'
+        race = Races.angel
         corpsePoisonousness = constant(0)
         color = Color.WHITE
         canUseDoors = true
@@ -146,7 +146,7 @@ object Creatures : MonsterDefinitions() {
 
     // (b) Bats
     private fun MonsterDefinition.bat() {
-        letter = 'b'
+        race = Races.bat
         corpsePoisonousness = constant(1)
     }
 
@@ -222,7 +222,7 @@ object Creatures : MonsterDefinitions() {
     // (B) Birds
 
     private fun MonsterDefinition.bird() {
-        letter = 'B'
+        race = Races.bird
         corpsePoisonousness = constant(0)
     }
 
@@ -284,7 +284,7 @@ object Creatures : MonsterDefinitions() {
     // (c) Centipedes
 
     private fun MonsterDefinition.centipede() {
-        letter = 'c'
+        race = Races.centipede
         corpsePoisonousness = constant(1)
     }
 
@@ -344,7 +344,7 @@ object Creatures : MonsterDefinitions() {
 
 
     private fun MonsterDefinition.canine() {
-        letter = 'C'
+        race = Races.canine
         corpsePoisonousness = constant(1)
     }
 
@@ -1019,7 +1019,7 @@ object Creatures : MonsterDefinitions() {
     // (p) Persons (humans)
 
     private fun MonsterDefinition.person() {
-        letter = 'p'
+        race = Races.human
         canUseDoors = true
         corpsePoisonousness = constant(1)
     }

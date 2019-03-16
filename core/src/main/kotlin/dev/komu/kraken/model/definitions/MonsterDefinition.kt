@@ -4,6 +4,7 @@ import dev.komu.kraken.model.common.Color
 import dev.komu.kraken.model.creature.Drops
 import dev.komu.kraken.model.creature.Monster
 import dev.komu.kraken.model.creature.MonsterState
+import dev.komu.kraken.model.creature.Race
 import dev.komu.kraken.model.item.weapon.NaturalWeapon
 import dev.komu.kraken.utils.Expression
 import dev.komu.kraken.utils.randomInt
@@ -30,6 +31,7 @@ class MonsterDefinition(val name: String) : ObjectDefinition<Monster>() {
     val inventory = mutableListOf<ItemDefinition<*>>()
     var state: (() -> MonsterState)? = null
     var drops: Drops? = null
+    var race: Race = Race("unknown", '§')
 
     var swarmSize: ClosedRange<Int> = 1..1
 
@@ -38,7 +40,7 @@ class MonsterDefinition(val name: String) : ObjectDefinition<Monster>() {
     fun createSwarm(): Collection<Monster> =
         List(randomInt(swarmSize)) { create() }
 
-    override fun create(): Monster = Monster(name).also {
+    override fun create(): Monster = Monster(name, race).also {
         if (color != null)
             it.color = color!!
 
@@ -56,6 +58,8 @@ class MonsterDefinition(val name: String) : ObjectDefinition<Monster>() {
 
         if (letter != null)
             it.letter = letter!!
+        else
+            it.letter = race.letter
 
         if (naturalWeapon != null)
             it.naturalWeapon = naturalWeapon!!

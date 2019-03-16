@@ -4,7 +4,11 @@ import dev.komu.kraken.model.Game
 import dev.komu.kraken.model.actions.Action
 import dev.komu.kraken.model.region.Cell
 
-class Monster(name: String): Creature(name) {
+class Monster(name: String, val race: Race): Creature(name) {
+
+    init {
+        letter = race.letter
+    }
 
     var lastKnownPlayerPosition: Cell? = null
 

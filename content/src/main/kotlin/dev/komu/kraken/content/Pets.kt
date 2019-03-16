@@ -17,15 +17,13 @@ enum class PetType(private val petName: String) {
     LASSIE("Lassie");
 
     fun instantiate(): Monster = when (this) {
-        DORIS -> Monster("Doris").apply {
+        DORIS -> Monster("Doris", Races.feline).apply {
             weight = 10
-            letter = 'f'
             naturalWeapon = NaturalWeapon("bite", 1, Expression.random(3..7))
             state = PetState.Doris
         }
-        LASSIE -> Monster("Lassie").apply {
+        LASSIE -> Monster("Lassie", Races.canine).apply {
             weight = 25
-            letter = 'C'
             naturalWeapon = NaturalWeapon("bite", 1, Expression.random(3..7))
             state = PetState.Lassie
         }
